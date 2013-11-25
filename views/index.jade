@@ -1,0 +1,89 @@
+extends layout
+
+block append site_styles
+
+block append site_scripts
+	script(src="/javascripts/index.js")
+
+block content
+	div.main
+		- { if (session.user != null)
+			input(type="hidden", id="sessname", value="#{session.user.name}", data-bind="text: session.name('#{session.user.name}')")
+			input(type="hidden", id="sessid", value="#{session.user._id}", data-bind="text: session._id('#{session.user._id}')")
+			input(type="hidden", id="sesshot", value="#{session.user.hotness}", data-bind="text: session.hotness('#{session.user.hotness}')")
+			input(type="hidden", id="sessclub", value="#{session.user.club}", data-bind="text: session.club('#{session.user.club}')")
+			input(type="hidden", id="sessrank", value="#{session.user.rank}", data-bind="text: session.rank('#{session.user.rank}')")
+			input(type="hidden", id="sessuser", value="#{session.user.username}", data-bind="text: session.username('#{session.user.username}')")
+		- }
+	
+	div#loggedIn.panel(data-bind="visible: session.name()")
+		div
+			h2 Hei pokanikin käyttäjä,
+			h4 Olet jo kirjautunut sisään käyttäjänä&nbsp;
+				span(data-bind="text: session.name")
+			p
+			a.left(href="/logout") Kirjaudu ulos
+			a.right.button.small.radius(href="/profile") Siirry palveluun
+			p
+		p &nbsp;
+	
+	div#loginFail.reveal-modal.panel.radius(data-bind="click: function() {closeModal('#loginFail') }")
+		div.panel
+			h2.subheader
+				|Kirjautuminen epäonnistui
+			hr
+			//h5.subheader(data-bind="text: loginAlertHeader")
+			//p(data-bind="text: loginAlertBody")
+
+	div(id="lostPass", class="reveal-modal", data-options="closeOnBackgroundClick:true")
+		div
+			h2
+				|Salasanan palautus
+			h5.subheader
+				|Anna sähköpostiosoitteesi
+			form(method="post")#get-credentials-form
+				input(type="text", name="email", id="email-tf", data-bind="value: user.email").radius
+				button(data-bind="click: function() { closeModal('#lostPass') }") Peruuta
+				button(data-type="submit")#submit.btn.btn-primary Lähetä
+				//div(data-bind="visible: retrievePassFail")
+					div(data-bind="visible: retrievePassFail", class="failAlert").panel
+						b
+						span(data-bind="text: retrievePassFail")
+	
+
+	div(class="panel", data-bind="visible: !session.name()")
+
+		form#login-form
+			h3 Kirjaudu sisään pokanikkiin
+			h5.subheader Voit myös 
+				a(href="/home")
+					|tutustua palveluun ilman tunnuksia
+			label Käyttäjätunnus
+			input(type="text", name="user", id='user-tf', data-bind="value: user.username", autocapitalize="off")
+			div.error_custom(data-bind="visible: userFail() == true")
+				| Käyttäjää ei löytynyt
+			label Salasana
+			input(type="password", name="pass", id='pass-tf', data-bind="value: user.password")
+			div.error_custom(data-bind="visible: passwordFail() == true")
+				| Väärä salasana
+
+			div(class="small-12 large-12 columns left", style="padding: 0px")
+				button(type="submit", data-bind="click: login").radius.success.small.right
+					|Kirjaudu sisään
+				label#remember-me.checkbox.right
+					| &nbsp;Muista minut 
+					input(type="checkbox", checked='checked', data-bind="checked: user.rememberMe")
+					|  &nbsp; &nbsp;
+
+
+			div.clear-fix
+			hr
+			div
+				//a(data-bind="")#forgot-password Unohtuiko salasana?
+				//&nbsp;&nbsp;&nbsp;
+				//a(data-bind="click: function() { window.location.href='/newuser' }")#create-account
+				span(style="color: #cecece") Rekisteröidy
+				
+	//div(style="background-color: #eee")
+		pre(data-bind="text: ko.toJSON($data, null, 2)")
+		pre(data-bind="text: ko.toJSON(user)")

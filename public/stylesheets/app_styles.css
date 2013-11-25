@@ -1,0 +1,664 @@
+.ui-page.ui-body-c  {
+//	background: url('img/wild_oliva.png') !important;
+//	background: black;
+//	background-color: black;
+	padding: 0;
+	margin: 0;
+//	overflow: hidden;
+	font-family: helvetica, arial, sans-serif;
+
+	
+} 
+
+html, body {
+	height: 100%;
+	min-height: 100%;
+	//overflow: hidden;
+	-webkit-user-select: none;
+}
+
+//a {
+//	-webkit-touch-callout: none !important; // pitäis estää longtap-menu ios-laitteilla, mutta ei tunne toimivan?
+//}
+
+/* .ui-li {
+	width: 100px !important;
+	text-overflow: hide;
+} */
+
+
+.winner {
+//	font-size: 20px;
+//	font-weight: 700;
+}
+
+
+body {
+	margin: 0;
+	padding: 0;
+//	position: fixed;
+//	max-width: 800px;
+	width: 100%;
+//	background: url('img/wild_oliva.png') !important;
+//	background-color: black;
+//	background: black;
+//	overflow: hidden;
+}
+
+
+#app {
+	position: fixed;
+	height: 100%;
+}
+
+.loginSetupTop {
+	position: fixed;
+	height: 22px;
+	width: 100%;
+	left: 0px;
+	right: 0px;
+	margin: 0px;
+	padding: 0px;
+	top: 0px;
+}
+
+.top {
+	position: absolute;
+	height: 44px;
+	width: 100%;
+	top: -1px;
+	left: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin: 0px;
+
+/*
+	background: -moz-linear-gradient(top,  rgba(132,0,95,0.9) 0%, rgba(130,67,112,0.8) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(132,0,95,0.9)), color-stop(100%,rgba(130,67,112,0.8))); 
+	background: -webkit-linear-gradient(top,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%);
+	background: -o-linear-gradient(top,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%); 
+	background: -ms-linear-gradient(top,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%); 
+	background: linear-gradient(to bottom,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e684005f', endColorstr='#cc824370',GradientType=0 );
+*/
+	background: -moz-linear-gradient(top,  rgba(0,89,178,0.95) 0%, rgba(14,103,186,0.7) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,89,178,0.95)), color-stop(100%,rgba(14,103,186,0.85)));
+	background: -webkit-linear-gradient(top,  rgba(0,89,178,0.95) 0%,rgba(14,103,186,0.85) 100%);
+	background: -o-linear-gradient(top,  rgba(0,89,178,0.95) 0%,rgba(14,103,186,0.85) 100%);
+	background: -ms-linear-gradient(top,  rgba(0,89,178,0.95) 0%,rgba(14,103,186,0.85) 100%);
+	background: linear-gradient(to bottom,  rgba(0,89,178,0.95) 0%,rgba(14,103,186,0.85) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e60059b2', endColorstr='#b30e67ba',GradientType=0 );
+
+	
+	text-align: center;
+	z-index: 100;
+}
+
+
+/* * .ui-select .ui-btn select {
+	max-width: 80px !important;
+} */
+
+* .ui-controlgroup-horizontal.ui-mini .ui-btn-inner {
+	max-width: 5.5em !important;
+}
+
+.topAddedToHome {
+	position: absolute;
+	height: 44px;
+	width: 100%;
+	top: 22px !important;
+	left: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin: 0px;
+	background:red;
+	background-color: red;
+	
+	text-align: center;
+	
+	z-index: 100;
+}
+
+* .ui-input-text {
+	border-radius: 2px;
+	font-weight: 400;	
+}
+
+* .ui-btn {
+	border-radius: 2px;
+	font-weight: 400;
+}
+
+#peru {
+	top: 2px !important;
+}
+
+#asetukset {
+	//top: 2px;
+}
+
+.top .ui-btn-inner {
+
+}
+
+.dialogBtn {
+	top: 0px !important;
+	height: 44px;
+	background: transparent;
+	border-color: transparent;
+	box-shadow: none;
+	padding: 0px;
+	border: 0px;
+	margin: 0px;
+}
+
+.dialogBtn .ui-btn-inner{
+	margin-top: 6px;
+	border: 0px;
+	padding-right: 3px;
+	padding-left: 3px;
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.dialogBtn .ui-icon {
+	background-color: rgba(0,0,0,0.0);
+	box-shadow: none;
+}
+
+
+#options {
+	opacity: 0.9;
+}
+
+
+.scroller {
+	position: absolute;
+	top: 0px;
+	bottom: 108px;
+//	width: 100%;
+	padding-bottom: 15px;
+	left: 0px;
+	right: 0px;
+	margin-top: 0px;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-left: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	z-index: 1;
+}
+
+#scrollPad {
+	height: 44px;
+	z-index: 1;
+	
+	//height: 136px;
+}
+
+.scrollerAddedToHome {
+	top: 66px !important;
+	position: absolute;
+	bottom: 96px;
+//	width: 100%;
+	padding-bottom: 15px;
+	left: 0px;
+	right: 0px;
+	margin-top: 0px;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-left: 0px;
+	margin-left: 0px;
+	margin-right: 0px;	
+}
+
+#foo {
+	min-height: 100%;
+}
+
+.hidden {
+	display: none;
+}
+
+#scoreBoard {
+	border-collapse: collapse;
+	width: 100%;
+	max-width: 100%;
+	padding: 0px;
+	padding-top: 0px;
+	margin-top: 0px;
+	font-size: 13px;
+}
+
+.scoreCellCall {
+	font-size: 80% !important;
+	text-align: center !important;	
+	width: 20%;
+}
+
+.scoreCell {
+	text-align: center;
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	width: 20%;
+}
+
+.scoreCellGames {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	width: 20%;
+	text-align: center;
+//	font-size: 75% !important;
+}
+
+
+.scoreCellOdd {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	width: 20%;
+	text-align: center;
+	background-color: #eee !important;
+	border-bottom-width: 1px !important;
+	border-bottom-color: #ccc !important;
+	border-bottom-style: solid !important;
+}
+
+.scoreCellLatest {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+    
+    border-bottom-width: 1px !important;
+    border-bottom-color: #ccc !important;
+    border-bottom-style: solid !important;
+	
+/*	border-bottom-width: 1px;
+	border-bottom-color: #ccc;
+	border-bottom-style: dashed; */
+	
+	font-size: 130%;
+	width: 20%;	
+}
+
+
+.scoreCellGameBall {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	
+	border-bottom-width: 1px;
+	border-bottom-color: #afafaf;
+	border-top-style: solid;
+	
+	background-color: #ffd77c !important;	
+	
+	width: 20%;
+
+}
+
+.scoreCellGameOver {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #aaa;
+	border-top-style: solid;
+
+	border-bottom-width: 1px;
+	border-bottom-color: #aaa;
+	border-bottom-style: solid;
+	
+	font-size: 130%;
+	width: 20%;
+
+	background-color: #C2E0FF !important;
+	
+}
+
+.scoreCellPlayerOneYesLet {
+	background: -moz-linear-gradient(left,  rgba(19,142,0,1) 0%, rgba(19,142,0,1) 9%, rgba(19,142,0,0) 10%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(19,142,0,1)), color-stop(9%,rgba(19,142,0,1)), color-stop(10%,rgba(19,142,0,0)));
+	background: -webkit-linear-gradient(left,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	background: -o-linear-gradient(left,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	background: -ms-linear-gradient(left,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	background: linear-gradient(to right,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#138e00', endColorstr='#00138e00',GradientType=1 );
+
+}
+
+.scoreCellPlayerOneNoLet {
+	background: -moz-linear-gradient(left,  rgba(255,116,0,1) 0%, rgba(255,116,0,1) 9%, rgba(255,116,0,0) 10%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,116,0,1)), color-stop(9%,rgba(255,116,0,1)), color-stop(10%,rgba(255,116,0,0)));
+	background: -webkit-linear-gradient(left,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	background: -o-linear-gradient(left,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	background: -ms-linear-gradient(left,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	background: linear-gradient(to right,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7400', endColorstr='#00ff7400',GradientType=1 );
+
+}
+
+.scoreCellPlayerOneStroke {
+	background: -moz-linear-gradient(left,  rgba(160,2,0,1) 0%, rgba(160,2,0,1) 9%, rgba(160,2,0,0) 10%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(160,2,0,1)), color-stop(9%,rgba(160,2,0,1)), color-stop(10%,rgba(160,2,0,0)));
+	background: -webkit-linear-gradient(left,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	background: -o-linear-gradient(left,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	background: -ms-linear-gradient(left,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	background: linear-gradient(to right,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a00200', endColorstr='#00a00200',GradientType=1 );
+		
+}
+
+.scoreCellPlayerTwoYesLet {
+	background: -moz-linear-gradient(left,  rgba(19,142,0,0) 90%, rgba(19,142,0,1) 91%, rgba(19,142,0,1) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(90%,rgba(19,142,0,0)), color-stop(91%,rgba(19,142,0,1)), color-stop(100%,rgba(19,142,0,1)));
+	background: -webkit-linear-gradient(left,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	background: -o-linear-gradient(left,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	background: -ms-linear-gradient(left,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	background: linear-gradient(to right,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00138e00', endColorstr='#138e00',GradientType=1 );
+		
+}
+
+.scoreCellPlayerTwoNoLet {
+	background: -moz-linear-gradient(left,  rgba(255,116,0,0) 90%, rgba(255,116,0,1) 91%, rgba(255,116,0,1) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(90%,rgba(255,116,0,0)), color-stop(91%,rgba(255,116,0,1)), color-stop(100%,rgba(255,116,0,1)));
+	background: -webkit-linear-gradient(left,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	background: -o-linear-gradient(left,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	background: -ms-linear-gradient(left,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	background: linear-gradient(to right,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ff7400', endColorstr='#ff7400',GradientType=1 );
+
+}
+
+.scoreCellPlayerTwoStroke {
+	background: -moz-linear-gradient(left,  rgba(160,2,0,0) 90%, rgba(160,2,0,1) 91%, rgba(160,2,0,1) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(90%,rgba(160,2,0,0)), color-stop(91%,rgba(160,2,0,1)), color-stop(100%,rgba(160,2,0,1)));
+	background: -webkit-linear-gradient(left,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	background: -o-linear-gradient(left,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	background: -ms-linear-gradient(left,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	background: linear-gradient(to right,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00a00200', endColorstr='#a00200',GradientType=1 );
+
+}
+
+
+.sliderContainer {
+	width: 50%;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.sliderW {
+//	margin: auto;
+	height: 2px;
+	border: 1px;
+	border-style: outset;
+	border-color: #222;
+	border-radius: 10px;
+	background: silver;
+	margin-top: 5px;
+	margin-bottom: 0px;
+	padding: 0px;
+//	width: 70%;
+	padding-left: 10px;
+	padding-right: 10px;
+/*	margin-right: 0px;
+	margin-left: 0px; */
+	margin-top: 12px;
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+
+.slaidi {
+//	margin: auto;
+	margin-top: -20px !important;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	height: 44px !important;
+//	padding: auto;
+	padding: 0px !important;
+	/*	margin-left: 40px;
+	margin-right: 40px; */
+}
+
+#scoreBar {
+	height: 24px;
+	position: absolute;
+	bottom: 74px !important;
+	width: 100%;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 0px;
+	padding-right: 0px;
+	
+	background: -moz-linear-gradient(top,  rgba(1,98,183,0.9) 0%, rgba(0,72,145,0.95) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(1,98,183,0.9)), color-stop(100%,rgba(0,72,145,0.95))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(1,98,183,0.9) 0%,rgba(0,72,145,0.95) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(1,98,183,0.9) 0%,rgba(0,72,145,0.95) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(1,98,183,0.9) 0%,rgba(0,72,145,0.95) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(1,98,183,0.9) 0%,rgba(0,72,145,0.95) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e60162b7', endColorstr='#f2004891',GradientType=0 ); /* IE6-9 */
+	
+	/* border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #929292; */
+
+	
+}
+
+#gameScores {
+	position: absolute;
+	bottom: 52px !important;
+	width: 100%;
+	height: 22px !important;
+	padding: 0px;
+	margin: 0px;
+	
+	background: -moz-linear-gradient(top,  rgba(0,72,145,0.95) 0%, rgba(0,51,96,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,72,145,0.95)), color-stop(100%,rgba(0,51,96,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(0,72,145,0.95) 0%,rgba(0,51,96,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(0,72,145,0.95) 0%,rgba(0,51,96,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(0,72,145,0.95) 0%,rgba(0,51,96,1) 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  rgba(0,72,145,0.95) 0%,rgba(0,51,96,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2004891', endColorstr='#003360',GradientType=0 ); /* IE6-9 */	
+	
+}
+
+#doomings {
+	height: 44px;
+	width: 75px;
+	margin: auto;
+	text-align: center !important;
+}
+
+
+#tuomiot {
+	margin: 0px !important;
+	padding-right: 0px;
+	margin-right: 0px;
+	padding: 0px !important;
+}
+
+#tuom_arrow {
+	float: right;
+	margin-top: 11px;
+	margin-bottom: 10px;
+	margin-left: 0px;
+	margin-right: 0px;	
+	padding-top: 1px;
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	color: white;
+	font-weight: 300;
+	font-size: 12px;
+	//font-family: "andale mono";
+	//width: 10px;
+	//height: 10px;
+}
+
+.callButton {
+	width: 60px;
+}
+
+.callButton .ui-btn-inner {
+	min-width: 10px !important;
+	padding: 3px 3px 3px 3px !important;
+}
+
+.yesLetBtn {
+	border-left-style: solid;
+	border-left-color: rgba(19,142,0,1);
+	border-right-color: rgba(19,142,0,1);	
+	border-right-width: 3px;
+	border-left-width: 3px;
+}
+
+.noLetBtn {
+	border-left-width: 3px;
+	border-right-width: 3px;
+	border-left-color: rgba(255,116,0,1);
+	border-right-color: rgba(255,116,0,1);
+}
+
+.strokeBtn {
+	border-left-width: 3px;
+	border-right-width: 3px;
+	border-left-color: rgba(160,2,0,1);
+	border-right-color: rgba(160,2,0,1);
+	
+}
+
+.gameScores {
+	font-size: 14px;
+	font-weight: 700;
+	padding: 4px;	
+	height: 20px;
+}
+
+.playerName {
+	font-size: 14px; 
+	overflow: hidden;
+	text-overflow: ellipsis; 
+	white-space: nowrap;
+	max-width: 100%;
+	padding: 4px;
+	height: 20px;
+
+}
+
+#slaidiDiv {
+	width: 100%;
+	height: 32px;
+	position: absolute;
+//	padding: 0px;
+	padding-bottom: 10px !important;
+	padding-top: 10px !important;
+	padding-right: 0px;
+	padding-left: 0px;
+	bottom: 0px !important;
+//	bottom: 0px;
+	margin-bottom: 0px !important;
+	text-align: center;
+	margin-left: 0px;
+	margin-right: 0px;
+	background: rgb(0,51,96);
+	background: -moz-linear-gradient(top,  rgba(0,51,96,1) 0%, rgba(0,38,76,1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,51,96,1)), color-stop(100%,rgba(0,38,76,1)));
+	background: -webkit-linear-gradient(top,  rgba(0,51,96,1) 0%,rgba(0,38,76,1) 100%);
+	background: -o-linear-gradient(top,  rgba(0,51,96,1) 0%,rgba(0,38,76,1) 100%);
+	background: -ms-linear-gradient(top,  rgba(0,51,96,1) 0%,rgba(0,38,76,1) 100%);
+	background: linear-gradient(to bottom,  rgba(0,51,96,1) 0%,rgba(0,38,76,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#003360', endColorstr='#00264c',GradientType=0 );
+
+}
+
+#tuom {
+	padding-top: 0px;
+	top: 43px;
+	//top: -500px;
+	position: absolute;
+	width: 100%;
+	opacity: 1;
+	//background: #eee;
+	z-index: 2;
+	display: none;
+}
+
+#calls {
+	opacity: 0.98;
+	background: #eee;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ccc;
+	width: 100%;
+}
+
+#endGamePopup {
+	min-width: 260px;
+}
+
+#tuom .ui-content {
+	padding: 2px;
+	padding-top: 0px !important;
+	margin: 0px;
+	margin-top: 0px !important;
+}
+
+.ui-slider .ui-slider-handle {
+	width: 125px !important; 
+	height: 76px !important; 
+	outline: none;
+	border-radius: 0px !important;
+	border: 0px;
+	background: url('../images/handle_b.png');
+	background-repeat: no-repeat;
+	background-size: 100%;
+	margin-left: -60px !important;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+	z-index: 50;
+}
+
+.ui-slider .ui-slider-handle .ui-btn-inner {
+	border: 0px;
+	background: transparent;
+	padding: 0px;
+}
+
+.ui-slider-track {
+//	width: 33%;
+	margin-left: 0px;
+//	background: transparent;
+	border:0px;
+}

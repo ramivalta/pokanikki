@@ -1,0 +1,17 @@
+extends layout
+
+block append headers
+	link(rel="stylesheet" href="/stylesheets/foundation.css")
+	link(rel="stylesheet" href="/stylesheets/site_styles.css")
+	
+block append site_scripts
+	script(src="/javascripts/home.js")
+
+block content
+	include navbar
+
+	div.row
+		div.large-12.small-12.columns
+			h1.subheader Tervetuloa pokanikkiin!
+			div.panel
+				p Pokanikki on palvelu kössitulosten tallentamiseen ja analysointiin ja otteluiden tuomitsemiseen. Se on tällä hetkellä Laajavuori Squashin sisäisessä testikäytössä.

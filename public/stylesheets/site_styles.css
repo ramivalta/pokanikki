@@ -1,0 +1,588 @@
+/*@font-face {
+	font-family: 'LeagueGothic';
+	font-style: 'normal';
+	font-weight: 'normal';
+	src: local('LeagueGothic'), url('/stylesheets/LeagueGothic-Regular.otf') format('opentype');
+}*/
+
+h1 {
+	//font-family: LeagueGothic, Helvetica, sans-serif;
+	//letter-spacing: 1px;
+}
+
+.hidden {
+	display: none;
+}
+
+.visible {
+	display: block;
+}
+
+.main_header {
+	background: gray;
+//	background-image: url('/images/princeo323.png');
+	background-image: url('/images/darkdenim3.png');
+
+//	background-size: 100% auto;
+//	background-position: top right;
+//	background-repeat: no-repeat;
+	width: 100%;
+	margin-top: 0px;
+	margin-left: 0px !important;
+	margin-right: 0px !important;
+	//height: 78px;
+	padding: 0px;
+}
+
+#main_title
+{
+	display: inline;
+	text-shadow: 0px 1px 1px #B7B7B7, 0px -1px 0px #000;
+	//background-color: #AFAFAF;
+	color: #333;
+	letter-spacing: 1px;
+}
+
+#club_title
+{
+	position: absolute;
+	display: inline;
+	text-shadow: 0px 1px 1px #000, 0px -1px 0px #000;
+	color: #fff;
+	opacity: 0.15;
+	right: 2px;
+}
+
+#club_title >span >a {
+	color: #fff;
+}
+
+
+.header_top
+{
+	height: 20px;
+	//background: rgba(0,0,0, 0.1);
+	background: silver;
+	color: #666;
+	font-size: 12px;
+	padding: 4px;
+	border-bottom: 1px #707070 solid;
+	margin-top: 0px;
+}
+
+.header_top_ios {
+	margin-top: 24px;
+}
+
+.launchedFromHomeIos {
+	z-index: 10;
+	position: fixed;
+	//left: 0;
+	//top: 0;
+	//right: 0;
+	color: #C9C9C9;
+	//padding-top: 24px;
+	height: 24px;
+	background-image: url('/images/darkdenim3.png');	
+}
+
+
+.header_top > .right > a {
+	color: #666;
+}
+
+.launchedFromHomeIos > .right > a {
+	color: #C9C9C9;
+}
+
+.ranking_cold {
+	background-image: url('/images/down.png');
+	background-size: 100%;
+	background-position: top left;
+	width: 18px;
+	height: 18px;
+	background-repeat: no-repeat;
+}
+
+.ranking_hot {
+//	background-image: url('/images/up.png');
+//	background-size: 100%;
+//	background-position: top left;
+//	width: 18px;
+//	height: 18px;
+//	background-repeat: no-repeat;
+	
+	color: white;
+}
+
+.ranking_lukewarm {
+	background-image: url('/images/level.png');
+	background-size: 100%;
+	background-position: top left;
+	width: 18px;
+	height: 18px;
+	background-repeat: no-repeat;	
+}
+
+body, html {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	background-image: url('/images/subtle_dots.png');
+}
+
+.main {
+	max-width: 1920px;
+}
+
+.scores {
+	
+}
+
+.custom_active { 
+	//background-color: #4A4A4A;
+	//background-color: rgba(0,0,0, 0.5);	
+	background-image: url('/images/debut_dark.png') !important;
+	
+}
+
+.active {
+	
+}
+
+.select_custom {
+	height: 24px;
+	font-size: 13px;
+	background: #eee;
+	color: #111;
+	max-width: 200px;
+}
+
+scoreEntryTable {
+	padding: 6px;
+	margin: 6px;
+}
+
+.scoreEntryCell {
+	padding: 4px;
+	margin: 4px;
+}
+
+.error_custom {
+	background-color: #C66 !important;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	box-shadow: 0px 0px 2px #000;
+	padding: 8px !important;
+	margin-top: -6px;
+	display: block;
+//	margin-top: 0;
+	margin-bottom: 1em;
+	font-size: 0.75em;
+	font-weight: bold;
+	color: white;
+
+}
+
+small.error
+{
+	background-color: #C66 !important;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	box-shadow: 0px 0px 2px #000;
+	padding: 8px !important;
+}
+
+
+.custom_small_error
+{
+	background-color: #C66 !important;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 6px;
+	box-shadow: 0px 0px 2px #000;
+	padding: 8px !important;
+	font-size: 12px;
+	font-weight: 600;
+	margin-top: -14px;
+	color: white;
+}
+
+
+
+#scoreEntryTable input {
+	box-shadow: 0px 1px 3px #d6d6d6 !important;
+	margin: 2px;
+	padding: 2px;
+}
+
+input {
+	box-shadow: 0px 0px 1px #d6d6d6 !important;
+}
+
+.scoreEntryAddRemoveButton {
+	font-size: 18px;
+	color: green;
+}
+
+body {
+	margin-top: 0px !important;
+	padding-top: 0px !important;
+	cursor: auto;
+}
+
+.site_scoreRow {
+	
+}
+
+.site_scoreCell {
+	background: #333;
+	color: #fff;
+	font-size: 11px;
+//	white-space: nowrap;
+	max-width: 40px;
+	text-overflow: ellipsis !important;
+	overflow: hidden;
+}
+
+.site_gameList {
+//	background: #333;
+	color: #444;
+	font-size: 12px;
+	line-height: 13px;
+//	white-space: nowrap;
+	text-overflow: ellipsis !important;
+	overflow: hidden;
+	font-weight: 300;
+	padding: 1px;
+//	cursor: pointer;
+}
+
+.name_ellipsed {
+	text-overflow: ellipsis !important;
+	overflow: hidden;
+//	white-space: nowrap;
+}
+
+.scoreBoard {
+	border-collapse: collapse;
+	width: 100%;
+	max-width: 100%;
+	padding: 0px;
+	padding-top: 0px;
+	margin-top: 0px;
+	font-size: 13px;
+}
+
+.scoreBoard >tr >td {
+//	border-left: 0px;
+//	border-right: 0px;	
+	border-bottom: 1px solid #ccc;
+	padding: 2px;
+	margin: 0px;
+}
+
+.circle {
+	border-radius: 50%;
+	background: pink;
+	width: 16px !important;
+	height: 16px !important;
+	
+	padding: 2px;
+	display: block-inline;
+	
+}
+
+.circle_pad {
+	padding-left: 6px;
+	padding-right: 6px;	
+	//color: green;
+}
+
+#era {
+	width: 60px !important;
+	padding: 0px;
+	margin: 0px;
+	border-bottom: 0px !important;
+
+}
+
+
+.rotate {
+	-webkit-transform: rotate(270deg);
+	transform: rotate(270deg);
+//	-webkit-transform-origin: 50% 50%;
+//	transform-origin: 50% 50%;		
+	-webkit-transform-origin: left bottom;
+}
+
+.game_header {
+	width: 60px;
+	font-weight: 700;
+	background: black;
+	color: #eee;
+	padding: 6px;
+	padding-right: 0px;
+}
+
+
+
+hr {
+	padding: 0px;
+	margin: 4px;
+}
+
+.gameListHeader {
+	cursor: pointer;	
+}
+
+.gameListHeader > div:hover {
+	text-decoration: underline;
+}
+
+
+.scoreBoard {
+	border-collapse: collapse;
+	width: 100%;
+//	max-width: 100%;
+	padding: 0px !important;
+	margin: 0px !important:
+
+	border-width: 1px;
+	border-style:solid;
+	border-color: silver;
+	text-align: center;
+	
+}
+
+.scoreCellCall {
+	font-size: 80% !important;
+	text-align: center !important;	
+}
+
+.scoreCell {
+	text-align: center;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ccc;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+//	width: 20%;
+}
+
+.scoreCellGrey {
+	text-align: center;
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	color: #333;
+	
+	font-weight: 200;
+
+
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #ccc;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+//	width: 20%;
+}
+
+
+.scoreCellGames {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	text-align: center;
+//	font-size: 75% !important;
+}
+
+
+.scoreCellOdd {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	text-align: center;
+	background-color: #eee !important;
+	border-bottom-width: 1px !important;
+	border-bottom-color: #ccc !important;
+	border-bottom-style: solid !important;
+}
+
+.scoreCellLatest {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+    
+    border-bottom-width: 1px !important;
+    border-bottom-color: #ccc !important;
+    border-bottom-style: solid !important;
+	
+/*	border-bottom-width: 1px;
+	border-bottom-color: #ccc;
+	border-bottom-style: dashed; */
+	
+	font-size: 130%;
+}
+
+
+.scoreCellGameBall {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #ccc;
+	border-top-style: solid;
+	
+	border-bottom-width: 1px;
+	border-bottom-color: #afafaf;
+	border-top-style: solid;
+	
+	background-color: #ffd77c !important;	
+	
+
+}
+
+.scoreCellGameOver {
+	border-width: 0px;
+	border-style: solid;
+	border-color: black;
+
+	border-top-width: 1px;
+	border-top-color: #aaa;
+	border-top-style: solid;
+
+	border-bottom-width: 1px;
+	border-bottom-color: #aaa;
+	border-bottom-style: solid;
+	
+//	font-size: 100%;
+	
+	font-weight: 700;
+	
+	text-align: center;
+	
+//	width: 20%;
+
+	background-color: #C2E0FF !important;
+	
+}
+
+.scoreCellPlayerOneYesLet {
+	background: -moz-linear-gradient(left,  rgba(19,142,0,1) 0%, rgba(19,142,0,1) 9%, rgba(19,142,0,0) 10%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(19,142,0,1)), color-stop(9%,rgba(19,142,0,1)), color-stop(10%,rgba(19,142,0,0)));
+	background: -webkit-linear-gradient(left,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	background: -o-linear-gradient(left,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	background: -ms-linear-gradient(left,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	background: linear-gradient(to right,  rgba(19,142,0,1) 0%,rgba(19,142,0,1) 9%,rgba(19,142,0,0) 10%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#138e00', endColorstr='#00138e00',GradientType=1 );
+
+}
+
+.scoreCellPlayerOneNoLet {
+	background: -moz-linear-gradient(left,  rgba(255,116,0,1) 0%, rgba(255,116,0,1) 9%, rgba(255,116,0,0) 10%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,116,0,1)), color-stop(9%,rgba(255,116,0,1)), color-stop(10%,rgba(255,116,0,0)));
+	background: -webkit-linear-gradient(left,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	background: -o-linear-gradient(left,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	background: -ms-linear-gradient(left,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	background: linear-gradient(to right,  rgba(255,116,0,1) 0%,rgba(255,116,0,1) 9%,rgba(255,116,0,0) 10%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff7400', endColorstr='#00ff7400',GradientType=1 );
+
+}
+
+.scoreCellPlayerOneStroke {
+	background: -moz-linear-gradient(left,  rgba(160,2,0,1) 0%, rgba(160,2,0,1) 9%, rgba(160,2,0,0) 10%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(160,2,0,1)), color-stop(9%,rgba(160,2,0,1)), color-stop(10%,rgba(160,2,0,0)));
+	background: -webkit-linear-gradient(left,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	background: -o-linear-gradient(left,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	background: -ms-linear-gradient(left,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	background: linear-gradient(to right,  rgba(160,2,0,1) 0%,rgba(160,2,0,1) 9%,rgba(160,2,0,0) 10%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a00200', endColorstr='#00a00200',GradientType=1 );
+		
+}
+
+.scoreCellPlayerTwoYesLet {
+	background: -moz-linear-gradient(left,  rgba(19,142,0,0) 90%, rgba(19,142,0,1) 91%, rgba(19,142,0,1) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(90%,rgba(19,142,0,0)), color-stop(91%,rgba(19,142,0,1)), color-stop(100%,rgba(19,142,0,1)));
+	background: -webkit-linear-gradient(left,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	background: -o-linear-gradient(left,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	background: -ms-linear-gradient(left,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	background: linear-gradient(to right,  rgba(19,142,0,0) 90%,rgba(19,142,0,1) 91%,rgba(19,142,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00138e00', endColorstr='#138e00',GradientType=1 );
+		
+}
+
+.scoreCellPlayerTwoNoLet {
+	background: -moz-linear-gradient(left,  rgba(255,116,0,0) 90%, rgba(255,116,0,1) 91%, rgba(255,116,0,1) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(90%,rgba(255,116,0,0)), color-stop(91%,rgba(255,116,0,1)), color-stop(100%,rgba(255,116,0,1)));
+	background: -webkit-linear-gradient(left,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	background: -o-linear-gradient(left,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	background: -ms-linear-gradient(left,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	background: linear-gradient(to right,  rgba(255,116,0,0) 90%,rgba(255,116,0,1) 91%,rgba(255,116,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ff7400', endColorstr='#ff7400',GradientType=1 );
+
+}
+
+.scoreCellPlayerTwoStroke {
+	background: -moz-linear-gradient(left,  rgba(160,2,0,0) 90%, rgba(160,2,0,1) 91%, rgba(160,2,0,1) 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(90%,rgba(160,2,0,0)), color-stop(91%,rgba(160,2,0,1)), color-stop(100%,rgba(160,2,0,1)));
+	background: -webkit-linear-gradient(left,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	background: -o-linear-gradient(left,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	background: -ms-linear-gradient(left,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	background: linear-gradient(to right,  rgba(160,2,0,0) 90%,rgba(160,2,0,1) 91%,rgba(160,2,0,1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00a00200', endColorstr='#a00200',GradientType=1 );
+
+}
+
+.panel_mod {
+  	border-style: solid !important;
+  	border-width: 1px !important;
+  	border-color: #d9d9d9 !important;
+  	margin-bottom: 0px !important;
+	padding: 1em !important;
+	background: #f8f8f8 !important;
+	border-radius: 3px;
+	border-bottom-width: 1 !important;
+
+}
+
+.scoreCellYesLet {
+	background-color: #138e00;
+	width: 3px;
+
+}
+
+.scoreCellNoLet {
+	background-color: #ff7400;
+	width: 3px;	
+
+}
+
+.scoreCellStroke {
+	background-color: #a00200;
+	width: 3px;	
+}
+
+.decisionText {
+	font-weight: 400;
+	color: #333;
+	font-size: 12px;
+}
+

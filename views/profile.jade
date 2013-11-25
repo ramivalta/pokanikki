@@ -1,0 +1,120 @@
+extends layout
+
+block append headers
+	link(rel="stylesheet" href="/stylesheets/foundation.css")
+	link(rel="stylesheet" href="/stylesheets/site_styles.css")
+	
+block append site_scripts
+	script(src="/javascripts/vendor/foundation/foundation.abide.js")
+	script(src="/javascripts/profile.js?123")
+
+block content
+	include navbar
+
+	div(class="large-7 small-12 columns")
+		dl.sub-nav(class="large-12 small-12 columns", style="padding-top: 16px")
+			dd.active(data-bind="css: { active : visiblePage() == 'profiili' }")
+				a(data-bind="click: function() { return visiblePage('profiili') }") Profiili
+			dd(data-bind="css: { active : visiblePage() == 'edit' }")
+				a(data-bind="click: function() { return visiblePage('edit') }") Käyttäjätilin asetukset
+
+
+		div.large-12.small-12.columns#profiili
+			h4.subheader
+				|Pelaaja
+				
+			div(class="large-12 small-12 columns panel")
+				h5.subheader
+					|Nimi: 
+					span #{session.user.name }
+				h5.subheader
+					|Seura: 
+					span #{session.user.clubName }
+				h5.subheader(data-bind="visible: session.rank() !== 'null'")
+					|Seuraranking: 
+					span(data-bind="text: session.rank");
+					
+		div.large-12.small-12.columns#edit
+			h4.subheader
+				| Tietojen muokkaus
+				
+			div(class="large-12 small-12 columns panel")
+				h5.subheader
+					|Salasanan vaihto:
+				form#changePass(data-abide)
+					fieldset
+						div
+							label(for="oldpass") Vanha salasana:
+							input(id="oldpass", type="password", required, pattern="dummy", name="oldpass", data-bind="value: oldPass")
+							small.error
+							div#oldPassErr.custom_small_error(data-bind="visible: oldPassFail() == true")
+								|Vanha salasana väärin
+						div
+							label(for="newpass") Uusi salasana:
+							input(id="newpass", type="password", pattern="shortpass", name="newpass", required, data-bind="value: newPass")
+							small.error Salasanan pitää olla vähintään kuusi merkkiä pitkä
+							div#newPassErr.custom_small_error(data-bind="visible: newPassFail() == true")
+								| Salasanan pitää olla vähintään kuusi merkkiä pitkä
+				
+						div
+							label(for="newpassverify") Uusi salasana uudestaan:
+							input(id="newpassverify", type="password", pattern="shortpass", name="verifypass", required, data-bind="value: newPassVerify")
+							input(type="hidden", data-bind="attr: { 'data-invalid' : newPass() !== newPassVerify() }")
+							small.error 
+							div.custom_small_error#passErr(data-bind="visible: doPasswordsDiffer") Salasanat eivät täsmää
+
+				div.large-12.small-12.right(data-bind="visible: saveSucceeded() === true")
+					span(style="color: green; font-weight: 300")
+						p Salasana vaihdettu.
+						a.button.success.radius(href="/logout") Kirjaudu uudelleen sisään
+				
+				div.large-6.small-12.left(data-bind="visible: saveInProgress() === true")
+					img(src="/images/loader.gif");
+			
+				div.large-6.small-12.right(data-bind="visible: saveSucceeded() === false")
+					button.right.small.radius(data-bind="click: saveUser") Vaihda salasana
+
+
+	div(class="large-5 small-12 columns")
+		h4.subheader Omat pelit
+		div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
+		
+			// ko if: ($index() === 0)
+	
+			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+			hr
+		
+			// /ko
+		
+			// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
+
+			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+			hr
+		
+			// /ko
+			div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible")
+					div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
+					div.large-4.small-4.columns.site_gameList(style="text-align: center")
+						span(data-bind="text: p1GamesWon")
+						|&nbsp;-&nbsp;
+						span(data-bind="text: p2GamesWon")
+					div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
+		
+				div.large-12.small-12.columns.site_gameList.gameScores(style="display:none", data-bind="if: gameScores().length > 0")
+						hr
+
+						div(data-bind="foreach: gameScores", style="text-align: center; padding-bottom: 4px").large-12.small-12.columns
+
+							span(data-bind="text: p1score")
+							|-
+							span(data-bind="text: p2score")
+							span(data-bind="if: ($index() !== ($parent.gameScores().length - 1))")
+								|,&nbsp;
+
+						//hr
+	//div.row
+		div.large-12
+			pre(data-bind="text: ko.toJSON(session, null, 2)")
+					
+	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
+		&nbsp;

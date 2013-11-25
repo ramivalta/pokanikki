@@ -1,0 +1,10 @@
+- { if (session.user != null)
+	input(type="hidden", id="sessname", value="#{session.user.name}", data-bind="text: session.name('#{session.user.name}')")
+	input(type="hidden", id="sessid", value="#{session.user._id}", data-bind="text: session._id('#{session.user._id}')")
+	input(type="hidden", id="sesshot", value="#{session.user.hotness}", data-bind="text: session.hotness('#{session.user.hotness}')")
+	input(type="hidden", id="sessclub", value="#{session.user.club}", data-bind="text: session.club('#{session.user.club}')")
+	input(type="hidden", id="sessrank", value="#{session.user.rank}", data-bind="text: session.rank('#{session.user.rank}')")
+	input(type="hidden", id="sessuser", value="#{session.user.username}", data-bind="text: session.username('#{session.user.username}')")
+	input(type="hidden", id="sessclub", value="#{session.user.clubShort}", data-bind="text: session.clubShort('#{session.user.clubShort}')"),
+	input(type="hidden", id="sessclubshort", value="#{session.user.clubName}", data-bind="text: session.clubName('#{session.user.clubName}')")		
+- }

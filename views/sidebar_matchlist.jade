@@ -1,0 +1,33 @@
+div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
+
+	// ko if: ($index() === 0)
+
+	div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+	hr
+
+	// /ko
+
+	// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
+
+	div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+	hr
+
+	// /ko
+	div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible")
+			div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
+			div.large-4.small-4.columns.site_gameList(style="text-align: center")
+				span(data-bind="text: p1GamesWon")
+				|&nbsp;-&nbsp;
+				span(data-bind="text: p2GamesWon")
+			div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
+
+		div.large-12.small-12.columns.site_gameList.gameScores(style="display:none", data-bind="if: gameScores().length > 0")
+				hr
+
+				div(data-bind="foreach: gameScores", style="text-align: center; padding-bottom: 4px").large-12.small-12.columns
+
+					span(data-bind="text: p1score")
+					|-
+					span(data-bind="text: p2score")
+					span(data-bind="if: ($index() !== ($parent.gameScores().length - 1))")
+						|,&nbsp;

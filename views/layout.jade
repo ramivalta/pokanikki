@@ -1,0 +1,35 @@
+!!! 5
+html
+	head
+		title= title
+		
+		block metatags
+			meta(charset="utf-8")
+			meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=5.0, minimum-scale=0.5, user-scalable=1")
+			meta(name='apple-mobile-web-app-title', content='Pokanikki')
+			
+		block styles
+						
+		block site_styles
+			link(rel="stylesheet" href="/stylesheets/vendor/foundation.css")
+			link(rel="stylesheet" href="/stylesheets/vendor/foundation-icons.css")
+			link(rel="stylesheet" href="/stylesheets/site_styles.css")
+		
+		block scripts
+			script(src='/javascripts/vendor/jquery-2.0.3.min.js')
+			script(src='/javascripts/vendor/knockout-3.0.0.js')
+			script(src='/javascripts/vendor/knockout.mapping-latest.js')
+			script(src="/javascripts/vendor/moment.min.js")
+			script(src="/javascripts/vendor/langs.min.js")
+			script(src='/javascripts/vendor/jquery.transit.js')			
+			script(src='/javascripts/global.js')
+
+		block site_scripts
+			script(src="/javascripts/vendor/custom.modernizr.js")
+			script(src="/javascripts/vendor/foundation/foundation.js")
+			script(src="/javascripts/vendor/foundation/foundation.forms.js")
+			script(src="/javascripts/vendor/foundation/foundation.topbar.js")
+		
+
+	body#main
+		block content

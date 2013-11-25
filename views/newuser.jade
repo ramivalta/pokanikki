@@ -1,0 +1,75 @@
+extends layout
+
+//block scripts
+
+block append site_scripts
+	script(src="/javascripts/vendor/foundation/foundation.abide.js?3123")
+	script(src="/javascripts/newuser.js")
+
+block content
+	- { if (session.user != null)
+		span(data-bind="text: sessionuser('#{session.user.username }')", style="visibility: hidden")
+	- }
+	
+	div(class="large-8 small-12 columns small-centered main")
+		div#formi
+			form(id="#account-form", data-abide)
+				h1.subheader Rekisteröityminen
+				fieldset.panel.radius
+					div
+						label(for='name-tf') Nimi
+						input#name-tf(type='text', pattern='alpha', required, name='realname', data-bind="value: user.name")
+						small.error Nimi vaaditaan
+
+					div
+						label(for='email-tf') Sähköposti
+						input#email-tf(type='email', required name='useremail', data-bind="value: user.email", autocapitalize="off")
+						div.error_custom(data-bind="visible: emailTaken() == true")
+							|Tämä sähköpostisoite on jo käytössä
+						
+						small.error Validi sähköpostisoite vaaditaan rekisteröitymiseen
+
+					div
+						label(for="club-sel") Seura
+						select(id="club-sel", name="club-sel", class="select_custom", data-bind="options: clubList, optionsText: 'name', value: club")
+					
+					hr
+
+					div
+						label(for='user-tf') Käyttäjätunnus
+						input#user-tf(pattern="shortuser", type='text', required, name='username', data-bind="value: user.username")
+						div.error_custom(data-bind="visible: usernameTaken() == true")
+							|Käyttäjätunnus on jo varattu
+						small.error
+							|Käyttäjätunnuksen on oltava vähintään kolme merkkiä pitkä
+
+					div
+						label(for='pass-tf') Salasana
+						input#pass-tf(type='password', pattern="shortpass", name='password', required, data-bind="value: user.password")
+						small.error Salasanan on oltava vähintään kuusi merkkiä pitkä
+
+					div
+						label(for="pass-2") Salasana uudestaan
+						input(id="passVerify", type="password", pattern="dummy", name="pass-2", required, data-bind="value: passwordVerify")
+						input(type="hidden", data-bind="attr: { 'data-invalid' : user.password() !== passwordVerify() } ")
+						small.error
+						div.custom_small_error#passErr(data-bind="visible: doPasswordsDiffer") Salasanat eivät täsmää
+
+					div.right
+						a(href="/")
+							button(type='button').secondary.radius.small
+								|Peruuta
+						span(style="padding: 4px")
+						button(type='submit', data-bind="click: addUser").success.radius.small
+							|Rekisteröidy
+
+		div#success(style="display: none")
+			div(class="large-12 small-12 columns")
+				h3 Rekisteröityminen onnistui!
+				div.panel
+					a(data-bind="click: function() { window.location.href='/' }") Kirjaudu sisään
+
+
+	//div(style="background-color: #eee")
+		pre(data-bind="text: ko.toJSON($data, null, 2)")
+		pre(data-bind="text: ko.toJSON(user)")

@@ -1,0 +1,134 @@
+extends layout
+
+block append site_styles
+	
+block append site_scripts
+	script(src="/javascripts/newgame.js")
+
+block content
+	include navbar
+
+	div.row
+		div(class="large-12 small-12 columns", data-bind="ifnot: session.name")
+			h4.subheader Halloo
+			
+			p Rekisteröityneet käyttäjät voivat lisätä uusia pelejä. Jos olet jo rekisteröitynyt, kirjaudu sisään lisätäksesi pelejä.
+	
+		div(class="large-12 small-12 columns", data-bind="if: session.name")
+			div(class="large-12 small-12 columns", style="height: 6px")
+			h4.subheader(style="display: inline") Uusi peli
+			a(data-bind="click: function() { window.location.href='/application' }" ,style="display: inline").button.success.radius.right.small
+				| Avaa tuomarointisovellus
+			
+			div(id="useapp", class="large-12 columns panel")
+				p Avaa tuomarointisovellus painamalla ylhäällä olevaa nappia tai syötä jo pelatun pelin tulos alapuolella olevalla lomakkeella.
+			
+			div(id="byhand" class="large-12 columns panel")
+				div(class="large-6 small-6 columns", style="padding: 4px")
+					h5.subheader(style="text-align: right") Pelaaja 1
+					form
+						select.right(id="derp", class="small select_custom", data-bind="options: playerList, optionsText: 'name', value: playerOne")
+							
+				div(class="large-6 small-6 columns", style="padding: 4px")
+					h5.subheader(style="text-align: left") Pelaaja 2
+					form
+						select.left(id="herp", class="small select_custom", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo")
+
+				div(class="large-12 small-12 columns")
+					div(style="width: 200px; margin-left: auto; margin-right: auto")
+						form
+							label(for="eventSelect", style="color: #333; font-weight: 300; font-size: 13px") Tapahtuma johon peli kuuluu...
+							select(id="eventSelect", class="small select_custom", data-bind="options: eventList, optionsText: 'name', value: event")
+					div(data-bind="if: eventList().length > 0", style="text-align: center")
+						div(data-bind="if: event().affectsRanking() === 'false'")
+							div(style="text-align: center; font-size: 12px; margin-bottom: 6px; margin-top: 0px") Ei vaikuta rankingiin
+							
+							
+							
+					//div(data-bind="text: event().affectsRanking")
+
+				div(class="large-12 small-12 columns")
+					div(style="text-align: center; width: 140px; margin-left: auto; margin-right: auto; padding: 4px; font-size: 13px")
+						span(style="color: #333; font-weight: 300") Paras...
+					form
+						div.switch.round(style="width: 120px; margin-left: auto; margin-right: auto")
+							input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
+							label(for="bestof5", onclick=" ", style=" ")
+								|Viidestä
+							
+							input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
+							label(for="bestof3", onclick=" ", style="margin-left: -18px !important")
+								|Kolmesta
+							
+							span 
+					//span(data-bind="text: selectedSwitch")
+					
+	
+				div#scoreEntryTable(class="large-12 small-12 columns", style="text-align: center")
+					table(data-bind="if: playerList().length > 0 && playerListTwo().length > 0", style="margin: auto; text-align: center")
+						thead
+							tr
+								th(style="background: #333")
+								th(style="background: #333")
+									span(data-bind="text: playerOne().name", style="color: #fff")
+								th(style="background: #333")
+									span(data-bind="text: playerTwo().name", style="color: #fff")
+								th(style="background: #333")
+						tfoot
+							tr
+								td(colspan=4).scoreEntryCell
+									// | Päiväys
+									// input(type="date")
+									span.error_custom(data-bind="visible: scoreEntryError() === 	true", style="text-align: center")
+											|Virhe tuloksissa
+											
+									div.left(data-bind="visible: saveSucceeded() === true")
+										span(style="color: green; font-weight: 300")
+											|Tallennus onnistui!
+									div.left(data-bind="visible: saveInProgress() === true")
+										img(src="/images/loader.gif");
+														
+									div.button.right.radius(data-bind="click: validateMatch") Tallenna		
+								
+						tbody(data-bind="foreach: scoreEntry")
+							tr
+								td.scoreEntryCell
+									span(data-bind="text: $index() +1")
+									|.&nbsp;er&auml;
+								td.scoreEntryCell(style="max-width: 80px")
+									input(type="tel", pattern="[0-9]", data-bind="value: p1score", min="0")
+								td.scoreEntryCell(style="max-width: 80px")
+									input(type="tel", pattern="[0-9]", data-bind="value: p2score", min="0")
+								td.scoreEntryCell(data-bind="if: ($index() === ($parent.scoreEntry().length - 1))", style="width: 60px")
+									div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 4 ")
+										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'remove' )")
+											i.fi-minus
+										
+									div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 2")
+										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add')")
+											i.fi-plus																						
+										
+									div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 3")
+									
+										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'remove' )")
+											i.fi-minus
+										&nbsp;&nbsp;
+										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add' )")
+											i.fi-plus
+									div.left(data-bind="if: $root.selectedSwitch() === 'bestof3' && ($index()) === 2 ")
+										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'remove')")
+											i.fi-minus
+									div.left(data-bind="if: $root.selectedSwitch() === 'bestof3' && ($index()) < 2 ")
+										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add')")
+											i.fi-plus
+
+
+	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
+		&nbsp;
+	
+	//div(data-bind="text: matchList.scores")
+
+
+	//div(style="background-color: #eee")
+		pre(data-bind="text: ko.toJSON($data, null, 2)")
+		pre(data-bind="text: ko.toJSON(rankinglist, null, 2)")
