@@ -50,7 +50,7 @@ function viewModel() {
 	
 	
 	self.login = function() {
-		console.log("logging in");
+		//console.log("logging in");
 		var username = ko.toJS(self.user.username());
 		var password = ko.toJS(self.user.password());
 		var rememberMe = ko.toJS(self.user.rememberMe());

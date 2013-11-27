@@ -27,41 +27,41 @@ block content
 				div(class="large-6 small-6 columns", style="padding: 4px")
 					h5.subheader(style="text-align: right") Pelaaja 1
 					form
-						select.right(id="derp", class="small select_custom", data-bind="options: playerList, optionsText: 'name', value: playerOne")
+						select.right(id="derp", class="small", data-bind="options: playerList, optionsText: 'name', value: playerOne")
 							
 				div(class="large-6 small-6 columns", style="padding: 4px")
 					h5.subheader(style="text-align: left") Pelaaja 2
 					form
-						select.left(id="herp", class="small select_custom", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo")
+						select.left(id="herp", class="small", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo")
 
 				div(class="large-12 small-12 columns")
 					div(style="width: 200px; margin-left: auto; margin-right: auto")
 						form
 							label(for="eventSelect", style="color: #333; font-weight: 300; font-size: 13px") Tapahtuma johon peli kuuluu...
-							select(id="eventSelect", class="small select_custom", data-bind="options: eventList, optionsText: 'name', value: event")
+							select(id="eventSelect", class="small", data-bind="options: eventList, optionsText: 'name', value: event")
 					div(data-bind="if: eventList().length > 0", style="text-align: center")
 						div(data-bind="if: event().affectsRanking() === 'false'")
-							div(style="text-align: center; font-size: 12px; margin-bottom: 6px; margin-top: 0px") Ei vaikuta rankingiin
+							div(style="text-align: center; font-size: 12px; margin-bottom: 6px; margin-top: 0px; padding-top: 0px") Ei vaikuta rankingiin
 							
 							
 							
 					//div(data-bind="text: event().affectsRanking")
 
 				div(class="large-12 small-12 columns")
-					div(style="text-align: center; width: 140px; margin-left: auto; margin-right: auto; padding: 4px; font-size: 13px")
-						span(style="color: #333; font-weight: 300") Paras...
-					form
-						div.switch.round(style="width: 120px; margin-left: auto; margin-right: auto")
-							input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
-							label(for="bestof5", onclick=" ", style=" ")
-								|Viidestä
-							
-							input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
-							label(for="bestof3", onclick=" ", style="margin-left: -18px !important")
-								|Kolmesta
-							
-							span 
-					//span(data-bind="text: selectedSwitch")
+					div(style="text-align: center; width: 240px; margin-left: auto; margin-right: auto; padding: 4px; font-size: 13px")
+						span.left(style="color: #333; font-weight: 300") Pelataan paras...
+
+					div(style="width: 240px; margin-left: auto; margin-right: auto")
+						form
+						input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
+						label(for="bestof3", style="color: #333; font-weight: 300") kolmesta
+						
+						input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
+						label(for="bestof5", style="color: #333; font-weight: 300") viidestä
+						
+						
+						span 
+				//span(data-bind="text: selectedSwitch")
 					
 	
 				div#scoreEntryTable(class="large-12 small-12 columns", style="text-align: center")
@@ -87,6 +87,8 @@ block content
 											|Tallennus onnistui!
 									div.left(data-bind="visible: saveInProgress() === true")
 										img(src="/images/loader.gif");
+										
+									hr
 														
 									div.button.right.radius(data-bind="click: validateMatch") Tallenna		
 								
@@ -106,6 +108,7 @@ block content
 										
 									div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 2")
 										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add')")
+											i.fi-minus(style="visibility: hidden")
 											i.fi-plus																						
 										
 									div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 3")
@@ -120,6 +123,7 @@ block content
 											i.fi-minus
 									div.left(data-bind="if: $root.selectedSwitch() === 'bestof3' && ($index()) < 2 ")
 										a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add')")
+											i.fi-minus(style="visibility: hidden")
 											i.fi-plus
 
 

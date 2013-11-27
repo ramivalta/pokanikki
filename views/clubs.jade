@@ -10,7 +10,7 @@ block append site_scripts
 block content
 	include navbar
 
-	div(class="large-4 small-12 columns")
+	div(class="large-4 medium-4 small-12 columns")
 		// dl.sub-nav(class="large-12 small-12 columns", style="padding-top: 16px")
 			dd.active
 				a(href="#") Profiili
@@ -33,7 +33,7 @@ block content
 				|...
 				br
 
-	div(class="large-4 small-12 columns")
+	div(class="large-4 medium-4 small-12 columns")
 		h3.subheader Pelaajat
 		
 		div(data-bind="if: playerList().length > 0")
@@ -50,7 +50,7 @@ block content
 		div.large-12.small-12.columns(data-bind="foreach: playerList", style="padding: 2px")
 
 			//div(data-bind="text: name")
-	div(class="large-4 small-12 columns")
+	div(class="large-4 medium-4 small-12 columns")
 		h3.subheader Pelit
 		
 		div(data-bind="if: matchList().length > 0")

@@ -9,7 +9,7 @@ block append site_scripts
 block content
 	include navbar
 
-	div(class="large-7 small-12 columns")
+	div(class="large-7 medium-7 small-12 columns")
 		h4.subheader Seuraranking - LSQ
 		div.large-12.small-12.columns.panel
 		
@@ -37,8 +37,8 @@ block content
 						// /ko
 
 	
-	div(class="large-5 small-12 columns")
-		h4.subheader Kuukauden rankingpelit
+	div(class="large-5 medium-5 small-12 columns")
+		h4.subheader Kuukauden pelit
 		div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
 		
 			// ko if: ($index() === 0)

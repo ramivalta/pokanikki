@@ -11,7 +11,7 @@ block append site_scripts
 block content
 	include navbar
 
-	div(class="large-7 small-12 columns")
+	div(class="large-7 medium-7 small-12 columns")
 		dl.sub-nav(class="large-12 small-12 columns", style="padding-top: 16px")
 			dd.active(data-bind="css: { active : visiblePage() == 'profiili' }")
 				a(data-bind="click: function() { return visiblePage('profiili') }") Profiili
@@ -75,7 +75,7 @@ block content
 					button.right.small.radius(data-bind="click: saveUser") Vaihda salasana
 
 
-	div(class="large-5 small-12 columns")
+	div(class="large-5 medium-5 small-12 columns")
 		h4.subheader Omat pelit
 		div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
 		

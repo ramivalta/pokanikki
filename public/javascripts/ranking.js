@@ -18,7 +18,7 @@ function viewModel() {
 		rank	: ko.observable($('#sessrank').val()),
 		username: ko.observable($('#sessuser').val()),
 		clubShort	: ko.observable($('#sessclub').val()),
-		clubName	: ko.observable($('#sessclubshort').val()),				
+		clubName	: ko.observable($('#sessclubshort').val()),		
 	});	
 			
 	

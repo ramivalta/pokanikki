@@ -1,13 +1,5 @@
-/*@font-face {
-	font-family: 'LeagueGothic';
-	font-style: 'normal';
-	font-weight: 'normal';
-	src: local('LeagueGothic'), url('/stylesheets/LeagueGothic-Regular.otf') format('opentype');
-}*/
-
-h1 {
-	//font-family: LeagueGothic, Helvetica, sans-serif;
-	//letter-spacing: 1px;
+h1, h2, h3, h4, h5 {
+	font-family: helvetica, arial, sans-serif;	
 }
 
 .hidden {
@@ -32,6 +24,7 @@ h1 {
 	margin-right: 0px !important;
 	//height: 78px;
 	padding: 0px;
+
 }
 
 #main_title
@@ -41,6 +34,7 @@ h1 {
 	//background-color: #AFAFAF;
 	color: #333;
 	letter-spacing: 1px;
+	font-weight: 900;
 }
 
 #club_title
@@ -51,6 +45,7 @@ h1 {
 	color: #fff;
 	opacity: 0.15;
 	right: 2px;
+	font-weight: 900;
 }
 
 #club_title >span >a {
@@ -147,7 +142,6 @@ body, html {
 }
 
 .active {
-	
 }
 
 .select_custom {
@@ -221,13 +215,14 @@ input {
 
 .scoreEntryAddRemoveButton {
 	font-size: 18px;
-	color: green;
+	color: black;
 }
 
 body {
 	margin-top: 0px !important;
 	padding-top: 0px !important;
 	cursor: auto;
+	//font-family: helvetica, arial, sans-serif;
 }
 
 .site_scoreRow {

@@ -27,10 +27,10 @@ block content
 				div.large-6.small-12.columns(data-bind="if: playerList().length > 0")
 					form
 						label(for="userid")
-						select(id="userid", class="small select_custom", data-bind="options: playerList, optionsText: 'name', value: player", style="color: #111; font-size: 14px")
+						select(id="userid", class="small", data-bind="options: playerList, optionsText: 'name', value: player", style="color: #111; font-size: 14px")
 						
 						label(for="userclub")
-						select(id="userclub", class="small select_custom", data-bind="options: clubList, optionsText: 'name', value: userclub", style="color: #111; font-size: 14px")
+						select(id="userclub", class="small", data-bind="options: clubList, optionsText: 'name', value: userclub", style="color: #111; font-size: 14px")
 						
 
 						label(for="sijoitus") Sijoitus
@@ -92,7 +92,7 @@ block content
 				div.large-12.small-12.columns.panel#editEvent(data-bind=" if: (eventList().length > 0), css: { hidden : visibleSubPage() !== 'editEvent', visible : visibleSubPage() === 'editEvent' }")
 					form
 						label(for="events")
-						select(id="events", class="small select_custom", data-bind="options: eventList, optionsText: 'name', value: event", style="color: #111, font-size: 14px")
+						select(id="events", class="small", data-bind="options: eventList, optionsText: 'name', value: event", style="color: #111, font-size: 14px")
 			
 					div(data-bind="visible: ios() == false")
 					

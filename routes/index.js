@@ -531,9 +531,6 @@ exports.checkPass = function(db) {
 	}
 }
 
-
-
-
 exports.getRankings = function(db) {
 	return function(req, res) {
 		var rankings = db.get('users');

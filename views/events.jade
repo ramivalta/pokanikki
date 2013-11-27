@@ -9,7 +9,7 @@ block append site_styles
 block content
 	include navbar
 
-	div(class="large-7 small-12 columns")
+	div(class="large-7 medium-7 small-12 columns")
 		h4.subheader Tapahtumat
 		
 		div#eventList(style="display: block")
@@ -20,7 +20,7 @@ block content
 					h5.subheader(data-bind="text: moment(startDate()).format('DoMM.YYYY')", style="display: inline")
 					|&nbsp;-&nbsp;
 					h5.subheader(data-bind="text: moment(endDate()).format('DoMM.YYYY')", style="display: inline")
-					a(href="#tulokset", data-bind="click: $root.getMatchesForEvent.bind($data, _id, name)", style="display: inline").right
+					a(data-bind="click: $root.getMatchesForEvent.bind($data, _id, name)", style="display: inline").right
 						|näytä pelit...
 					p
 					p
@@ -30,7 +30,7 @@ block content
 			pre(data-bind="text: ko.toJSON(session, null, 2)")
 
 
-	div(class="large-5 small-12 columns")
+	div(class="large-5 medium-5 small-12 columns")
 	
 	
 		//<script id="feed-1385119291110789" type="text/javascript" src="http://rss.bloople.net/?url=http%3A%2F%2F192.81.223.221%3A3000%2Flsq.xml&limit=1&showtitle=false&type=js&id=1385119291110789"></script>	

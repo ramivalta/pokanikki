@@ -16,7 +16,7 @@ html
 			link(rel="stylesheet" href="/stylesheets/site_styles.css")
 		
 		block scripts
-			script(src='/javascripts/vendor/jquery-2.0.3.min.js')
+			script(src='/javascripts/vendor/jquery.js')
 			script(src='/javascripts/vendor/knockout-3.0.0.js')
 			script(src='/javascripts/vendor/knockout.mapping-latest.js')
 			script(src="/javascripts/vendor/moment.min.js")
@@ -24,12 +24,15 @@ html
 			script(src='/javascripts/vendor/jquery.transit.js')			
 			script(src='/javascripts/global.js')
 
-		block site_scripts
-			script(src="/javascripts/vendor/custom.modernizr.js")
-			script(src="/javascripts/vendor/foundation/foundation.js")
-			script(src="/javascripts/vendor/foundation/foundation.forms.js")
-			script(src="/javascripts/vendor/foundation/foundation.topbar.js")
 		
 
 	body#main
+	
 		block content
+
+
+		block site_scripts
+			script(src="/javascripts/vendor/custom.modernizr.js")
+			script(src="/javascripts/vendor/foundation.min.js")
+			//script(src="/javascripts/vendor/foundation/foundation.forms.js")
+			//script(src="/javascripts/vendor/foundation/foundation.topbar.js")
