@@ -3,7 +3,7 @@ extends layout
 block append site_styles
 	
 block append site_scripts
-	script(src="/javascripts/ranking.js?123123")
+	script(src="/javascripts/ranking.js")
 
 
 block content
@@ -12,7 +12,9 @@ block content
 	div(class="large-7 medium-7 small-12 columns")
 		h4.subheader Seuraranking - LSQ
 		div.large-12.small-12.columns.panel
-		
+			
+			h5.subheader
+				span(data-bind="text: rankingDate", style="text-transform: capitalize")
 			table(style="width: 100%", style="border-collapse: collapse")
 				thead
 					tr

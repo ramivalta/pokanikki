@@ -14,7 +14,7 @@ function viewModel() {
 		clubName	: ko.observable($('#sessclubshort').val()),				
 	});	
 		
-	
+	self.ios = ko.observable(navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);	
 	
 //	self.playerList = ko.observable();
 	
@@ -209,8 +209,23 @@ function viewModel() {
 		sqEventProxy.getUserlist(
 			{ data:data },
 			function(data) {
+			
+				data.sort(function(a, b) {
+					var key1 = a.name;
+					var key2 = b.name;
+					if (key1 < key2) return -1;
+					if (key1 > key2) return 1;
+					return 0;
+				});
+			
+			
 				ko.mapping.fromJS(data, {}, self.playerList);
 				ko.mapping.fromJS(data, {}, self.playerListTwo);
+				
+				
+				
+
+				//self.playerListTwo.sort();
 			}
 		);
 	}
@@ -278,6 +293,7 @@ function viewModel() {
 			function(data) {
 				//console.log(data.message);
 				self.saveSucceeded(true);
+				getRankings();
 				
 				setTimeout(function() {
 					self.saveSucceeded(false);

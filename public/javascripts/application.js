@@ -117,6 +117,13 @@ function viewModel () {
 		sqEventProxy.getUserlist(
 			{ data:data },
 			function(data) {
+				data.sort(function(a, b) {
+					var key1 = a.name;
+					var key2 = b.name;
+					if (key1 < key2) return -1;
+					if (key1 > key2) return 1;
+					return 0;
+				});			
 				ko.mapping.fromJS(data, {}, self.playerList);
 			}
 		);

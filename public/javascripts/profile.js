@@ -243,13 +243,17 @@ $(document).ready(function() {
 	window.vm = new viewModel();
 	ko.applyBindings(vm, document.getElementById("main"));
     $(document).foundation();
-	$(document).foundation('abide', {
-		patterns : {
+    
+//$(document).foundation({dropdown: {is_hover: false}});    
+    
+	$(document).foundation({abide: {
+		patterns: {
 			shortpass : /.{6,}/,
+			password : /.{6,}/,
 			shortuser : /.{3,}/,
 			dummy : /./,
 		},
-	});
+	}});
     
 	
 });

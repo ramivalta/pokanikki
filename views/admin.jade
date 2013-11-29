@@ -21,6 +21,38 @@ block content
 					a(data-bind="click: function() { return visiblePage('clubs') }") Seurat					
 				dd(data-bind="css: { active : visiblePage() == 'events' }")
 					a(data-bind="click: function() { return visiblePage('events') }") Tapahtumat
+				dd(data-bind="css: { active : visiblePage() == 'ranking' }")
+					a(data-bind="click: function() { return visiblePage('ranking') }") Ranking
+					
+			div#ranking.large-12.small-12.columns.panel(style="display: none")
+				div.large-6.medium-6.small-12.columns(data-bind="if: rankingList().length > 0 && hotnessList().length > 0")
+					div(style="color: #909090")
+						span Päivitetty: 
+						span(data-bind="text: rankingDate")
+					table
+						tbody(data-bind="foreach: rankingList", style="padding: 1px; margin: 0px")
+
+							tr
+								td(style="width: 50px; margin: 0px; padding: 0px")
+									input(data-bind="numericValue: rank", type="number", pattern="[0-9]", style="padding: 4px; margin: 0px", min="1")
+								td
+									select(id="hotness", class="small", data-bind="options: $root.hotnessList,  value: hotness", style="color: #111; font-size: 14px; padding: 9px; margin: 0px")								
+								
+								td(data-bind="text: name")
+								
+				
+				div.large-6.medium-6.small-12.columns
+					a.button.small.left(data-bind="click: saveRankingList") Tallenna ranking
+
+					p(data-bind="if: showSuccess() === true", style="color: green")
+						| Tallennus onnistui
+						
+
+				
+					//div(style="background-color: #eee")
+						pre(data-bind="text: ko.toJSON(rankingList, null, 2)")								
+				
+				
 
 
 			div#users.large-12.small-12.columns.panel(style="display: block")
@@ -42,25 +74,19 @@ block content
 
 						label(for="cold", style="display: inline") &nbsp;Cold
 						br
-						input(id="lukewarm", name="lukewarm", type="radio", value="null", data-bind="checked: player().hotness") Lukewarm
+						input(id="lukewarm", name="lukewarm", type="radio", value="lukewarm", data-bind="checked: player().hotness") Lukewarm
 						label(for="lukewarm", style="display: inline") &nbsp;Lukewarm
 				
 				div.large-6.small-12.columns
 					a.button(data-bind="click: saveUser") Muuta pelaajan ranking
 					table#rankingtable
-						tbody(data-bind="foreach: rankingList")
+						tbody(data-bind="foreach: playerList")
 							tr
 								td(data-bind="text: rank")
 								td(data-bind="text: name")
 
 					span(data-bind="if: showSuccess() === true", style="color: green")
 						| Tallennus onnistui
-						
-						
-						
-
-
-
 						
 			div#clubs(style="display: none").large-12.small-12.columns
 				div.panel
@@ -74,8 +100,6 @@ block content
 					
 					p &nbsp;				
 					p &nbsp;				
-				
-				
 				
 				
 				
@@ -158,10 +182,10 @@ block content
 					input(type="checkbox", id="ranked", name="ranked", value="true", checked, style="display: inline", data-bind="checked: eventAffectsRanking")
 					label(for="ranked", style="display: inline")&nbsp; Vaikuttaa rankingiin						
 
-					a(data-bind="click: createEvent").button.right
+					a(data-bind="click: createEvent").button.right.small
 						| Luo tapahtuma
 
 
 	//div(data-bind="text: matchList.scores")
-	div(style="background-color: #eee")
+	//div(style="background-color: #eee")
 		pre(data-bind="text: ko.toJSON(clubList, null, 2)")

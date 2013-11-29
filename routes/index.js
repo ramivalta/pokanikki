@@ -140,7 +140,7 @@ exports.getPlayersByClub = function(db) {
 	return function(req, res) {
 		var users = db.get('users');
 		var club_id = req.body.club_id;
-		users.find( { club : club_id }, { fields: { password :0 }}, function(e, docs) {
+		users.find( { club : club_id, rank: { $exists: true, $ne: null}}, { fields: { password :0 }}, function(e, docs) {
 			if (docs) {
 				res.send({"players" : docs});
 			}
@@ -154,6 +154,11 @@ exports.updateMatch = function(db) {
 		
 		console.log(req.body.id);
 		var id = req.body.id;
+		
+		req.body.addedBy = req.session.user._id;
+		req.body.addedByName = req.session.user.username;
+		
+		
 		if (req.body.endTime == "now") {
 			console.log("updating endtime");
 			req.body.endTime = moment().toJSON();
@@ -187,6 +192,9 @@ exports.startMatch = function(db) {
 		
 		if (req.body.form == 'true')
 			doc.endTime = date;
+			
+		doc.addedBy = req.session.user._id;
+		doc.addedByName = req.session.user.username;
 
 		collection.insert(req.body,
 			function(err, doc) {
@@ -533,10 +541,37 @@ exports.checkPass = function(db) {
 
 exports.getRankings = function(db) {
 	return function(req, res) {
-		var rankings = db.get('users');
+		var rankings = db.get('rankings');
 		
-		rankings.find( {}, {sort: { rank: 1 }, fields: { password: 0, email: 0 }}, function(e,docs) {
-			res.send({ "ranking" : docs });
+		rankings.find( {}, {sort: { date: -1 }, fields: { password: 0, email: 0 }, limit : 1 }, function(e,docs) {
+			if(docs.length == 0) {
+				res.send({'message' : 'ranking empty'});
+			}
+			else if(docs.length > 0) {
+				res.send( docs );
+			}
+		});
+	}
+}
+
+exports.saveRankingList = function(db) {
+	return function(req, res) {
+		var rankings = db.get('rankings');
+		
+		var list = {};
+		
+		list.ranking = req.body.rankings;
+		
+		var date = new moment().toJSON();
+		
+		list.date = date;
+		
+		rankings.insert(list, function(e, d) {
+			if (!e) {
+				console.log("ranking list saved");
+				res.send({'message' : 'OK', 'date' : date });
+				
+			}
 		});
 	}
 }

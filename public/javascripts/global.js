@@ -157,6 +157,10 @@ var sqEventProxy = function() {
 		self.proxy.post('/changePassword', 'POST', data, done, fail, always);
 	}
 	
+	self.saveRankingList = function(data, done, fail, always) {
+		self.proxy.post('/saveRankingList', 'POST', data, done, fail, always);
+	}
+	
 };
 
 moment.lang('fi');

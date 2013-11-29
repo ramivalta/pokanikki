@@ -20,7 +20,7 @@ function viewModel() {
 	
 	self.playerList = ko.observableArray();
 	self.matchList = ko.observableArray([]);
-	self.rankingList = ko.observableArray();	
+	self.userList = ko.observableArray();	
 	
 	self.sessionuser = ko.observable();
 	self.activePage = ko.observable("admin");
@@ -46,10 +46,21 @@ function viewModel() {
 	self.club = ko.observable();
 	self.clubShort = ko.observable();
 	self.clubList = ko.observableArray();
+	self.rankingList = ko.observableArray();
 	
 	self.userclub = ko.observable();
 	
 	self.eventAffectsRanking = ko.observable(true);
+	
+	self.hotnessList = ko.observableArray([
+		 "hot",
+		 "cold",
+		 "lukewarm"
+	]);
+	
+	self.rankingDate = ko.observable();
+	
+	self.hotness = ko.observable();
 	
 	
 	self.ios = ko.observable(navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
@@ -60,16 +71,25 @@ function viewModel() {
 			$("#users").css('display', 'none');
 			$("#clubs").css('display', 'none');
 			$("#events").css('display', 'block');
+			$("#ranking").css('display', 'none');
 		}
 		else if(self.visiblePage() == "clubs") {
 			$("#users").css('display', 'none');
 			$("#clubs").css('display', 'block');
-			$("#events").css('display', 'none');			
+			$("#events").css('display', 'none');
+			$("#ranking").css('display', 'none');
 		}
 		else if(self.visiblePage() == "users") {
 			$("#users").css('display', 'block');
 			$("#clubs").css('display', 'none');
-			$("#events").css('display', 'none');			
+			$("#events").css('display', 'none');
+			$("#ranking").css('display', 'none');
+		}
+		else if(self.visiblePage() == "ranking") {
+			$("#clubs").css('display', 'none');
+			$("#events").css('display', 'none');
+			$("#ranking").css('display', 'block');
+			$("#users").css('display', 'none');
 		}
 	});
 	
@@ -131,19 +151,7 @@ function viewModel() {
 			}
 		);
 	}
-	
-	
-	self.getRankings = function getRankings() {
-		var data;
-		sqEventProxy.getRankings(
-			{ data:data },
-			function(data) {
-				//console.log(data);
-				ko.mapping.fromJS(data.ranking, {}, self.rankingList);
-			}
-		);
-	}
-	
+
 	function getClubs() {
 		var data;
 		sqEventProxy.getClubs(
@@ -181,51 +189,91 @@ function viewModel() {
 				//console.log(data);
 				self.showSuccess(true);
 				
-				self.getRankings();
+				getPlayers();
 			}
 		);
 	}
 	
-	/*self.addClub = function() {
-		var club = ko.toJS(self.club());
-		var clubShort = ko.toJS(self.clubShort());
+
+	self.saveRankingList = function() {
+		var data;
 		
-		sqEventProxy.addClub(
-			{ club:club, clubShort:clubShort },
+		var rankings = ko.toJS(self.rankingList());
+		
+		sqEventProxy.saveRankingList(
+			{rankings:rankings},
 			function(data) {
-				self.showSuccess(true);
-				getClubs;
+				if(data.message === "OK") {
+					self.showSuccess(true);
+					//self.rankingDate(moment(data.date).format('dddd, DoMoYYYY'));
+					getRankings();
+				}
 			}
 		);
-	} */
+	}
+	
+	ko.bindingHandlers.numericValue = { 
+		init : function(element, valueAccessor, allBindingsAccessor) { 
+			var underlyingObservable = valueAccessor(); 
+			var interceptor = ko.computed({ 
+				read: underlyingObservable, 
+				write: function(value) { 
+					if (!isNaN(value)) { 
+						underlyingObservable(parseInt(value)); 
+					} 
+				} 
+			}); 
+		ko.bindingHandlers.value.init(element, function() {
+			return 	interceptor }, allBindingsAccessor); 
+		}, 
+		update : ko.bindingHandlers.value.update 
+	}; 	
+
 	
 	function getPlayers() {
 		var data;
 		sqEventProxy.getUserlist(
 			{ data:data },
 			function(data) {
-/*				for (var i=0, i < data.length, i++) {
-					self.playerList[i]. */
-//				var x = ko.mapping.fromJS(data);
-				
-//				console.log(x().length);
-				
+			
+				data.sort(function(a, b) {
+					var key1 = a.rank;
+					var key2 = b.rank;
+					if (key1 < key2) return -1;
+					if (key1 > key2) return 1;
+					return 0;
+				});
 				ko.mapping.fromJS(data, {}, self.playerList);
-				
-//				self.playerList = ko.mapping.fromJS(data);
-
-		//		console.log(self.playerList().length);
-
-	//			for (var i = 0; i < self.playerList().length; i++) {
-//					console.log(self.playerList()[i].username());
-	//			}
-//				console.log(playerList.userlist[0]().username());
 			}
 		);
 	}
 	
 	getPlayers();
-	//getRankings();
+	
+	function getRankings() {
+		var data;
+		sqEventProxy.getRankings(
+			{ data:data },
+			function(data) {
+				if(data.message !== "ranking empty") {
+					//console.log(data);
+					ko.mapping.fromJS(data[0].ranking, {}, self.rankingList);
+				
+					self.rankingList.sort(function(a, b) {
+						var key1 = a.rank();
+						var key2 = b.rank();
+						if (key1 < key2) return -1;
+						if (key1 > key2) return 1;
+						return 0;
+					});
+				
+					self.rankingDate(moment(data[0].date).format('dddd, DoMoYYYY'));
+				}
+			}
+		);
+	}
+	
+	getRankings();
 	
 	function getMatches() {
 		var data;
@@ -275,7 +323,6 @@ function viewModel() {
 	}
 	
 	self.login();	
-	self.getRankings();
 }
 	
 

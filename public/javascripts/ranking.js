@@ -21,7 +21,7 @@ function viewModel() {
 		clubName	: ko.observable($('#sessclubshort').val()),		
 	});	
 			
-	
+	self.rankingDate = ko.observable();
 	
 	
 	function getRankings() {
@@ -29,8 +29,18 @@ function viewModel() {
 		sqEventProxy.getRankings(
 			{ data:data },
 			function(data) {
-				//console.log(data);
-				ko.mapping.fromJS(data.ranking, {}, self.rankingList);
+				if(data.message !== "ranking empty") {
+					//console.log(data);
+					ko.mapping.fromJS(data[0].ranking, {}, self.rankingList);
+					self.rankingList.sort(function(a, b) {
+						var key1 = a.rank();
+						var key2 = b.rank();
+						if (key1 < key2) return -1;
+						if (key1 > key2) return 1;
+						return 0;
+					});
+					self.rankingDate(moment(data[0].date).format('dddd, DoMoYYYY'));
+				}
 			}
 		);
 	}

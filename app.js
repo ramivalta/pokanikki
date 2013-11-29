@@ -151,185 +151,180 @@ app.post('/getPlayersByClub', routes.getPlayersByClub(db));
 app.post('/getMatchesByClub', routes.getMatchesByClub(db));
 app.post('/checkPass', routes.checkPass(db));
 app.post('/changePassword', routes.changePassword(db));
+app.post('/saveRankingList', routes.saveRankingList(db));
 
 
 app.get('/lsq.xml', function(req, res) {
-	function derp() {
-		var list = db.get('rankings');
-		list.find( {}, { sort: { date: -1 }, limit : 1}, function(err, doc) {
-			if(doc.length == 0) {			
-				console.log(err);
-				res.send("ranking empty");
+	var list = db.get('rankings');
+	list.find( {}, { sort: { date: -1 }, limit : 1}, function(err, doc) {
+		if(doc.length == 0) {			
+			console.log(err);
+			res.send("ranking empty");
+		}
+	  else if(doc.length > 0) {
+			console.log(doc.length);
+			console.log(err);
+			var items = [];
+			var l;
+			if (doc[0].ranking.length > 10) {
+				l = 10;
 			}
-			      else if(doc.length > 0) {
-				console.log(doc.length);
-				console.log(err);
-				var items = [];
+			else l = doc[0].ranking.length;
 
 
-				var l;
-				if (doc[0].ranking.length > 10) {
-								l = 10;
-				}
-				else l = doc[o].ranking.length;
-
-
-				for(var i = 0; l > i; i++) {
-								var trend;
-								if (doc[0].ranking[i].hotness == "hot")
-												trend = "<i class='fi-arrow-up'></i>";
-								else if (doc[0].ranking[i].hotness == "cold")
-												trend = "<i class='fi-arrow-down'></i>";
-								//else trend = "<span class='circle'>&nbsp;</span>";
-								else trend = "<i class='fi-arrow-left lukewarm'></i>";
-								items[i] = doc[0].ranking[i].rank + " " + trend + " " + doc[0].ranking[i].name;
-				}
-
-				var date = doc[0].date;
-				var unix = moment(date).unix();
-				unix = unix + 'asd';
-
-				var formatted_date = moment(date).format('DD.MM.YYYY');
-
-				var html = "";
-				html += "<div id='rssRanking'>";
-				//html += "<h3 id='rss_header'> Seuraranking ";
-				//html += formatted_date + '</h3>';
-				html += '<style>';
-				html += "@import url('http://pokanikki.valta.me/stylesheets/vendor/foundation-icons.css');"
-				html += '#rssRanking { font-family: verdana; font-size: 13px !important }';
-				html += '#rssTable { border: 1px solid #333; border-collapse: collapse; width: 100%; font-family: verdana; sans-serif }';
-				html += '.rssTableCell { border: 1px solid #ccc; font-family: verdana, sans-serif; font-size: 13px }';
-				html += '.lukewarm { visibility: hidden }';
-				html += '.rss2html-note { display: none }';
-				//html += 'h4 > .feed-item-title: { display: none }';
-
-				html += '#pokis { font-size: 90% }';
-				html += '</style>';
-
-				html += "<table id='rssTable'>";
-				for (var i = 0; i < items.length; i++) {
-						html += '<tr>'
-						html += "<td class='rssTableCell'>";
-						html += '<span>'
-						html += items[i];
-						html += '</span>';
-						html += '</td>';
-				}
-				html += '</tr> </table>';
-				html += '<p></p>';
-				//html += '<h3>' + formatted_date + '</h3>';
-				html += "<a id='pokis' href='http://pokanikki.valta.me/ranking'>Tarkemmat tiedot Pokanikistä</a></div>";
-
-				console.log(unix);
-
-				var feed = new RSS( {
-						title: 'Ranking',
-						feed_url: 'http://pokanikki.valta.me/lsq.xml',
-						site_url: 'http://pokanikki.valta.me/ranking',
-						link: 'http://pokanikki.valta.me/ranking',
-						ttl: 1,
-						pubDate : date,
-						description: 'LSQ:n rankinglista'
-
-				});
-
-				feed.item( {
-
-					title: formatted_date,
-					description: html,
-					date : date,
-					guid: 'asd'+unix,
-				});
-				
-				var xml = feed.xml('\t');
-				
-				res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-				res.header("Pragma", "no-cache");
-				res.header("Expires", 0);				
-	
-				res.set('Content-Type', 'text/xml');
-				res.send(xml);
+			for(var i = 0; l > i; i++) {
+				var trend;
+				if (doc[0].ranking[i].hotness == "hot")
+					trend = "<i class='fi-arrow-up'></i>";
+				else if (doc[0].ranking[i].hotness == "cold")
+					trend = "<i class='fi-arrow-down'></i>";
+				//else trend = "<span class='circle'>&nbsp;</span>";
+				else trend = "<i class='fi-arrow-left lukewarm'></i>";
+				items[i] = doc[0].ranking[i].rank + " " + trend + " " + doc[0].ranking[i].name;
 			}
-		});
-	}
-	derp();
+
+			var date = doc[0].date;
+			var unix = moment(date).unix();
+			unix = unix + 'asd';
+
+			var formatted_date = moment(date).format('DD.MM.YYYY');
+
+			var html = "";
+			html += "<div id='rssRanking'>";
+			//html += "<h3 id='rss_header'> Seuraranking ";
+			//html += formatted_date + '</h3>';
+			html += '<style>';
+			html += "@import url('http://pokanikki.valta.me/stylesheets/vendor/foundation-icons.css');"
+			html += '#rssRanking { font-family: verdana; font-size: 13px !important }';
+			html += '#rssTable { border: 1px solid #333; border-collapse: collapse; width: 100%; font-family: verdana; sans-serif }';
+			html += '.rssTableCell { border: 1px solid #ccc; font-family: verdana, sans-serif; font-size: 13px }';
+			html += '.lukewarm { visibility: hidden }';
+			html += '.rss2html-note { display: none }';
+			//html += 'h4 > .feed-item-title: { display: none }';
+
+			html += '#pokis { font-size: 90% }';
+			html += '</style>';
+
+			html += "<table id='rssTable'>";
+			for (var i = 0; i < items.length; i++) {
+				html += '<tr>'
+				html += "<td class='rssTableCell'>";
+				html += '<span>'
+				html += items[i];
+				html += '</span>';
+				html += '</td>';
+			}
+			html += '</tr> </table>';
+			html += '<p></p>';
+			//html += '<h3>' + formatted_date + '</h3>';
+			html += "<a id='pokis' href='http://pokanikki.valta.me/ranking'>Tarkemmat tiedot Pokanikistä</a></div>";
+
+			console.log(unix);
+
+			var feed = new RSS( {
+				title: 'Ranking',
+				feed_url: 'http://pokanikki.valta.me/lsq.xml',
+				site_url: 'http://pokanikki.valta.me/ranking',
+				link: 'http://pokanikki.valta.me/ranking',
+				ttl: 1,
+				pubDate : date,
+				description: 'LSQ:n rankinglista'
+
+			});
+
+			feed.item( {
+
+				title: formatted_date,
+				description: html,
+				date : date,
+				guid: 'asd'+unix,
+			});
+			
+			var xml = feed.xml('\t');
+			
+			res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+			res.header("Pragma", "no-cache");
+			res.header("Expires", 0);				
+
+			res.set('Content-Type', 'text/xml');
+			res.send(xml);
+		}
+	});
 });
 
 app.get('/lsq_monthly.xml', function(req, res) {
 
-	function derp() {
-		var list = db.get('monthly_rankings');
-		list.find( {}, { sort: { date: -1 }, limit : 1}, function(err, doc) {
-			if(!doc) {
-				console.log(err);
+	var list = db.get('monthly_rankings');
+	list.find( {}, { sort: { date: -1 }, limit : 1}, function(err, doc) {
+		if(!doc) {
+			console.log(err);
+		}
+		else {
+			//console.log(doc);
+			var items = [];
+			for(var i = 0; doc[0].ranking.length > i; i++) {
+				items[i] = doc[0].ranking[i].rank + " " + doc[0].ranking[i].name;
 			}
-			else {
-				//console.log(doc);
-				var items = [];
-				for(var i = 0; doc[0].ranking.length > i; i++) {
-					items[i] = doc[0].ranking[i].rank + " " + doc[0].ranking[i].name;
-				}
 
-				var date = doc[0].date;
-				var unix = moment(date).unix();
-				unix = unix + 'asd';
-				
-				var formatted_date = moment(date).format('DD.MM.YYYY');
-				
-				var html = "";
-				html += "<div id='rssRanking'>";
-				html += "<h3 id='rss_header'> Seuraranking ";
-				html += formatted_date + '</h3>';
-				html += '<style>';
-				html += '#rssTable { border: 1px solid #333; border-collapse: collapse; }';
-				html += '.rssTableCell { border: 1px solid #ccc; }';
-				html += '</style>';
-				
-				html += "<table id='rssTable'>";
-				for (var i = 0; i < items.length; i++) {
-					html += '<tr>'
-					html += "<td class='rssTableCell'>";
-					html += '<span>'
-					html += items[i];
-					html += '</span>';
-					html += '</td>';
-				}
-				html += '</tr> </table>';
-				html += "<a id='rssLink' href='http://pokanikki.valta.me/ranking'>Pokanikki</a></div>";
-				
-				console.log(unix);
+			var date = doc[0].date;
+			var unix = moment(date).unix();
+			unix = unix + 'asd';
+			
+			var formatted_date = moment(date).format('DD.MM.YYYY');
+			
+			var html = "";
+			html += "<div id='rssRanking'>";
+			html += "<h3 id='rss_header'> Seuraranking ";
+			html += formatted_date + '</h3>';
+			html += '<style>';
+			html += '#rssTable { border: 1px solid #333; border-collapse: collapse; }';
+			html += '.rssTableCell { border: 1px solid #ccc; }';
+			html += '</style>';
+			
+			html += "<table id='rssTable'>";
+			for (var i = 0; i < items.length; i++) {
+				html += '<tr>'
+				html += "<td class='rssTableCell'>";
+				html += '<span>'
+				html += items[i];
+				html += '</span>';
+				html += '</td>';
+			}
+			html += '</tr> </table>';
+			html += "<a id='rssLink' href='http://pokanikki.valta.me/ranking'>Pokanikki</a></div>";
+			
+			console.log(unix);
 
-				var feed = new RSS( {
-					title: 'Ranking',
-					feed_url: 'http://pokanikki.valta.me/lsq_monthly.xml',
-					site_url: 'http://pokanikki.valta.me/ranking',
-					link: 'http://pokanikki.valta.me/ranking',
-					ttl: 1,
-					pubDate : date,
-					description: 'LSQ:n rankinglista'
+			var feed = new RSS( {
+				title: 'Ranking',
+				feed_url: 'http://pokanikki.valta.me/lsq_monthly.xml',
+				site_url: 'http://pokanikki.valta.me/ranking',
+				link: 'http://pokanikki.valta.me/ranking',
+				ttl: 1,
+				pubDate : date,
+				description: 'LSQ:n rankinglista'
 
-				});				
-				
-				feed.item( {
-					title: 'Ranking',
-					description: html,
-					date : date,
-					guid: 'asd'+unix,
-				});
-				
-				var xml = feed.xml('\t');
-				
-				res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-				res.header("Pragma", "no-cache");
-				res.header("Expires", 0);				
+			});				
+			
+			feed.item( {
+				title: 'Ranking',
+				description: html,
+				date : date,
+				guid: 'asd'+unix,
+			});
+			
+			var xml = feed.xml('\t');
+			
+			res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+			res.header("Pragma", "no-cache");
+			res.header("Expires", 0);				
+
+			res.set('Content-Type', 'text/xml');
+			res.send(xml);
+		}
+	});
 	
-				res.set('Content-Type', 'text/xml');
-				res.send(xml);
-			}
-		});
-	}
-	derp();
+
 });
 
 
