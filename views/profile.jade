@@ -45,20 +45,20 @@ block content
 					fieldset
 						div
 							label(for="oldpass") Vanha salasana:
-							input(id="oldpass", type="password", required, pattern="dummy", name="oldpass", data-bind="value: oldPass")
+							input(id="oldpass", type="password", pattern=".*", required, name="oldpass", data-bind="value: oldPass")
 							small.error
 							div#oldPassErr.custom_small_error(data-bind="visible: oldPassFail() == true")
 								|Vanha salasana väärin
 						div
 							label(for="newpass") Uusi salasana:
-							input(id="newpass", type="password", pattern="shortpass", name="newpass", required, data-bind="value: newPass")
+							input(id="newpass", type="password", pattern=".{6,}", name="newpass", required, data-bind="value: newPass")
 							small.error Salasanan pitää olla vähintään kuusi merkkiä pitkä
 							div#newPassErr.custom_small_error(data-bind="visible: newPassFail() == true")
 								| Salasanan pitää olla vähintään kuusi merkkiä pitkä
 				
 						div
 							label(for="newpassverify") Uusi salasana uudestaan:
-							input(id="newpassverify", type="password", pattern="shortpass", name="verifypass", required, data-bind="value: newPassVerify")
+							input(id="newpassverify", type="password", pattern=".{6,}", name="verifypass", required, data-bind="value: newPassVerify")
 							input(type="hidden", data-bind="attr: { 'data-invalid' : newPass() !== newPassVerify() }")
 							small.error 
 							div.custom_small_error#passErr(data-bind="visible: doPasswordsDiffer") Salasanat eivät täsmää
