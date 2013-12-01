@@ -45,12 +45,10 @@ exports.autoLogin = function(db) {
 				else {
 				
 					var club_id = o.club;
-					console.log(club_id);
 					
 					var clubs = db.get("clubs");
 					clubs.findOne({ _id: club_id}, {}, function(e, doc) {
 						if (doc) {
-							console.log(doc),
 							o.clubName = doc.name;
 							o.clubShort = doc.nameShort;
 						
@@ -110,10 +108,6 @@ exports.events = function(req, res){
 	res.header("Pragma", "no-cache");
 	res.header("Expires", 0);
 	
-	if (req.session.user) {
-		console.log(req.session.user.name);
-		console.log("logged in as ^^^^^");
-	}
 	req.session.lastPage = "/events";
 	res.render('events');
 }
@@ -129,7 +123,7 @@ exports.sup = function(req, res) {
 exports.users = function(db) {
 	return function(req, res) {
 		var collection = db.get('users');
-		collection.find( { rank : { $exists: true }},{ fields: { password: 0 }}, function(e, docs) {
+		collection.find( { rank : { $exists: true, $ne: null }},{ fields: { password: 0 }}, function(e, docs) {
 			res.send(docs);
 //			res.json(docs);
 		});
@@ -223,7 +217,7 @@ exports.getActiveEvents = function(db) {
 		
 		var date = moment().toJSON();
 		
-		events.find( { endDate : { $gte : date  }, startDate : { $lte : date }}, {}, function(e, docs) {
+		events.find( { endDate : { $gte : date  }, startDate : { $lte : date }}, { sort : { startDate: -1}}, function(e, docs) {
 			if(e) {
 				console.log(e);
 			}
@@ -239,7 +233,7 @@ exports.getAllEvents = function(db) {
 	return function(req, res) {
 		var events = db.get('events');
 		
-		events.find( {}, {}, function(err, docs) {
+		events.find( {}, { sort: { startDate: -1}}, function(err, docs) {
 			if(docs) {
 				res.send( { "events" : docs });
 			}
@@ -251,6 +245,24 @@ exports.getAllEvents = function(db) {
 	}
 }
 
+exports.getPastEvents = function(db) {
+	return function(req, res) {
+		// hakee käynnissä olevat ja loppuneet eventit
+		
+		var events = db.get('events');
+		
+		var date = moment().toJSON();
+		
+		events.find( { startDate : { $lte : date }}, {sort: { startDate: -1}}, function(e, docs) {
+			if(docs) {
+				res.send({"events" : docs });
+			}
+			if( e) {
+				console.log(e);
+			}
+		});
+	}
+}
 
 exports.createEvent = function(db) {
 	return function(req, res) {
@@ -369,9 +381,6 @@ exports.monthMatches = function(db) {
 		var start = mom.startOf('month').toJSON();
 		var end = mom.endOf('month').toJSON();
 		
-		console.log("month start " + start);
-		console.log("month end " + end);
-	
 		var col = db.get('matches');
 		
 		col.find({ endTime : { $exists : true }, startTime : { $gte: start, $lte: end }}, { sort: { startTime : -1 }, fields : { endTime : 0 }}, function(err, docs) {
@@ -390,7 +399,6 @@ exports.getMatchesForEvent = function(db) {
 	return function(req, res) {
 		var event_id = req.body.event_id;
 		
-		console.log(req.body);
 		var matches = db.get('matches');
 		
 		matches.find({ event_id : event_id, endTime : { $exists : true }}, { sort: { startTime : -1 } }, function(err, docs) {
@@ -516,15 +524,10 @@ exports.checkPass = function(db) {
 		var password = req.body.password;
 		var id = req.body.user_id;
 		
-		console.log(password);
-		console.log(id);
-		
 		var users = db.get('users');
 		
 		users.findOne({ _id: id }, function(e, o) {
-			console.log(o.password);
 			if (o) {
-				console.log(o.password);
 	//			console.log(o[0].password);
 				validatePassword(password, o.password, function(err, ok) {
 					if (ok) {
@@ -553,6 +556,19 @@ exports.getRankings = function(db) {
 		});
 	}
 }
+
+exports.getPastRankings = function(db) {
+	return function(req, res) {
+		var rankings = db.get('rankings');
+		
+		rankings.find( {}, {sort: { date: 1}, fields: { password: 0, email : 0 }}, function(e, docs) {
+			if(docs.length > 0) {
+				res.send({'rankings' : docs });
+			}
+		});
+	}
+}
+
 
 exports.saveRankingList = function(db) {
 	return function(req, res) {
@@ -621,6 +637,7 @@ exports.updateRankinglist = function(db) {
 		
 		
 		// tarvii rewriten nopeeta
+		// ...kirjoitettu kerran uusiksi, entistäkin surullisempi 
 		
 		users.findOne({ _id: w._id }, function(e, winner) {
 			if(winner) {
@@ -636,7 +653,6 @@ exports.updateRankinglist = function(db) {
 							users.findOne({ rank: s }, function(e, swappee) {
 								if (e) console.log(e);
 								if (swappee) {
-								
 									console.log("found relevant players");
 									console.log(swappee);
 									var w_rank = winner.rank
@@ -652,13 +668,16 @@ exports.updateRankinglist = function(db) {
 										}
 										else {
 											console.log("winner ranking updated to: " +  winner.rank);
-										}
-									});
-									
-									users.update({ _id: swappee._id}, { $set :{ rank : swappee.rank, hotness : swappee.hotness }}, {}, function(e, doc) {
-										if(e) console.log("error updating swappee rank");
-										else {
-											console.log("swappee ranking updated to:  "+ swappee.rank);
+											users.update({ _id: swappee._id}, { $set :{ rank : swappee.rank, hotness : swappee.hotness }}, {}, function(e, doc) {
+												if(e) console.log("error updating swappee rank");
+												else {
+													console.log("swappee ranking updated to:  "+ swappee.rank);
+													var userlist = db.get("users");
+													var rankings = db.get("rankings");
+													updateRanking(userlist, rankings);			
+													
+												}
+											});
 										}
 									});
 								}
@@ -667,42 +686,15 @@ exports.updateRankinglist = function(db) {
 						else {
 							console.log("no need to update ranking");
 							
-							if (loser.hotness !== "lukewarm") {
-								users.update( { _id: loser._id}, { $set : { hotness : 'lukewarm' }}, {}, function(err, doc) {
-									
-								});
-							}
-							if (winner.hotness !== "lukewarm") {
-								users.update( { _id: winner._id}, { $set : { hotness : 'lukewarm' }}, {}, function(err, doc) {
-									
-								});
-							}
-						}
-						
-						// update ranking db
-						
-						var list = db.get("users");
-						var rank = db.get("rankings");
-						
-						var date = new moment().toJSON();
-						
-						list.find( { rank: { $ne : null }}, { sort: { rank: 1}, fields: { password: 0, email: 0, lastLogin: 0, addedDate: 0, username: 0 }}, function(err, doc) {
-							if(doc) {
-								var list = {};
-								list.ranking = doc;
-								list.date = date;
+							users.update( { _id: loser._id}, { $set : { hotness : 'lukewarm' }}, {}, function(err, doc) {
+									users.update( { _id: winner._id}, { $set : { hotness : 'lukewarm' }}, {}, function(err, doc) {
+											var userlist = db.get("users");
+											var rankings = db.get("rankings");
+											updateRanking(userlist, rankings);													
 								
-								rank.insert(list, function(err, doc) {
-									if(doc) {
-										console.log("ranking collection saved");
-									}
-									else {
-										console.log(err);
-									}
+									});
 								});
-							}
-						});
-						
+						}
 					}
 					else {}
 				});
@@ -712,6 +704,29 @@ exports.updateRankinglist = function(db) {
 		res.send({ "message": "OK" });
 
 	}
+}
+
+function updateRanking(users, rankings) {
+	console.log("update raking called");
+
+	var date = new moment().toJSON();
+
+	users.find( { rank: { $ne : null }}, { sort: { rank: 1}, fields: { password: 0, email: 0, lastLogin: 0, addedDate: 0, username: 0 }}, function(err, doc) {
+		if(doc) {
+			var list = {};
+			list.ranking = doc;
+			list.date = date;
+		
+			rankings.insert(list, function(err, doc) {
+				if(doc) {
+					console.log("ranking collection saved");
+				}
+				else {
+					console.log(err);
+				}
+			});
+		}
+	});		
 }
 
 
@@ -777,11 +792,13 @@ function login(username, password, col, auto, cb) {
 				if (err) {}
 				else {
 					//console.log(doc);
-					console.log("updated");
+					//console.log("updated");
 				}
 			}
 		);
 	}
+	
+	console.log("trying to log in as " + username);
 	
 	col.findOne ( { username : username}, function(e, o) {
 		if (o) {
@@ -816,14 +833,11 @@ function login(username, password, col, auto, cb) {
 
 exports.login = function(db) {
 	return function(req, res) {
-		console.log("derp");
 		if(req.session.user) {
 			console.log(req.session.user);
 			res.send({ "message" : "already logged in" });
 			return;
 		}
-	
-		console.log("not logged in, req.session.user:" + req.session.user);
 	
 		var collection = db.get('users');	
 		var username, password, auto;
@@ -886,7 +900,6 @@ exports.login = function(db) {
 
 exports.logout = function(req, res) {
 	var prev = req.session.lastPage;
-	console.log("route yes");
 	res.clearCookie('username');
 	res.clearCookie('password');
 	req.session.destroy(function(e) {
