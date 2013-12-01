@@ -90,35 +90,6 @@ h1, h2, h3, h4, h5 {
 	color: #C9C9C9;
 }
 
-.ranking_cold {
-	background-image: url('/images/down.png');
-	background-size: 100%;
-	background-position: top left;
-	width: 18px;
-	height: 18px;
-	background-repeat: no-repeat;
-}
-
-.ranking_hot {
-//	background-image: url('/images/up.png');
-//	background-size: 100%;
-//	background-position: top left;
-//	width: 18px;
-//	height: 18px;
-//	background-repeat: no-repeat;
-	
-	color: white;
-}
-
-.ranking_lukewarm {
-	background-image: url('/images/level.png');
-	background-size: 100%;
-	background-position: top left;
-	width: 18px;
-	height: 18px;
-	background-repeat: no-repeat;	
-}
-
 body, html {
 	margin: 0px;
 	padding: 0px;
