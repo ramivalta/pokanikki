@@ -24,7 +24,7 @@ block content
 				dd(data-bind="css: { active : visiblePage() == 'ranking' }")
 					a(data-bind="click: function() { return visiblePage('ranking') }") Ranking
 					
-			div#ranking.large-12.small-12.columns.panel(style="display: none")
+			div#ranking.large-12.small-12.columns.panel(data-bind="css: { hidden : visiblePage() !== 'ranking' }")
 				div.large-6.medium-6.small-12.columns(data-bind="if: rankingList().length > 0 && hotnessList().length > 0")
 					div(style="color: #909090")
 						span Päivitetty: 
@@ -55,7 +55,7 @@ block content
 				
 
 
-			div#users.large-12.small-12.columns.panel(style="display: block")
+			div#users.large-12.small-12.columns.panel(data-bind="css: { hidden : visiblePage() !== 'users' }")
 				div.large-6.small-12.columns(data-bind="if: playerList().length > 0")
 					form
 						label(for="userid")
@@ -88,7 +88,7 @@ block content
 					span(data-bind="if: showSuccess() === true", style="color: green")
 						| Tallennus onnistui
 						
-			div#clubs(style="display: none").large-12.small-12.columns
+			div#clubs.large-12.small-12.columns(data-bind="css: { hidden : visiblePage() !== 'clubs' }")
 				div.panel
 					label(for="club")
 					input(id="club", type="text", data-bind="value: club", placeholder="Seuran nimi...")
@@ -103,7 +103,7 @@ block content
 				
 				
 				
-			div#events(style="display: none").large-12.small-12.columns
+			div#events.large-12.small-12.columns(data-bind="css: { hidden : visiblePage() !== 'events' }")
 			
 				dl.sub-nav(class="large-12 small-12 columns", style="font-size: 95%")
 					dd.active(data-bind="css: { active : visibleSubPage() == 'newEvent' }")

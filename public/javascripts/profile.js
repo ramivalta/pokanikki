@@ -25,6 +25,7 @@ function viewModel() {
 	
 	self.playerMatches = ko.observableArray();
 
+	self.match = ko.observable();
 	
 	self.oldPass = ko.observable();
 	self.newPass = ko.observable();
@@ -33,17 +34,20 @@ function viewModel() {
 	self.saveSucceeded = ko.observable(false);
 	
 	self.visiblePage = ko.observable('profiili');
-
-	self.hideInactive = ko.computed(function() {
-		if(self.visiblePage() == "profiili") {
-			$("#edit").css('display', 'none');
-			$("#profiili").css('display', 'block');
+	
+	self.showMatch = function(id) {
+		for(var i = 0; i < self.matchList().length; i++) {
+			if (id() == self.matchList()[i]._id()) {
+				self.match(self.matchList()[i]);
+				self.getStats();
+				
+				//self.playerListTwo(self.playerList().slice(0)); 				
+				
+			}
 		}
-		else if(self.visiblePage() == "edit") {
-			$("#profiili").css('display', 'none');
-			$("#edit").css('display', 'block');
-		}
-	});
+	}	
+	
+	
 	
 	self.checkOldPass = function(user_id, password, cb) {
 		sqEventProxy.checkOldPass(
@@ -155,6 +159,78 @@ function viewModel() {
 	
 	
 	self.getMatchesByPlayer();
+	
+
+	self.stats = ko.observable({
+		p1lets 		: ko.observable(0),
+		p2lets 		: ko.observable(0),
+		p1nolets 	: ko.observable(0),
+		p2nolets 	: ko.observable(0),
+		p1strokes	: ko.observable(0),
+		p2strokes	: ko.observable(0),
+		p1gameBalls : ko.observable(0),
+		p2gameBalls : ko.observable(0),
+		p1matchBalls: ko.observable(0),
+		p2matchBalls: ko.observable(0)
+	});
+	
+	self.getStats = function() {
+		self.stats().p1lets(0);
+		self.stats().p2lets(0);
+		self.stats().p1nolets(0);
+		self.stats().p2nolets(0);
+		self.stats().p1strokes(0);
+		self.stats().p2strokes(0);
+		self.stats().p1gameBalls(0);
+		self.stats().p2gameBalls(0);
+		self.stats().p1matchBalls(0);
+		self.stats().p2matchBalls(0);
+		
+		if (self.match() !== undefined) {
+			for(var i = 0; i < self.match().scores().length; i++) {
+				if(typeof self.match().scores()[i].playerOneYesLet !== 'undefined') {
+					if(self.match().scores()[i].playerOneYesLet() == 'true') {
+						self.stats().p1lets(self.stats().p1lets() + 1);
+					}
+					else if (self.match().scores()[i].playerOneNoLet() == 'true') {
+						self.stats().p1nolets(self.stats().p1nolets() + 1);
+					}
+					else if (self.match().scores()[i].playerOneStroke() == 'true') {
+						self.stats().p1strokes(self.stats().p1strokes() + 1);
+					}
+					
+					if(self.match().scores()[i].gameBall() == 'true' && parseInt(self.match().scores()[i].playerOneScore()) > parseInt(self.match().scores()[i].playerTwoScore()) ) {
+						self.stats().p1gameBalls(self.stats().p1gameBalls() + 1);
+					}
+				}
+				
+				if(typeof self.match().scores()[i].playerTwoYesLet !== 'undefined') {
+					if(self.match().scores()[i].playerTwoYesLet() == 'true') {
+						self.stats().p2lets(self.stats().p2lets() + 1);
+					}
+					else if (self.match().scores()[i].playerTwoNoLet() == 'true') {
+						self.stats().p2nolets(self.stats().p2nolets() + 1);
+					}
+					else if (self.match().scores()[i].playerTwoStroke() == 'true') {
+						self.stats().p2strokes(self.stats().p2strokes() + 1);
+					}
+					if(self.match().scores()[i].gameBall() == 'true' && parseInt(self.match().scores()[i].playerTwoScore()) > parseInt(self.match().scores()[i].playerOneScore()) ) {
+						self.stats().p2gameBalls(self.stats().p2gameBalls() + 1);
+					}
+				}
+				
+				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' && parseInt(self.match().scores()[i].playerOneScore()) > parseInt(self.match().scores()[i].playerTwoScore()) ) {
+						self.stats().p1matchBalls(self.stats().p1matchBalls() + 1);
+				}					
+
+				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' && parseInt(self.match().scores()[i].playerTwoScore()) > parseInt(self.match().scores()[i].playerOneScore()) ) {
+					self.stats().p2matchBalls(self.stats().p2matchBalls() + 1);
+				}
+			}
+		}
+	}	
+	
+	
 	
 	self.toggleVisible = function(item, event) {
 		var el = event.currentTarget;

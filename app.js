@@ -135,6 +135,8 @@ app.get('/logout', routes.logout);
 app.get('/getRankings', routes.getRankings(db));
 app.get('/getActiveEvents', routes.getActiveEvents(db));
 app.get('/getAllEvents', routes.getAllEvents(db));
+app.get('/getPastEvents', routes.getPastEvents(db));
+app.get('/getPastRankings', routes.getPastRankings(db));
 
 app.post('/adduser', routes.adduser(db));
 app.post('/login', routes.login(db));
@@ -152,6 +154,7 @@ app.post('/getMatchesByClub', routes.getMatchesByClub(db));
 app.post('/checkPass', routes.checkPass(db));
 app.post('/changePassword', routes.changePassword(db));
 app.post('/saveRankingList', routes.saveRankingList(db));
+
 
 
 app.get('/lsq.xml', function(req, res) {

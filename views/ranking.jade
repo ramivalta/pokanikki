@@ -1,9 +1,12 @@
 extends layout
 
 block append site_styles
+	link(rel="stylesheet" href="/stylesheets/vendor/jquery-ui-1.10.3.custom.min.css")
 	
 block append site_scripts
 	script(src="/javascripts/ranking.js")
+	script(src="/javascripts/vendor/jquery-ui-1.10.3.custom.min.js")
+	script(src="/javascripts/vendor/jquery.ui.touch-punch.min.js")
 
 
 block content
@@ -11,19 +14,32 @@ block content
 
 	div(class="large-7 medium-7 small-12 columns")
 		h4.subheader Seuraranking - LSQ
-		div.large-12.small-12.columns.panel
-			
-			h5.subheader
-				span(data-bind="text: rankingDate", style="text-transform: capitalize")
+		
+		div#current.large-12.small-12.columns.panel(data-bind="css : { hidden : visiblePage() !== 'current' }")
+
+			div(data-bind="click: toggleHistory")
+				a(data-bind="if: sliderVis() == false") Näytä vanhat...
+				a(data-bind="if: sliderVis() == true") Piilota vanhat...
+
+		
+			div#sliderContainer.large-12.small-12.columns(style="padding-left: 0; padding-right: 0; padding-top: 8px; display: none")
+				div.left(style="color: LightGray; font-size: 36px; position: absolute; top: 10px; padding: 2px; letter-spacing: -5px; z-index: 1; left: 26px; font-weight: 700")
+					span(data-bind="text: oldRankingFirstDate", style="text-shadow: 0px 0px 2px #eee")
+				div.right(style="color: LightGray; font-size: 36px; position: absolute; top: 10px; padding: 2px; letter-spacing: -5px; z-index: 1; right: 26px; font-weight: 700")
+					span(data-bind="text: oldRankingLastDate", style="text-shadow: 0px 0px 2px #eee")
+				div#sliderWrap.large-12.small-12.columns
+					div#slider.large-12.small-12.columns
+						div.large-12.small-12.columns(data-bind="value: historySlider, uislider: historySlider, event: { slide: historySliderMove }", name="historySlider", id="historySlider")
+				
+				p
+			div.large-12.small-12.columns
+				h5.subheader(style="text-align: center")
+					span(data-bind="text: oldRankingDate", style="text-transform: capitalize")
 			table(style="width: 100%", style="border-collapse: collapse")
 				thead
 					tr
-						//th(colspan=4)
-							|Ranking 8.11.2013
-
-				tbody(data-bind="foreach: rankingList")
+				tbody(data-bind="foreach: oldRankingList")
 					tr
-						//td(data-bind="text: $index()")
 						// ko if: rank
 						td.scoreCell(data-bind="text: rank")
 						td.scoreCell
@@ -35,9 +51,14 @@ block content
 							div(data-bind="visible: hotness() === 'lukewarm' || hotness() === null")
 								div(style="background-color: black; border: 1px #000 solid; border-radius: 1000px; width: 6px; height: 6px; margin: auto")
 						td.scoreCell(data-bind="text: name", style="width: 100%; text-align: left")
-						//td.scoreCell o 
 						// /ko
 
+
+
+			//div(style="background-color: #eee")
+				pre(data-bind="text: ko.toJSON(oldRankings, null, 2)")
+		
+		
 	
 	div(class="large-5 medium-5 small-12 columns")
 		h4.subheader Kuukauden pelit

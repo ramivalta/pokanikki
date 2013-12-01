@@ -69,7 +69,19 @@ function viewModel() {
 		);
 	}
 	
-	self.getActiveEvents();
+	//self.getActiveEvents();
+	
+	self.getPastEvents = function() {
+		var data;
+		sqEventProxy.getPastEvents(
+			{data:data},
+			function(data) {
+				ko.mapping.fromJS(data.events, {}, self.eventList);
+			}
+		);
+	}
+	
+	self.getPastEvents();
 	
 	self.getMatchesForEvent = function(id, name) {
 		//var event_id = event._id;

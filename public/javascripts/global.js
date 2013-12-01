@@ -161,6 +161,14 @@ var sqEventProxy = function() {
 		self.proxy.post('/saveRankingList', 'POST', data, done, fail, always);
 	}
 	
+	self.getPastEvents = function(data, done, fail, always) {
+		self.proxy.post('/getPastEvents', 'GET', data, done, fail, always);
+	}
+	
+	self.getPastRankings = function(data, done, fail, always) {
+		self.proxy.post('/getPastRankings', 'GET', data, done, fail, always);
+	}
+	
 };
 
 moment.lang('fi');

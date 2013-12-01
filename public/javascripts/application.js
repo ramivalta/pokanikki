@@ -1012,6 +1012,10 @@ function viewModel () {
 		$("#endGamePopup").popup( "open", { transition: "flow", shadow: true, positionTo: "window" });
 	};
 	
+	self.closeEndGamePopup = function() {
+		$("#endGamePopup").popup( "close", { transition: "flow", reverse: true });
+	};	
+	
 	self.closeCallsPopup = function() {
 		$("#calls").popup( "close", { transition: "slidedown", shadow: true, reverse: true });
 	}
@@ -1135,7 +1139,6 @@ function viewModel () {
 	
 }
 
-
 $(document).on('pageinit', function() {
 	window.vm = new viewModel();
 	ko.virtualElements.allowedBindings.mobileTable = true; // 
@@ -1168,6 +1171,7 @@ $(document).on('pageinit', function() {
 
 	$('#app').on('pageinit', function() {
 		ko.applyBindings(vm, document.getElementById('app'));
+		
 	});
 	
 	$('#app').on('pageshow', function() {
@@ -1176,7 +1180,7 @@ $(document).on('pageinit', function() {
 		}
 		if(vm.session.name() == undefined) {
 			//console.log("derp");
-			window.location.href="/autoLogin";			
+			window.location.href="/autoLogin";
 			//$.mobile.changePage('/application#login');
 		}
 

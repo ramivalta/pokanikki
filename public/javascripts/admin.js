@@ -66,34 +66,6 @@ function viewModel() {
 	self.ios = ko.observable(navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
 	
 	
-	self.hideInactive = ko.computed(function() {
-		if(self.visiblePage() == "events") {
-			$("#users").css('display', 'none');
-			$("#clubs").css('display', 'none');
-			$("#events").css('display', 'block');
-			$("#ranking").css('display', 'none');
-		}
-		else if(self.visiblePage() == "clubs") {
-			$("#users").css('display', 'none');
-			$("#clubs").css('display', 'block');
-			$("#events").css('display', 'none');
-			$("#ranking").css('display', 'none');
-		}
-		else if(self.visiblePage() == "users") {
-			$("#users").css('display', 'block');
-			$("#clubs").css('display', 'none');
-			$("#events").css('display', 'none');
-			$("#ranking").css('display', 'none');
-		}
-		else if(self.visiblePage() == "ranking") {
-			$("#clubs").css('display', 'none');
-			$("#events").css('display', 'none');
-			$("#ranking").css('display', 'block');
-			$("#users").css('display', 'none');
-		}
-	});
-	
-	
 	self.navShowNewEvent = function() {
 		if(self.visibleSubPage() == "editEvent") {
 			//$("#newEvent").css('display', 'block');

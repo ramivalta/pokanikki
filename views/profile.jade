@@ -2,7 +2,7 @@ extends layout
 
 block append headers
 	link(rel="stylesheet" href="/stylesheets/foundation.css")
-	link(rel="stylesheet" href="/stylesheets/site_styles.css")
+	link(rel="stylesheet" href="/stylesheets/site_styles.css?1")
 	
 block append site_scripts
 	script(src="/javascripts/vendor/foundation/foundation.abide.js")
@@ -11,15 +11,20 @@ block append site_scripts
 block content
 	include navbar
 
-	div(class="large-7 medium-7 small-12 columns")
+	div(class="large-12 medium-12 small-12 columns")
 		dl.sub-nav(class="large-12 small-12 columns", style="padding-top: 16px")
 			dd.active(data-bind="css: { active : visiblePage() == 'profiili' }")
-				a(data-bind="click: function() { return visiblePage('profiili') }") Profiili
+				a(data-bind="click: function() { return visiblePage('profiili') }")
+					|Profiili
+			dd(data-bind="css: { active : visiblePage() == 'matches' }")
+				a(data-bind="click: function() { return visiblePage('matches') }")
+					|Omat pelit
 			dd(data-bind="css: { active : visiblePage() == 'edit' }")
-				a(data-bind="click: function() { return visiblePage('edit') }") Käyttäjätilin asetukset
+				a(data-bind="click: function() { return visiblePage('edit') }")
+					|Käyttäjätilin asetukset
 
 
-		div.large-12.small-12.columns#profiili
+		div.large-12.small-12.columns#profiili(data-bind="css: { hidden : visiblePage() !== 'profiili' }")
 			h4.subheader
 				|Pelaaja
 				
@@ -34,7 +39,7 @@ block content
 					|Seuraranking: 
 					span(data-bind="text: session.rank");
 					
-		div.large-12.small-12.columns#edit
+		div.large-12.small-12.columns#edit(data-bind="css: { hidden : visiblePage() !== 'edit' }")
 			h4.subheader
 				| Tietojen muokkaus
 				
@@ -73,8 +78,231 @@ block content
 			
 				div.large-6.small-12.right(data-bind="visible: saveSucceeded() === false")
 					button.right.small.radius(data-bind="click: saveUser") Vaihda salasana
+					
+		
+		div.large-12.small-12.columns#matches(data-bind="css: { hidden : visiblePage() !== 'matches'}")
+		
+			div(class="large-3 medium-12 small-12 columns")
+				h4.subheader Omat pelit
+		
+				div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
+		
+					// ko if: ($index() === 0)
+	
+					div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+					hr
+		
+					// /ko
+		
+					// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
 
+					div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+					hr
+		
+					// /ko
+					div.large-12.medium-6.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.showMatch.bind($data, _id), css: { highlight : scores().length > 0 }")
+							
+							div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
+							div.large-4.small-4.columns.site_gameList(style="text-align: center")
+								span(data-bind="text: p1GamesWon")
+								|&nbsp;-&nbsp;
+								span(data-bind="text: p2GamesWon")
+							div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
+	
+	
+	
 
+			div(class="large-9 medium-12 small-12 columns", style="padding-right: 0px; margin-right: 0px; margin-left: 0px; padding-left: 0px")
+		
+
+				div.large-12.medium-12.small-12.columns(style="padding-right: 0px; margin-right: 0px; margin-left: 0px; padding-left: 0px")
+					h4.subheader
+						|Pelin yksityiskohdat
+					div(data-bind="if:match")
+						h5.subheader
+							span(data-bind="text: match().playerOneName()")
+							|&nbsp;vs&nbsp;
+							span(data-bind="text: match().playerTwoName()")				
+							|,&nbsp;
+							span(data-bind="text: moment(match().startTime()).format('dddd DD.MM.YYYY, HH:mm')")
+					
+				
+					div(class="large-12 medium-12 small-12 columns", data-bind="if: match")
+				
+						div.large-7.medium-7.small-12.columns(style="padding: 0px")
+				
+							div(data-bind="ifnot: $root.match().scores().length > 0").large-12.small-12.columns
+					
+								div(style="padding: 6px; color: #000; background: #eee; width: 100%; border: 1px solid #ccc; text-align: center; font-size: 14px")
+									span(data-bind="text: $root.match().playerOneName").left
+							
+									strong(style="text-align: center")
+										span(data-bind="text: $root.match().p1GamesWon()", style="text-align: center")
+										|-
+										span(data-bind="text: $root.match().p2GamesWon()", style="text-align: center")
+								
+									span(data-bind="text: $root.match().playerTwoName").right
+
+								
+								div(data-bind="foreach: $root.match().gameScores")
+					
+									div(style="padding: 6px; color: #000; background: #fff; width: 100%; border: 1px solid #eee; border-top: 0; font-size: 13px").right
+										strong(data-bind="text: ($index() + 1)")
+										strong . erä &nbsp;
+										span(data-bind="text: p1score")
+										| -
+										span(data-bind="text: p2score")
+								p(style="color: #999") Pelistä ei ole yksityiskohtia
+									
+							div(data-bind="if: $root.match().scores().length > 0").large-12.small-12.columns.gameScores
+
+								table(style="padding: 0px; margin: 0px;  font-size: 13px;  border-spacing: 0")
+									thead
+									tbody(style="font-size: 14px; font-weight: 600; background: #fefefe; padding: 6px")
+										tr
+											td(colspan=2, data-bind="text: match().playerOneName()", style="text-align: right")
+											td(style="text-align: center")
+												span(data-bind="text: match().p1GamesWon()", style="text-align: center")
+												span(style="text-align: center")
+													|-
+												span(data-bind="text: match().p2GamesWon()", style="text-align: left")
+											td(colspan=2, data-bind="text: match().playerTwoName()", style="text-align: left")
+						
+									tbody(data-bind="foreach: $root.match().scores").scoreBoard
+							
+										tr(data-bind="if: ($index() == 0)")
+											td(colspan=5, style="padding: 0px; margin: 0px; width: 100%")
+												div(style="padding: 6px; color: #000; background: #eee; width: 100%").right
+													strong 1. erä
+							
+							
+										tr.gameScores
+											td(style="width: 40%").decisionText
+												div(data-bind="if: (typeof playerOneYesLet !== 'undefined' && typeof playerOneNoLet !== 'undefined' && typeof playerOneStroke !== 'undefined')")
+													span(data-bind="if: playerOneYesLet() == 'true'")
+														span.scoreCellYesLet.left &nbsp;
+														| Yes let
+													span(data-bind="if: playerOneNoLet() == 'true'")
+														span.scoreCellNoLet.left &nbsp;
+														| No let
+													span(data-bind="if: playerOneStroke() == 'true'")
+														span.scoreCellStroke.left &nbsp;
+														| Stroke
+												div(data-bind="if: (typeof playerOneYesLet == 'undefined')")
+													| &nbsp;
+						
+											td(style="width: 8%")
+												span(data-bind="text: playerOneScore, css: { circle_pad : playerOneScore().length < 2,											circle : (typeof playerTwoYesLet !== 'undefined' && playerTwoNoLet() == 'true') || (typeof playerOneYesLet !== 'undefined' && playerOneStroke() == 'true') || (typeof playerOneYesLet !== 'undefined' && (playerOneYesLet() == 'false' && playerOneNoLet() == 'false')) }")
+								
+										
+											td(style="width: 4%") -
+											td(style="width: 8%")
+												span(data-bind="text: playerTwoScore, css: { circle_pad : playerTwoScore().length < 2, circle : (typeof playerTwoYesLet !== 'undefined' && playerTwoStroke() == 'true') || (typeof playerOneYesLet !== 'undefined' && playerOneNoLet() == 'true') || (typeof playerTwoYesLet !== 'undefined' && (playerTwoYesLet() == 'false' && playerTwoNoLet() == 'false')) }")
+					
+											td(style="width: 40%").decisionText
+												div(data-bind="if: (typeof playerTwoYesLet !== 'undefined' && typeof playerTwoNoLet !== 'undefined' && typeof playerTwoStroke !== 'undefined')")
+													span(data-bind="if: playerTwoYesLet() == 'true'")
+														span.right.scoreCellYesLet &nbsp;
+														| Yes let
+													span(data-bind="if: playerTwoNoLet() == 'true'")
+														span.right.scoreCellNoLet &nbsp;
+														| No let
+													span(data-bind="if: playerTwoStroke() == 'true'")
+														span.right.scoreCellStroke &nbsp;
+														| Stroke
+												div(data-bind="if: (typeof playerTwoYesLet == 'undefined')")
+													| &nbsp;
+										tr(data-bind="if: gameOver() == 'true' && ($index() !== $root.match().scores().length - 1)")
+											td(colspan=5, style="padding: 0px; margin: 0px; width: 100%")
+												div(style="padding: 6px; color: #000; background: #eee; width: 100%").right
+													strong(data-bind="text: gameNumber")
+													strong . erä
+
+						
+						div.large-5.medium-5.small-12.columns(style="color: #fff; background: black; border-radius: 4px; padding: 6px; font-size: 13px", data-bind="visible: $root.match().scores().length > 0")
+
+							div
+								h5.subheader(style="padding:0px; margin:0px") Letit
+								div.panel(style="background: black; color: #eee; border: 1px solid #222")
+									p(style="color: #999; font-size: 1em")
+										span(data-bind="text: match().playerOneName()").left
+										span : 
+										span(data-bind="text: stats().p1lets()").right
+								
+										br
+							
+										span(data-bind="text: match().playerTwoName()", style="text-overflow: ellipsis").left
+										span : 
+										span(data-bind="text: stats().p2lets()").right
+						
+								h5.subheader(style="padding: 0x; margin: 0px") No letit
+								div.panel(style="background: black; color: #eee; border: 1px solid #222")
+									p(style="color: #999; font-size: 1em")
+										span(data-bind="text: match().playerOneName()").left.name_ellipsed
+										span : 
+										span(data-bind="text: stats().p1nolets()").right
+								
+										br
+
+										span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+										span : 
+										span(data-bind="text: stats().p2nolets()").right
+								
+								h5.subheader(style="padding: 0x; margin: 0px") Stroket
+								div.panel(style="background: black; color: #eee; border: 1px solid #222")
+									p(style="color: #999; font-size: 1em")
+										span(data-bind="text: match().playerOneName()").left.name_ellipsed
+										span : 
+										span(data-bind="text: stats().p1strokes()").right
+								
+										br
+
+										span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+										span : 
+										span(data-bind="text: stats().p2strokes()").right
+								h5.subheader(style="padding: 0px; margin: 0px") Eräpallot
+								div.panel(style="background: black; color: #eee; border: 1px solid #222")
+									p(style="color: #999; font-size: 1em")
+										span(data-bind="text: match().playerOneName()").left.name_ellipsed
+										span :
+								
+										span.right
+											span(data-bind="text: match().p1GamesWon()")								
+											span /
+											span(data-bind="text: stats().p1gameBalls()")
+								
+										br
+								
+										span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+										span :
+								
+										span.right
+											span(data-bind="text: match().p2GamesWon()")								
+											span /
+											span(data-bind="text: stats().p2gameBalls()")
+
+								h5.subheader(data-bind="visible: stats().p1matchBalls() > 0 || stats().p2matchBalls() > 0", style="padding: 0px; margin: 0px") Ottelupallot
+								div.panel(data-bind="visible: stats().p1matchBalls() > 0 || stats().p2matchBalls() > 0", style="background: black; color: #eee; border: 1px solid #222")
+									p(style="color: #999; font-size: 1em")
+										span(data-bind="text: match().playerOneName()").left.name_ellipsed
+										span :
+										span.right
+											span(data-bind="text: stats().p1matchBalls()")
+								
+										br
+								
+										span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+										span :
+								
+										span.right
+											span(data-bind="text: stats().p2matchBalls()")
+										
+					
+					
+					
+					
+
+//
 	div(class="large-5 medium-5 small-12 columns")
 		h4.subheader Omat pelit
 		div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
