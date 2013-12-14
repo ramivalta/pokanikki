@@ -13,7 +13,9 @@ function viewModel() {
 		clubShort	: ko.observable($('#sessclub').val()),
 		clubName	: ko.observable($('#sessclubshort').val()),		
 	});	
-		
+
+
+	self.title = ko.observable("Pokanikki");		
 	
 //	self.playerList = ko.observable();
 	

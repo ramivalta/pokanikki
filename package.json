@@ -1,6 +1,6 @@
 {
 	"name": "pokanikki",
-	"version": "0.2",
+	"version": "1.0.0",
 	"private": true,
 	"scripts": {
 	"start": "node app.js"
@@ -12,6 +12,7 @@
 		"monk": "0.7.1",
 		"moment": "2.4.0",
 		"rss": "0.2.1",
-		"cron": "1.0.1"
+		"cron": "1.0.1",
+		"jshare": "0.0.8"
 	}
 }

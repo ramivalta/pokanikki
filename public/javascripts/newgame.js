@@ -2,6 +2,8 @@ function viewModel() {
 	var self = this;
 	
 	self.session = ko.observable();
+	
+	self.title = ko.observable("Uusi peli - Pokanikki");	
 
 	self.session = ({
 		name	: ko.observable($('#sessname').val()),
@@ -16,9 +18,7 @@ function viewModel() {
 		
 	self.ios = ko.observable(navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);	
 	
-//	self.playerList = ko.observable();
-	
-	self.playerList = ko.observableArray([]);
+	self.playerListOne = ko.observableArray([]);
 	self.playerListTwo = ko.observableArray([]);
 	
 	self.matchList = ko.observableArray([]);
@@ -151,11 +151,6 @@ function viewModel() {
 					
 				self.saveScores();
 				
-				for (var i = 0; self.scoreEntry().length > i; i++) {
-					self.scoreEntry()[i].p1score("");
-					self.scoreEntry()[i].p2score("");					
-				}
-				
 				return;
 			}	
 				
@@ -205,11 +200,21 @@ function viewModel() {
 	}
 	
 	function getPlayers() {
+
+		self.customPlayerOne = ko.observable({
+			_id : ko.observable("custom1"),
+			name : ko.observable("Uusi pelaaja..."),
+		});
+		
+		self.customPlayerTwo = ko.observable({
+			_id : ko.observable("custom2"),
+			name : ko.observable("Uusi pelaaja..."),
+		});		
+	
 		var data;
 		sqEventProxy.getUserlist(
 			{ data:data },
 			function(data) {
-			
 				data.sort(function(a, b) {
 					var key1 = a.name;
 					var key2 = b.name;
@@ -217,33 +222,69 @@ function viewModel() {
 					if (key1 > key2) return 1;
 					return 0;
 				});
+				
+				//console.log(self.customPlayer()._id());
 			
-			
-				ko.mapping.fromJS(data, {}, self.playerList);
+				ko.mapping.fromJS(data, {}, self.playerListOne);
 				ko.mapping.fromJS(data, {}, self.playerListTwo);
 				
-				
-				
-
-				//self.playerListTwo.sort();
+				self.playerListOne.push(self.customPlayerOne());
+				self.playerListTwo.push(self.customPlayerTwo());				
 			}
 		);
 	}
 	
+
+	
 	self.setupPlayers = ko.computed(function() {
-		if (self.playerOne() == undefined || self.playerTwo() == undefined) {
-			
+		if (self.playerOne() == undefined || self.playerTwo() == undefined || typeof self.customPlayerOne == "undefined" || typeof self.customPlayerTwo == "undefined") {
 		}
 		else {
-			self.playerListTwo(self.playerList().slice(0)); 
 			var sel_id = self.playerOne()._id();
 			//console.log(sel_id);
 			
 			self.playerListTwo.remove(function(i) { return i._id() === sel_id });
-		
+			
+			if(self.playerOne()._id() == "custom1") {
+				$('#newPlayerModalOne').foundation('reveal', 'open');
+			}
+			
+			if(self.playerTwo()._id() == "custom2") {
+				$('#newPlayerModalTwo').foundation('reveal', 'open');
+			}
 		}
 		
 	}).extend({throttle: 1 });
+	
+	$('#newPlayerModalOne').on( "close", function() {
+		if(self.customPlayerOne().name() == "Uusi pelaaja...") {
+			self.playerOne(self.playerListOne()[0]);
+			self.customPlayerOne()._id("custom1");
+			self.customPlayerOne().name("Uusi pelaaja...");
+		}
+		else {
+			self.customPlayerOne()._id("0");
+		}
+	});	
+	
+	
+	$('#newPlayerModalTwo').on( "close", function() {
+		if(self.customPlayerTwo().name() == "Uusi pelaaja...") {
+			self.playerTwo(self.playerListTwo()[0]);
+			self.customPlayerTwo()._id("custom2");
+			self.customPlayerTwo().name("Uusi pelaaja...");
+		}
+		else {
+			self.customPlayerTwo()._id("1");
+		}
+		
+	});
+	
+/*	self.closeNewPlayerPopupTwo = function() {
+		self.playerTwo(self.playerLisTwo()[0]);
+		self.customPlayerTwo()._id("custom2");
+		self.customPlayerTwo()._id("Uusi pelaaja...");		
+	} */
 	
 	function getMatches() {
 		var data;
@@ -292,6 +333,12 @@ function viewModel() {
 			},
 			function(data) {
 				//console.log(data.message);
+				
+				for (var i = 0; self.scoreEntry().length > i; i++) {
+					self.scoreEntry()[i].p1score("");
+					self.scoreEntry()[i].p2score("");					
+				}				
+				
 				self.saveSucceeded(true);
 				getRankings();
 				
@@ -324,5 +371,7 @@ $(document).ready(function() {
 	ko.applyBindings(vm, document.getElementById("main"));
 	
     $(document).foundation();
+    
+    
 });
 	

@@ -35,6 +35,9 @@ app.use(express.methodOverride());
 app.use(express.cookieParser('seecur3t'));
 app.use(express.session());
 
+var jshare = require('jshare');
+app.use(jshare());
+
 
 // var quickdraw = require('quickdraw')(app);
 
@@ -113,11 +116,14 @@ var monthly_ranking = new cronJob('0, 0, 1, *, *', function() {
 app.get('/autoLogin', routes.autoLogin(db));
 app.get('/', routes.index);
 app.get('/home', routes.home);
-app.get('/events', routes.events);
+app.get('/events', routes.events(db));
+app.get('/events/:id', routes.events(db));
+app.get('/events/:id/:match_id', routes.events(db));
 app.get('/newgame', routes.newgame);
 app.get('/newuser', routes.newuser);
 app.get('/application', routes.application);
-app.get('/profile', routes.profile);
+app.get('/profile', routes.profile(db));
+app.get('/profile/:id', routes.profile(db));
 app.get('/ranking', routes.ranking);
 app.get('/admin', routes.admin);
 app.get('/matches', routes.matches);
@@ -154,7 +160,6 @@ app.post('/getMatchesByClub', routes.getMatchesByClub(db));
 app.post('/checkPass', routes.checkPass(db));
 app.post('/changePassword', routes.changePassword(db));
 app.post('/saveRankingList', routes.saveRankingList(db));
-
 
 
 app.get('/lsq.xml', function(req, res) {

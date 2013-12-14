@@ -9,69 +9,269 @@ block append site_styles
 block content
 	include navbar
 
-	div(class="large-7 medium-7 small-12 columns")
+	div(class="large-12 medium-12 small-12 columns")
 		h4.subheader Tapahtumat
 		
 		div#eventList(style="display: block")
-			div.large-12.small-12.columns.panel(data-bind="foreach: eventList")
-				div.large-12.small-12.columns
-					h4.subheader(data-bind="text: name", style="display: inline; font-size: 120%")
-					br
-					h5.subheader(data-bind="text: moment(startDate()).format('DoMM.YYYY')", style="display: inline")
-					|&nbsp;-&nbsp;
-					h5.subheader(data-bind="text: moment(endDate()).format('DoMM.YYYY')", style="display: inline")
-					a(data-bind="click: $root.getMatchesForEvent.bind($data, _id, name)", style="display: inline").right
-						|näytä pelit...
-					p
-					p
+			div.large-12.small-12.columns.panel.radius(data-bind="foreach: eventList")
+				div.large-12.small-12.columns(data-bind="css: { orange_highlight : $root.selectedEvent() == _id() }, click: $root.getMatchesForEvent.bind($data, _id(), name(), null, true)", style="cursor: pointer; vertical-align: middle; padding: 6px")
+					h5(style="display: inline")
+						span(data-bind="text: name")
+					span.right
+						|&nbsp; &bull; &nbsp;
+						h5.subheader(data-bind="text: moment(startDate()).format('DoMM.YYYY')", style="display: inline")
+						|&nbsp;-&nbsp;					
+						h5.subheader(data-bind="text: moment(endDate()).format('DoMM.YYYY')", style="display: inline")
+						//a(data-bind="click: $root.getMatchesForEvent.bind($data, _id(), name(), true)", style="display: inline").right
+							|näytä pelit...
+					
 
 		//div.row
 			a.button(data-bind="click: login") Login
 			pre(data-bind="text: ko.toJSON(session, null, 2)")
 
 
-	div(class="large-5 medium-5 small-12 columns")
-	
-	
-		//<script id="feed-1385119291110789" type="text/javascript" src="http://rss.bloople.net/?url=http%3A%2F%2F192.81.223.221%3A3000%2Flsq.xml&limit=1&showtitle=false&type=js&id=1385119291110789"></script>	
-	
-		h4#tulokset.subheader(data-bind="text: matchListHeader")
-		div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
-	
-			// ko if: ($index() === 0)
-	
-			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
-			hr
-		
-			// /ko
-		
-			// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
+	div(class="large-3 medium-12 small-12 columns")
 
-			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
-			hr
+		h4#tulokset.subheader(data-bind="text: matchListHeader")
 		
-			// /ko
+		div(data-bind="if: matchList().length == 0")
+			h5.subheader Tässä tapahtumassa ei ole pelejä.
+
+		div(data-bind="if: matchList().length > 0 ")
+
+			//include sidebar_matchlist.jade
 		
-			div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible")
+			div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
+		
+				// ko if: ($index() === 0)
+
+				div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+				hr
+
+				// /ko
+
+				// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
+
+				div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+				hr
+
+				// /ko
+
+				div.large-12.medium-6.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.showMatch.bind($data, _id()), css: { highlight : scores().length > 0, orange_highlight : _id == $root.selectedMatch_id() }")
+				
 					div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
 					div.large-4.small-4.columns.site_gameList(style="text-align: center")
 						span(data-bind="text: p1GamesWon")
 						|&nbsp;-&nbsp;
 						span(data-bind="text: p2GamesWon")
 					div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
+					
+			div.large-12.small-12.columns
+				small
+					span.highlight Pinkillä
+					span &nbsp;
+					span merkatuista peleistä on pöytäkirja tallennettuna.
+
+	div(class="large-9 medium-12 small-12 columns", data-bind="visible: match")
+
+
+		div#scores.large-12.medium-12.small-12.columns
+			h4.subheader
+				|Pelin pöytäkirja
+			div(data-bind="if: match() !== undefined")
+				h5.subheader
+					span(data-bind="text: match().playerOneName()")
+					|&nbsp;vs&nbsp;
+					span(data-bind="text: match().playerTwoName()")				
+					|,&nbsp;
+					span(data-bind="text: moment(match().startTime()).format('dddd DD.MM.YYYY, HH:mm')")
 		
-				div.large-12.small-12.columns.site_gameList.gameScores(style="display:none", data-bind="if: gameScores().length > 0")
-						hr
 
-						div(data-bind="foreach: gameScores", style="text-align: center; padding-bottom: 4px").large-12.small-12.columns
+		div(class="large-12 medium-12 small-12 columns", data-bind="if: match")
 
+			div(data-bind="ifnot: $root.match().scores().length > 0").large-12.small-12.columns
+
+				div(style="padding: 6px; color: #000; background: #eee; width: 100%; border: 1px solid #ccc; text-align: center; font-size: 14px; text-overflow: ellipsis; border-bottom: 0px; font-weight: 700")
+					div(data-bind="text: $root.match().playerOneName", style="text-align: right; width: 40%; max-width: 40%; display: inline; white-space: nowrap; text-overflow: ellipsis !important").left
+		
+					div(style="text-align: center; width: 20%; display: inline")
+						span(data-bind="text: $root.match().p1GamesWon()", style="text-align: center")
+						|-
+						span(data-bind="text: $root.match().p2GamesWon()", style="text-align: center")
+			
+					div(data-bind="text: $root.match().playerTwoName", style="text-align: left; width: 40%; display: inline; white-space: nowrap; text-overflow: ellipsis !important").right
+
+			
+				div
+					table#gameTable(style="width: 100%; padding: 0px; margin: 0px; border-collapse: collapse; border: 1px #ccc solid")
+						tbody(data-bind="foreach: $root.match().gameScores")
+							tr(style="border: 1px #ccc solid; font-weight: 700")
+								th.left(style="width: 60px")
+									span(data-bind="text: ($index() + 1)")
+									span . erä
+								td(style="text-align: center")
+									span(data-bind="text: p1score")
+									span -
+									span(data-bind="text: p2score")
+								td.right(style="width: 60px")
+									|&nbsp;
+						//div.left(style="padding: 6px; color: #000; background: #fff; width: 100%; border: 1px solid #eee; border-top: 0; font-size: 13px").right
+							strong(data-bind="text: ($index() + 1)")
+							strong . erä &nbsp;
 							span(data-bind="text: p1score")
-							|-
+							span -
 							span(data-bind="text: p2score")
-							span(data-bind="if: ($index() !== ($parent.gameScores().length - 1))")
-								|,&nbsp;
+					//p(style="color: #999") Pelistä ei ole yksityiskohtia
+			div.large-7.medium-7.small-12.columns(data-bind="if: $root.match().scores().length > 0")
+					
+				div(data-bind="if: $root.match().scores().length > 0", style="width: 100%").large-12.small-12.columns.gameScores
 
-						//hr
+					table(style="padding: 0px; margin: 0px;  font-size: 13px;  border-spacing: 0; width: 100%")
+						thead
+						tbody(style="font-size: 14px; font-weight: 600; background: #fefefe; padding: 8px")
+							tr
+								td(colspan=2, data-bind="text: match().playerOneName()", style="text-align: right")
+								td(style="text-align: center")
+									span(data-bind="text: match().p1GamesWon()", style="text-align: center")
+									span(style="text-align: center")
+										|-
+									span(data-bind="text: match().p2GamesWon()", style="text-align: left")
+								td(colspan=2, data-bind="text: match().playerTwoName()", style="text-align: left")
+		
+						tbody(data-bind="foreach: $root.match().scores").scoreBoard
+			
+							tr(data-bind="if: ($index() == 0)")
+								td(colspan=5, style="padding: 0px; margin: 0px; width: 100%")
+									div(style="padding: 6px; color: #000; background: #eee; width: 100%").right
+										strong 1. erä
+			
+			
+							tr.gameScores
+								td(style="width: 40%").decisionText
+									div(data-bind="if: (typeof playerOneYesLet !== 'undefined' && typeof playerOneNoLet !== 'undefined' && typeof playerOneStroke !== 'undefined')")
+										span(data-bind="if: playerOneYesLet() == 'true'")
+											span.scoreCellYesLet.left &nbsp;
+											| Yes let
+										span(data-bind="if: playerOneNoLet() == 'true'")
+											span.scoreCellNoLet.left &nbsp;
+											| No let
+										span(data-bind="if: playerOneStroke() == 'true'")
+											span.scoreCellStroke.left &nbsp;
+											| Stroke
+									div(data-bind="if: (typeof playerOneYesLet == 'undefined')")
+										| &nbsp;
+		
+								td(style="width: 8%")
+									span(data-bind="text: playerOneScore, css: { circle_pad : playerOneScore().length < 2,											circle : (typeof playerTwoYesLet !== 'undefined' && playerTwoNoLet() == 'true') || (typeof playerOneYesLet !== 'undefined' && playerOneStroke() == 'true') || (typeof playerOneYesLet !== 'undefined' && (playerOneYesLet() == 'false' && playerOneNoLet() == 'false')) }")
+				
+						
+								td(style="width: 4%") -
+								td(style="width: 8%")
+									span(data-bind="text: playerTwoScore, css: { circle_pad : playerTwoScore().length < 2, circle : (typeof playerTwoYesLet !== 'undefined' && playerTwoStroke() == 'true') || (typeof playerOneYesLet !== 'undefined' && playerOneNoLet() == 'true') || (typeof playerTwoYesLet !== 'undefined' && (playerTwoYesLet() == 'false' && playerTwoNoLet() == 'false')) }")
+	
+								td(style="width: 40%").decisionText
+									div(data-bind="if: (typeof playerTwoYesLet !== 'undefined' && typeof playerTwoNoLet !== 'undefined' && typeof playerTwoStroke !== 'undefined')")
+										span(data-bind="if: playerTwoYesLet() == 'true'")
+											span.right.scoreCellYesLet &nbsp;
+											| Yes let
+										span(data-bind="if: playerTwoNoLet() == 'true'")
+											span.right.scoreCellNoLet &nbsp;
+											| No let
+										span(data-bind="if: playerTwoStroke() == 'true'")
+											span.right.scoreCellStroke &nbsp;
+											| Stroke
+									div(data-bind="if: (typeof playerTwoYesLet == 'undefined')")
+										| &nbsp;
+							tr(data-bind="if: gameOver() == 'true' && ($index() !== $root.match().scores().length - 1)")
+								td(colspan=5, style="padding: 0px; margin: 0px; width: 100%")
+									div(style="padding: 6px; color: #000; background: #eee; width: 100%").right
+										strong(data-bind="text: gameNumber")
+										strong . erä
+
+		
+			div.large-5.medium-5.small-12.columns(style="color: #fff; background: black; border-radius: 4px; font-size: 13px", data-bind="visible: $root.match().scores().length > 0")
+
+				div
+					h5.subheader(style="padding:0px; margin:0px; padding-top: 8px") Letit
+					div.panel(style="background: black; color: #eee; border: 1px solid #222")
+						p(style="color: #999; font-size: 1em")
+							span(data-bind="text: match().playerOneName()").left
+							span : 
+							span(data-bind="text: stats().p1lets()").right
+				
+							br
+			
+							span(data-bind="text: match().playerTwoName()", style="text-overflow: ellipsis").left
+							span : 
+							span(data-bind="text: stats().p2lets()").right
+		
+					h5.subheader(style="padding: 0x; margin: 0px") No letit
+					div.panel(style="background: black; color: #eee; border: 1px solid #222")
+						p(style="color: #999; font-size: 1em")
+							span(data-bind="text: match().playerOneName()").left.name_ellipsed
+							span : 
+							span(data-bind="text: stats().p1nolets()").right
+				
+							br
+
+							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+							span : 
+							span(data-bind="text: stats().p2nolets()").right
+				
+					h5.subheader(style="padding: 0x; margin: 0px") Stroket
+					div.panel(style="background: black; color: #eee; border: 1px solid #222")
+						p(style="color: #999; font-size: 1em")
+							span(data-bind="text: match().playerOneName()").left.name_ellipsed
+							span : 
+							span(data-bind="text: stats().p1strokes()").right
+				
+							br
+
+							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+							span : 
+							span(data-bind="text: stats().p2strokes()").right
+					h5.subheader(style="padding: 0px; margin: 0px") Eräpallot
+					div.panel(style="background: black; color: #eee; border: 1px solid #222")
+						p(style="color: #999; font-size: 1em")
+							span(data-bind="text: match().playerOneName()").left.name_ellipsed
+							span :
+				
+							span.right
+								span(data-bind="text: match().p1GamesWon()")								
+								span /
+								span(data-bind="text: stats().p1gameBalls()")
+				
+							br
+				
+							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+							span :
+				
+							span.right
+								span(data-bind="text: match().p2GamesWon()")								
+								span /
+								span(data-bind="text: stats().p2gameBalls()")
+
+					h5.subheader(data-bind="visible: stats().p1matchBalls() > 0 || stats().p2matchBalls() > 0", style="padding: 0px; margin: 0px") Ottelupallot
+					div.panel(data-bind="visible: stats().p1matchBalls() > 0 || stats().p2matchBalls() > 0", style="background: black; color: #eee; border: 1px solid #222")
+						p(style="color: #999; font-size: 1em")
+							span(data-bind="text: match().playerOneName()").left.name_ellipsed
+							span :
+							span.right
+								span(data-bind="text: stats().p1matchBalls()")
+				
+							br
+				
+							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
+							span :
+				
+							span.right
+								span(data-bind="text: stats().p2matchBalls()")
+						
+	
+
+
+
 
 
 				

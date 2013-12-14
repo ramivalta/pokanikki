@@ -3,6 +3,8 @@ function viewModel() {
 	
 	self.user = {};
 	
+	self.title = ko.observable("Rekisteröityminen - Pokanikki");	
+	
 	self.user.username = ko.observable();
 	self.user.email = ko.observable();
 	self.user.name = ko.observable();

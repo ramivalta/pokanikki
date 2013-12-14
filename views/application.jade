@@ -51,56 +51,80 @@ block content
 	- }
 	
 	div#setup(data-role="page", data-theme="b")
+	
+		div(data-role="popup", id="newPlayerPopupOne", data-theme="b", data-dismissible="false", class="ui-corner-all")
+			div(data-role="header", data-theme="a", class="ui-corner-top")
+				h5(style="width: 100%; text-align: left") Pelaajan nimi:
+				a(data-rel="back", data-role="button", data-icon="delete", data-iconpos="notext", style="border-radius: 50%", data-theme="c", data-bind="click: closeNewPlayerPopupOne")
+
+			div(data-role="content", class="ui-corner-bottom ui-content")
+				form(data-bind="submit: updatePlayerListOne")
+					input(data-bind="value: customPlayerOne().name, valueUpdate : 'afterkeydown', click: function() { return $element.setSelectionRange(0, 9999) }")
+
+			a(data-role="button", data-bind="click: updatePlayerListOne", style="width: 45%; margin-right: 10px; margin-left: 50%; ") Lisää pelaaja
+
+		div(data-role="popup", id="newPlayerPopupTwo", data-theme="b", data-dismissible="false", class="ui-corner-all")
+			div(data-role="header", data-theme="a", class="ui-corner-top")
+				h5(style="width: 100%; text-align: left") Pelaajan nimi:
+				a(data-rel="back", data-role="button", data-icon="delete", data-iconpos="notext", style="border-radius: 50%", data-theme="c", data-bind="click: closeNewPlayerPopupTwo")
+			div(data-role="content")
+				form(data-bind="submit: updatePlayerListTwo")
+					input(data-bind="value: customPlayerTwo().name, valueUpdate : 'afterkeydown', click: function() { return $element.setSelectionRange(0, 9999) } ")
+			a(data-role="button", data-mini="true", data-inline="true", data-bind="click: updatePlayerListTwo", style="width: 45%; margin-right: 10px; margin-left: 50%; ") Lisää pelaaja
+	
+	
+	
 		div.loginSetupTop(data-role="header", data-position="fixed", data-fullscreen="true", data-theme="b")
 		div(data-role="content", style="padding: 8px; padding-top: 30px")
 			//a(data-role="button", data-mini="true", data-icon="arrow-l", data-inline="true", data-theme="c", data-ajax="false", data-bind="click: function() { window.location.href='/newgame' }") Palaa sivustolle
 			
 			div#yla(style="text-align: center; border-radius: 6px", data-theme="a", data-role="content")
+				div(style="max-width: 480px; margin-left: auto; margin-right: auto")
 			
-				h2 Uusi peli
+					h2 Uusi peli
 			
-				span Pelaaja 1
-				span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				span Pelaaja 2
-				form
-					fieldset(data-role="controlgroup" data-type="horizontal", data-mini="true")
-						label(for="select-1") Pelaaja 1
-						select(name="select-1" id="select-1" data-bind="jqmValue: playerOne, jqmOptions: playerList, optionsText: 'name'", data-theme="d")
-							option(data-bind="text: name")
-						label(for="select-2") Pelaaja 2
-						select(name="select-2" id="select-2" data-bind="jqmValue: playerTwo, jqmOptions: playerListTwo, optionsText: 'name'", data-theme="d")
-							option(data-bind="text: name")
+					span Pelaaja 1
+					span &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					span Pelaaja 2
+					form#playerSelect
+						fieldset(data-role="controlgroup" data-type="horizontal", data-mini="true")#playerSel
+							label(for="select-1") Pelaaja 1
+							select(name="select-1" id="select-1" data-bind="jqmValue: playerOne, jqmOptions: playerListOne, optionsText: 'name'", data-theme="d")
+								option(data-bind="text: name")
+							label(for="select-2") Pelaaja 2
+							select(name="select-2" id="select-2" data-bind="jqmValue: playerTwo, jqmOptions: playerListTwo, optionsText: 'name'", data-theme="d")
+								option(data-bind="text: name")
 
-				p
-				
-				span Kuuluu tapahtumaan:
-				form
-					fieldset(data-role="controlgroup", data-type="horizontal", data-mini="true")
-						label(for="eventSelect") Kuuluu tapahtumaan...
-						select(name="eventSelect", id="eventSelect", data-bind="jqmValue: event, jqmOptions: eventList, optionsText: 'name'", data-theme="d")
-							option(data-bind="text: name")
-				
-				div(data-bind="if: eventList().length > 0")
-					div(data-bind="if: event().affectsRanking() === 'false' ")
-						p Ei vaikuta rankingiin
-				
-				p
-	
-				div#ala(style="margin: auto; text-align: center")
-				
-					span Pelataan paras:
-				
-					form
-						fieldset(data-role="controlgroup" data-type="horizontal" data-mini="true")
-							input(type="radio" name="bestOf" id="bestOf3" value="3" data-bind="checked: bestOf, mobileradio: bestOf", data-theme="d")
-							label(for="bestOf3" style="border-radius: 2px") Kolmesta
-							input(type="radio" name="bestOf" id="bestOf5" value="5" checked="checked" data-bind="checked: bestOf, mobileradio: bestOf", data-theme="d")
-							label(for="bestOf5" style="border-radius: 2px") Viidest&auml;
-				
 					p
 				
-					a(href="#", data-role="button", data-inline="true", data-theme="b", data-bind="event: { tap : startMatch }")
-						|Aloita peli
+					span Kuuluu tapahtumaan:
+					form(style="width: 250px; margin-left: auto; margin-right: auto")
+						fieldset(id="eventSel", data-role="controlgroup", data-type="horizontal", data-mini="true")
+							label(for="eventSelect") Kuuluu tapahtumaan...
+							select(name="eventSelect", id="eventSelect", data-bind="jqmValue: event, jqmOptions: eventList, optionsText: 'name'", data-theme="d")
+								option(data-bind="text: name")
+				
+					div(data-bind="if: eventList().length > 0")
+						div(data-bind="if: event().affectsRanking() === 'false' ")
+							p Ei vaikuta rankingiin
+				
+					p
+	
+					div#ala(style="margin: auto; text-align: center")
+				
+						span Pelataan paras:
+				
+						form(style="width: 250px !important; margin-left: auto; margin-right: auto")
+							fieldset(data-role="controlgroup" data-type="horizontal" data-mini="true")#bestOfSel
+								input(type="radio" name="bestOf" id="bestOf3" value="3" data-bind="checked: bestOf, mobileradio: bestOf", data-theme="d")
+								label(for="bestOf3" style="border-radius: 2px") Kolmesta
+								input(type="radio" name="bestOf" id="bestOf5" value="5" checked="checked" data-bind="checked: bestOf, mobileradio: bestOf", data-theme="d")
+								label(for="bestOf5" style="border-radius: 2px") Viidest&auml;
+				
+						p
+				
+						a(href="#", data-role="button", data-inline="true", data-theme="b", data-bind="event: { tap : startMatch }")
+							|Aloita peli
 			
 			//pre(data-bind="text: ko.toJSON($data, null, 2)")
 		
@@ -429,7 +453,10 @@ block content
 
 				div.ui-grid-a(data-bind="if: matchSet() !== false")
 					div.ui-block-a
-						&nbsp;					
+						&nbsp;
+						span(data-bind="visible: session.username() == 'testi'")
+							|Tällä käyttäjällä ei ole oikeutta tallentaa pelejä
+
 					
 					div.ui-block-b
 						a(href="/application", data-role="button", data-mini="true", data-theme="b", data-inline="true", style="float: right", data-bind="if: matchSet() !== false, click: leaveGame")

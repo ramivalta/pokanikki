@@ -7,7 +7,8 @@ block append site_scripts
 	script(src="/javascripts/ranking.js")
 	script(src="/javascripts/vendor/jquery-ui-1.10.3.custom.min.js")
 	script(src="/javascripts/vendor/jquery.ui.touch-punch.min.js")
-
+	script(src="/javascripts/vendor/foundation/foundation.tooltip.js")
+	script(src="/javascripts/vendor/lodash.min.js")	
 
 block content
 	include navbar
@@ -15,7 +16,7 @@ block content
 	div(class="large-7 medium-7 small-12 columns")
 		h4.subheader Seuraranking - LSQ
 		
-		div#current.large-12.small-12.columns.panel(data-bind="css : { hidden : visiblePage() !== 'current' }")
+		div#current.large-12.medium-12.small-12.columns.panel.radius(data-bind="css : { hidden : visiblePage() !== 'current' }")
 
 			div(data-bind="click: toggleHistory")
 				a(data-bind="if: sliderVis() == false") Näytä vanhat...
@@ -23,61 +24,79 @@ block content
 
 		
 			div#sliderContainer.large-12.small-12.columns(style="padding-left: 0; padding-right: 0; padding-top: 8px; display: none")
-				div.left(style="color: LightGray; font-size: 36px; position: absolute; top: 10px; padding: 2px; letter-spacing: -5px; z-index: 1; left: 26px; font-weight: 700")
-					span(data-bind="text: oldRankingFirstDate", style="text-shadow: 0px 0px 2px #eee")
-				div.right(style="color: LightGray; font-size: 36px; position: absolute; top: 10px; padding: 2px; letter-spacing: -5px; z-index: 1; right: 26px; font-weight: 700")
-					span(data-bind="text: oldRankingLastDate", style="text-shadow: 0px 0px 2px #eee")
+				div.left(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; left: 26px; font-weight: 400")
+					span(data-bind="text: oldRankingFirstDate", style="text-shadow: 0px 1px 2px #fff")
+				div.right(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; right: 26px; font-weight: 400")
+					span(data-bind="text: oldRankingLastDate", style="text-shadow: 0px 1px 2px #fff")
 				div#sliderWrap.large-12.small-12.columns
 					div#slider.large-12.small-12.columns
 						div.large-12.small-12.columns(data-bind="value: historySlider, uislider: historySlider, event: { slide: historySliderMove }", name="historySlider", id="historySlider")
-				
+							//div#tooltip.has-tip(data-tooltip, data-bind="event: { mouseover : tooltipVisible }, attr: { title : moment(oldRankingDate()).format('DoMoYY, HH:MM')}")
+
+							div.ui-slider-handle.cursor_grab
+									//, style="position: absolute; top: -40px; text-align: center; width: 50px; border: 1px solid black; left: -20px; visibility: hidden")
 				p
 			div.large-12.small-12.columns
 				h5.subheader(style="text-align: center")
-					span(data-bind="text: oldRankingDate", style="text-transform: capitalize")
+					span(data-bind="text: moment(oldRankingDate()).format('dddd, DoMoYYYY')", style="text-transform: capitalize")
 			table(style="width: 100%", style="border-collapse: collapse")
 				thead
 					tr
+						th.scoreCellHeader #
+						th.scoreCellHeader &nbsp;
+						th.scoreCellHeader.left Pelaaja
+						th.scoreCellHeader Vastustajia
+						th.scoreCellHeader.show-for-landscape Pelejä
 				tbody(data-bind="foreach: oldRankingList")
-					tr
+					tr.scoreCell(data-bind="click: $root.loadProfile.bind($data, _id)", style="cursor: pointer")
 						// ko if: rank
 						td.scoreCell(data-bind="text: rank")
 						td.scoreCell
-						
 							div(data-bind="visible: hotness() === 'hot'")
 								i.fi-arrow-up
 							div(data-bind="visible: hotness() === 'cold'")
 								i.fi-arrow-down
 							div(data-bind="visible: hotness() === 'lukewarm' || hotness() === null")
-								div(style="background-color: black; border: 1px #000 solid; border-radius: 1000px; width: 6px; height: 6px; margin: auto")
-						td.scoreCell(data-bind="text: name", style="width: 100%; text-align: left")
+								div(style="background-color: black; border: 1px #000 solid; border-radius: 50%; width: 6px; height: 6px; margin: auto")
+						td.scoreCell(style="text-align: left; width: 100%")
+							div(data-bind="text: name")
+						
+						td.scoreCell(style="width: 1em")
+							div(data-bind="text: $root.gamesVsDifferentOpponents(_id)")						
+						
+						td.scoreCell(style="width: 1em").show-for-landscape
+							div(data-bind="text: $root.noOfGames(_id)")
+
 						// /ko
 
 
 
 			//div(style="background-color: #eee")
 				pre(data-bind="text: ko.toJSON(oldRankings, null, 2)")
+				pre(data-bind="text: ko.toJSON(matchList, null, 2)")				
 		
 		
 	
 	div(class="large-5 medium-5 small-12 columns")
-		h4.subheader Kuukauden pelit
-		div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
+		h4.subheader#matchList
+			span(data-bind="text: matchListLabel")
 		
+		
+		div.large-12.small-12.columns(data-bind="foreach: filteredMatches", style="padding: 2px")
+
 			// ko if: ($index() === 0)
-	
-			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
-			hr
-		
-			// /ko
-		
-			// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
 
 			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
 			hr
-		
+
 			// /ko
-		
+
+			// ko if: $index() > 0 && moment($parent.filteredMatches()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
+
+			div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+			hr
+
+			// /ko
 			div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible")
 					div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
 					div.large-4.small-4.columns.site_gameList(style="text-align: center")
@@ -85,7 +104,7 @@ block content
 						|&nbsp;-&nbsp;
 						span(data-bind="text: p2GamesWon")
 					div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
-		
+
 				div.large-12.small-12.columns.site_gameList.gameScores(style="display:none", data-bind="if: gameScores().length > 0")
 						hr
 
@@ -96,9 +115,8 @@ block content
 							span(data-bind="text: p2score")
 							span(data-bind="if: ($index() !== ($parent.gameScores().length - 1))")
 								|,&nbsp;
-
-						//hr
-
+						
+		
 	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
 		&nbsp;
 

@@ -37,7 +37,7 @@ block content
 
 					div
 						label(for='user-tf') Käyttäjätunnus
-						input#user-tf(pattern="shortuser", type='text', required, name='username', data-bind="value: user.username")
+						input#user-tf(pattern=".{3,}", type='text', required, name='username', data-bind="value: user.username")
 						div.error_custom(data-bind="visible: usernameTaken() == true")
 							|Käyttäjätunnus on jo varattu
 						small.error
@@ -45,12 +45,12 @@ block content
 
 					div
 						label(for='pass-tf') Salasana
-						input#pass-tf(type='password', pattern="shortpass", name='password', required, data-bind="value: user.password")
+						input#pass-tf(type='password', pattern=".{6,}", name='password', required, data-bind="value: user.password")
 						small.error Salasanan on oltava vähintään kuusi merkkiä pitkä
 
 					div
 						label(for="pass-2") Salasana uudestaan
-						input(id="passVerify", type="password", pattern="dummy", name="pass-2", required, data-bind="value: passwordVerify")
+						input(id="passVerify", type="password", pattern=".", name="pass-2", required, data-bind="value: passwordVerify")
 						input(type="hidden", data-bind="attr: { 'data-invalid' : user.password() !== passwordVerify() } ")
 						small.error
 						div.custom_small_error#passErr(data-bind="visible: doPasswordsDiffer") Salasanat eivät täsmää

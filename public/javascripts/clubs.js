@@ -13,9 +13,13 @@ function viewModel() {
 		clubShort	: ko.observable($('#sessclub').val()),
 		clubName	: ko.observable($('#sessclubshort').val()),		
 	});	
+
+	self.title = ko.observable("Seurat - Pokanikki");
 		
 	self.playerList = ko.observableArray();
 	self.matchList = ko.observableArray([]);
+	
+	self.eventList = ko.observableArray([]);
 	
 	self.showScores = ko.observable(false);
 	
@@ -48,6 +52,33 @@ function viewModel() {
 
 	getMatches(); */
 	
+	
+	self.getPastEvents = function() {
+		var data;
+		var id, name, match_id;
+		if(typeof jshare !== 'undefined') {
+			id = jshare.event._id;
+			name = jshare.event.name;
+			match_id = jshare.match_id;
+		}
+		sqEventProxy.getPastEvents(
+			{data:data},
+			function(data) {
+				ko.mapping.fromJS(data.events, {}, self.eventList);
+				/* if(typeof jshare !== 'undefined') {
+					self.getMatchesForEvent(id, name, match_id, true);
+					self.selectedEvent(id);
+				}
+				else {
+					self.getMatchesForEvent(data.events[0]._id, data.events[0].name, null, true);
+				} */
+			}
+		);
+	}
+	
+	self.getPastEvents();	
+	
+	
 	self.getClubData = function(id) {
 		self.getPlayersByClub(id);
 		self.getMatchesByClub(id);
@@ -67,6 +98,7 @@ function viewModel() {
 		{ data:data},
 		function(data) {
 			ko.mapping.fromJS(data.clubs, {}, self.clubList);
+			self.getClubData(data.clubs[0]._id);
 		});
 	}
 

@@ -4,9 +4,23 @@ block append site_styles
 	
 block append site_scripts
 	script(src="/javascripts/newgame.js")
+	script(src="/javascripts/vendor/foundation/foundation.reveal.js")
 
 block content
 	include navbar
+	
+	div.small.reveal-modal#newPlayerModalOne.panel(data-reveal)
+		h5.subheader Pelaajan nimi:
+		span(data-bind="if: playerOne && playerTwo")
+			input(data-bind="value: customPlayerOne().name, valueUpdate : 'afterkeydown', click: function() { return $element.setSelectionRange(0, 9999) }", type="text")
+		a.close-reveal-modal &#215;
+
+	div.small.reveal-modal#newPlayerModalTwo.panel(data-reveal)
+		h5.subheader Pelaajan nimi:
+		span(data-bind="if: playerOne && playerTwo")
+			input(data-bind="value: customPlayerTwo().name, valueUpdate : 'afterkeydown', click: function() { return $element.setSelectionRange(0, 9999) }", type="text")
+		a.close-reveal-modal &#215;
+	
 
 	div.row
 		div(class="large-12 small-12 columns", data-bind="ifnot: session.name")
@@ -17,28 +31,28 @@ block content
 		div(class="large-12 small-12 columns", data-bind="if: session.name")
 			div(class="large-12 small-12 columns", style="height: 6px")
 			h4.subheader(style="display: inline") Uusi peli
-			a(data-bind="click: function() { window.location.href='/application' }" ,style="display: inline").button.success.radius.right.small
+			a(href="/application" ,style="display: inline").button.success.radius.right.small
 				| Avaa tuomarointisovellus
 			
-			div(id="useapp", class="large-12 columns panel")
+			div(id="useapp", class="large-12 medium-12 small-12 columns panel radius")
 				p Avaa tuomarointisovellus painamalla ylhäällä olevaa nappia tai syötä jo pelatun pelin tulos alapuolella olevalla lomakkeella.
 			
-			div(id="byhand" class="large-12 small-12 columns panel")
+			div(id="byhand" class="large-12 medium-12 small-12 columns panel radius")
 				div.newGameForm
 					div(class="large-12 small-12 columns")
-						form
-							div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-right: 4px")
-								label(for="p1name", style="text-align: right; padding: 2px")
-									h5.subheader Pelaaja 1
-									select.right(id="p1name", class="small", data-bind="options: playerList, optionsText: 'name', value: playerOne", style="text-overflow: ellipsis")
-							
-							div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-left: 4px")
-								label(for="p2name", style="text-align: left")
-									h5.subheader Pelaaja 2
-									select.left(id="p2name", class="small", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo", style="text-overflow: ellipsis")
+
+						div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-right: 4px")
+							label(for="p1name", style="text-align: right; padding: 2px")
+								h5.subheader Pelaaja 1
+								select.right(id="p1name", class="small", data-bind="options: playerListOne, optionsText: 'name', value: playerOne", style="text-overflow: ellipsis")
+						
+						div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-left: 4px")
+							label(for="p2name", style="text-align: left; padding: 2px")
+								h5.subheader Pelaaja 2
+								select.left(id="p2name", class="small", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo", style="text-overflow: ellipsis")
 
 					div(class="large-12 small-12 columns")
-						form(style="margin-bottom: 0px")
+						span(style="margin-bottom: 0px")
 							label(for="eventSelect", style="color: #333; font-weight: 300; font-size: 13px") Tapahtuma johon peli kuuluu...
 							select(id="eventSelect", class="small", data-bind="options: eventList, optionsText: 'name', value: event", style="text-overflow: ellipsis")
 						div(data-bind="if: eventList().length > 0", style="text-align: center")
@@ -56,27 +70,27 @@ block content
 							span.left(style="color: #333; font-weight: 300") Pelataan paras...
 							p
 
-							form
-								input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
-								label(for="bestof3", style="color: #333; font-weight: 300") kolmesta
-						
-								input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
-								label(for="bestof5", style="color: #333; font-weight: 300") viidestä
-						
-						
-								span 
+
+							input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
+							label(for="bestof3", style="color: #333; font-weight: 300") kolmesta
+					
+							input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
+							label(for="bestof5", style="color: #333; font-weight: 300") viidestä
+					
+					
+							span 
 						//span(data-bind="text: selectedSwitch")
 					
 	
 					div#scoreEntryTable(class="large-12 small-12 columns", style="text-align: center")
-						table(data-bind="if: playerList().length > 0 && playerListTwo().length > 0", style="margin: auto; text-align: center; max-width: 640px; padding: 0px; border-spacing: 0 ")
+						table(data-bind="if: playerListOne().length > 0 && playerListTwo().length > 0", style="margin: auto; text-align: center; max-width: 640px; padding: 0px; border-spacing: 0 ")
 							thead
 								tr
 									//th(style="background: #333; border-top-left-radius: 2px" )
 									th.text-right(colspan=2, style="background: #333; max-width: 120px; border-top-left-radius: 2px")
-										span(data-bind="text: playerOne().name", style="color: #fff")
+										span(data-bind="text: playerOne().name()", style="color: #fff")
 									th.text-left(colspan=2, style="background: #333; max-width: 120px; border-top-right-radius: 2px")
-										span(data-bind="text: playerTwo().name", style="color: #fff")
+										span(data-bind="text: playerTwo().name()", style="color: #fff")
 									//th(style="background: #333; border-top-right-radius: 2px")
 							tfoot
 								tr
@@ -86,15 +100,22 @@ block content
 										span.error_custom(data-bind="visible: scoreEntryError() === 	true", style="text-align: center")
 												|Virhe tuloksissa
 											
-										div.left(data-bind="visible: saveSucceeded() === true")
-											span(style="color: green; font-weight: 300")
-												|Tallennus onnistui!
-										div.left(data-bind="visible: saveInProgress() === true")
-											img(src="/images/loader.gif");
 										
 										hr
-														
-										div.button.right.radius.small(data-bind="click: validateMatch") Tallenna		
+										
+										div.left(data-bind="visible: saveSucceeded() === true")
+											img.right(src="/images/loader.gif", data-bind="visible: saveInProgress() === true");
+										
+											h5.subheader(style="color: green")
+												|Tallennus onnistui!
+											
+										div.left(data-bind="visible: session.username() == 'testi'")
+												| Tällä käyttäjällä ei ole oikeuksia lisätä pelejä.
+										
+										div.button.right.radius.small.disabled(data-bind="visible: session.username() == 'testi'")
+												|Tallenna
+											div.button.right.radius.small(data-bind="visible: session.username() != 'testi', click: validateMatch")
+												|Tallenna
 								
 							tbody(data-bind="foreach: scoreEntry")
 								tr

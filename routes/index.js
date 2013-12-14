@@ -16,6 +16,7 @@ exports.clubs = function(req, res) {
 	req.session.lastPage = "/seurat";
 	res.render('clubs');
 }
+
 exports.autoLogin = function(db) {
 	return function(req, res) {
 
@@ -94,7 +95,7 @@ exports.matches = function(req, res) {
 }
 
 
-exports.home = function(req, res){
+exports.home = function(req, res) {
 	res.header("Cache-Control", "no-cache, no-store, must-revalidate");
 	res.header("Pragma", "no-cache");
 	res.header("Expires", 0);
@@ -103,13 +104,43 @@ exports.home = function(req, res){
 	res.render('home');
 }
 
-exports.events = function(req, res){
-	res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-	res.header("Pragma", "no-cache");
-	res.header("Expires", 0);
+exports.events = function(db) {
+	return function(req, res) {
+		res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+		res.header("Pragma", "no-cache");
+		res.header("Expires", 0);
 	
-	req.session.lastPage = "/events";
-	res.render('events');
+	
+	
+		req.session.lastPage = "/events";
+	
+		if(req.params.id !== undefined) {
+			var id;
+			var match_id = null;
+			var events = db.get('events');
+			id = req.params.id;
+			
+			events.findOne( { _id: id }, {}, function(e, event) {
+				if(event) {
+					res.jshare.event = event;
+					
+					if(req.params.match_id !== undefined) {
+						var match_id = req.params.match_id;
+						console.log(match_id);
+						res.jshare.match_id = match_id;
+					}
+					
+					
+					res.render('events');					
+				}
+				else {
+					res.render('events');
+					//res.send({ "message" : "not found"});
+				}
+			});
+		}
+		else res.render('events');
+	}
 }
 
 
@@ -300,20 +331,82 @@ exports.updateEvent = function(db) {
 	}
 }
 
-exports.profile = function(req, res) {
-	res.header("Cache-Control", "no-cache, no-store, must-revalidate");
-	res.header("Pragma", "no-cache");
-	res.header("Expires", 0);
-	
+exports.profile = function(db) {
+	return function(req, res) {
+		res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+		res.header("Pragma", "no-cache");
+		res.header("Expires", 0);
+		
+		req.session.lastPage = "/profile";
+		
 
-	if (req.session.user == undefined) {
-		console.log("herpderp");
-		res.redirect('/home');
-		return;
+		if(req.params.id !== undefined || req.session.user !== undefined) {
+			var id;
+			var users = db.get('users');
+			
+			if(req.params.id == undefined) {
+				id = req.session.user._id;
+			}
+			else {
+				id = req.params.id;
+			}
+			
+			console.log("params id: " + id);
+			
+			
+			users.findOne( { _id: id }, { fields: { password: 0 }}, function(e, prof) {
+				if(prof) {
+					var club_id = prof.club;
+				
+					var clubs = db.get("clubs");
+					clubs.findOne({_id: club_id}, {}, function(e, doc) {
+						if (doc) {
+							prof.clubName = doc.name;
+							prof.clubShort = doc.nameShort;
+							
+							//req.session.profile = prof.name;
+							req.session.pid = id;
+							
+							res.jshare.profile = prof;
+							
+							//console.log(req.session.profile);
+							
+							res.render('profile');
+						}
+
+					});
+				}
+			});			
+		}
+		else {
+			req.session.pid = undefined;
+			res.render('profile');			
+		}
 	}
-	req.session.lastPage = "/profile";
-	res.render('profile');
 }
+
+/* exports.getProfile = function(db) {
+	return function(req, res) {
+		var id = req.body.id;
+		console.log(id);
+		var users = db.get('users');
+		
+		users.findOne( { _id: id }, { fields: { password: 0 }}, function(e, prof) {
+			if(prof) {
+				var club_id = prof.club;
+				
+				var clubs = db.get("clubs");
+				clubs.findOne({_id: club_id}, {}, function(e, doc) {
+					if (doc) {
+						prof.clubName = doc.name;
+						prof.clubShort = doc.nameShort;
+					}
+					res.send(prof);
+				});
+			}
+		});
+	}
+} */
 
 exports.admin = function(req, res) {
 	res.header("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -383,7 +476,7 @@ exports.monthMatches = function(db) {
 		
 		var col = db.get('matches');
 		
-		col.find({ endTime : { $exists : true }, startTime : { $gte: start, $lte: end }}, { sort: { startTime : -1 }, fields : { endTime : 0 }}, function(err, docs) {
+		col.find({ endTime : { $exists : true }, startTime : { $gte: start, $lte: end }}, { sort: { startTime : -1 }}, function(err, docs) {
 			if (err) console.log("error ", + e);
 			else if (docs) {
 				res.send( {"scores" : docs });
@@ -577,6 +670,11 @@ exports.saveRankingList = function(db) {
 		var list = {};
 		
 		list.ranking = req.body.rankings;
+
+		for(var i = 0; i < list.ranking.length; i++) {
+			list.ranking[i].rank = parseInt(list.ranking[i].rank);
+		}
+		
 		
 		var date = new moment().toJSON();
 		

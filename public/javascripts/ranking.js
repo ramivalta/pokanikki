@@ -1,6 +1,8 @@
 function viewModel() {
 	var self = this;
 	
+	self.title = ko.observable("Seuraranking - Laajavuori Squash - Pokanikki");
+	
 	self.matchList = ko.observableArray([]);
 	self.sessionuser = ko.observable();
 	self.activePage = ko.observable("ranking");
@@ -20,10 +22,36 @@ function viewModel() {
 	
 	self.historySliderMove = function() {
 		var v = self.historySlider() - 1;
-		var l = self.oldRankings().length;
 		ko.mapping.fromJS(self.oldRankings()[v].ranking, {}, self.oldRankingList);
-		self.oldRankingDate(moment(self.oldRankings()[v].date()).format('dddd, DoMoYYYY'));
+		self.oldRankingDate(self.oldRankings()[v].date());
 	}
+	
+
+	
+	self.filteredMatches = ko.observableArray();
+
+	var tempdate;	
+	self.filterMatches = ko.computed(function() {
+		var f = moment(self.oldRankingDate()).format('MM');
+		//var matches = new Array();
+
+		if(f !== tempdate) {
+			var filt = ko.utils.arrayFilter(self.matchList(), function(item) {
+				/* console.log("item date: " + moment(item.endTime()).format('MM'));
+				console.log(self.oldRankingDate());
+				console.log("selected date: " + f); */
+				tempdate = f;
+				return moment(item.endTime()).format('MM') == f;
+			});
+
+			//ko.mapping.fromJS(matches, {}, self.filteredMatches);
+			//self.filteredMatches.valueHasMutated();
+			self.filteredMatches([]);
+			self.filteredMatches.push.apply(self.filteredMatches, filt);
+
+		}
+
+	}).extend({ throttle: 250 });
 	
 
 	self.session = ({
@@ -36,8 +64,49 @@ function viewModel() {
 		clubShort	: ko.observable($('#sessclub').val()),
 		clubName	: ko.observable($('#sessclubshort').val()),		
 	});	
-			
-	self.rankingDate = ko.observable();
+
+	self.matchListLabel = ko.computed(function() {
+		var label = moment(self.oldRankingDate()).format('MMMM') + "n" + " " + "pelit";
+		return label;
+	});
+	
+	self.tooltipVisible = function() {
+		$('#tooltip').css('visibility', 'visible');
+	}
+
+	self.noOfGames = function(player_id) {
+		var count = 0;
+		for(var i = 0; i < self.filteredMatches().length; i++) {
+			if(self.matchList()[i].playerOneId() == player_id() || self.matchList()[i].playerTwoId() == player_id()) {
+				count++;
+			}
+		}
+		
+		return count;
+	}
+	
+	self.gamesVsDifferentOpponents = function(player_id) {
+		var old = [];
+		for(var i = 0; i < self.filteredMatches().length; i++) {
+			if(self.filteredMatches()[i].playerOneId() == player_id()) {
+				if(_.contains(old, self.filteredMatches()[i].playerTwoId()) == false) 
+				{
+					old.push(self.filteredMatches()[i].playerTwoId());
+				}
+			}
+			else if (self.filteredMatches()[i].playerTwoId() == player_id()) {
+				if(_.contains(old, self.filteredMatches()[i].playerOneId()) == false) 
+				{
+					old.push(self.filteredMatches()[i].playerOneId());
+				}
+			}
+		}
+		return old.length;
+	}	
+	
+	self.loadProfile = function(id) {
+		window.location.href=('/profile/' + id());
+	}
 	
 	self.toggleHistory = function() {
 	//	var el = event.currentTarget;
@@ -77,22 +146,6 @@ function viewModel() {
 				}
 			});
 		}
-		
-/*s.transition( {
-				perspective: '1000',
-				height: '0px',
-				opacity: '0',
-				duration: '0',
-				complete: function() {
-					s.css('display', 'block');
-				}
-			}).transition( {
-				perspective: '1000',
-				duration: '250',
-				opacity: '1',
-				height: 'auto',
-			});
-					*/
 	}
 	
 	
@@ -134,10 +187,8 @@ function viewModel() {
 				
 				ko.mapping.fromJS(data.rankings[l-1].ranking, {}, self.oldRankingList);
 				
-				self.oldRankingDate(moment(data.rankings[0].date).format('dddd, DoMoYYYY'));				
-				
-				
-				
+				self.oldRankingDate(data.rankings[l-1].date);
+				//.format('dddd, DoMoYYYY'));
 			}
 		);
 	}
@@ -147,7 +198,7 @@ function viewModel() {
 	
 	function getMatches() {
 		var data;
-		sqEventProxy.getMonthMatches(
+		sqEventProxy.getMatchList(
 			{ data: data },
 			function(data) {
 				ko.mapping.fromJS(data.scores, {}, self.matchList);

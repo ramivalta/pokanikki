@@ -14,6 +14,8 @@ function viewModel() {
 		clubName	: ko.observable($('#sessclubshort').val()),		
 		
 	});	
+	
+	self.title = ko.observable("Pokanikki Admin Tools");	
 		
 	
 //	self.playerList = ko.observable();

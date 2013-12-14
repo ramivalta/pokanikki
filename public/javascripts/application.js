@@ -16,6 +16,8 @@ function viewModel () {
 		clubName	: ko.observable($('#sessclubshort').val()),		
 	});	
 		
+		
+	self.title = ko.observable("Tuomarointi - Pokanikki");	
 	
 	self.playerOne = ko.observable();
 	self.playerTwo = ko.observable();
@@ -25,8 +27,8 @@ function viewModel () {
 	
 	self.gameScores = ko.observableArray([]);
 	
-	self.playerList = ko.observableArray();
-	self.playerListTwo = ko.observableArray();
+	self.playerListOne = ko.observableArray([]);
+	self.playerListTwo = ko.observableArray([]);
 	
 	self.scoreBoard = ko.observableArray([]);
 	
@@ -44,6 +46,9 @@ function viewModel () {
 	self.user.username = ko.observable();
 	self.user.password = ko.observable();
 	self.user.rememberMe = ko.observable(true);
+	
+	self.playerOneGamesWon = ko.observable();
+	self.playerTwoGamesWon = ko.observable();	
 	
 	
 	self.login = function() {
@@ -109,10 +114,19 @@ function viewModel () {
 			}
 		);
 	}
-	
 
+	self.customPlayerOne = ko.observable({
+		_id : ko.observable("custom1"),
+		name : ko.observable("Uusi pelaaja..."),
+	});
 	
+	self.customPlayerTwo = ko.observable({
+		_id : ko.observable("custom2"),
+		name : ko.observable("Uusi pelaaja..."),
+	});	
+
 	self.getPlayers = function() {
+	
 		var data;
 		sqEventProxy.getUserlist(
 			{ data:data },
@@ -123,28 +137,73 @@ function viewModel () {
 					if (key1 < key2) return -1;
 					if (key1 > key2) return 1;
 					return 0;
-				});			
-				ko.mapping.fromJS(data, {}, self.playerList);
+				});
+				
+				ko.mapping.fromJS(data, {}, self.playerListTwo);				
+				ko.mapping.fromJS(data, {}, self.playerListOne);
+
+				self.playerListTwo.push(self.customPlayerTwo());				
+				self.playerListOne.push(self.customPlayerOne());
 			}
 		);
 	};
-
-	
 	
 	self.setupPlayers = ko.computed(function() {
-		if (self.playerOne() === undefined || self.playerTwo() === undefined) {
-			return;
+		
+		if (self.playerOne() === undefined || self.playerTwo() === undefined || typeof self.customPlayerOne == "undefined" || typeof self.customPlayerTwo == "undefined" || typeof self.playerOne == "undefined" || typeof self.playerTwo == "undefined" || self.playerListOne().length == 0 || self.playerListTwo().length == 0) {
 		}
 		else {
-			self.playerListTwo(self.playerList().slice(0)); 
-			var sel_id = self.playerOne()._id();
-			//console.log(sel_id);
-			
-			self.playerListTwo.remove(function(i) { return i._id() === sel_id });
 		
+			//self.playerListTwo(self.playerListOne().slice(0)); 
+			var sel_id = self.playerOne()._id();
+			
+
+			self.playerListTwo.remove(function(i) { return i._id() === sel_id });
+			
+			if(self.playerOne()._id() == "custom1") {
+				$("#newPlayerPopupOne").popup( "open", { transition: "pop", shadow: true, positionTo: "#select-1" });
+			}
+			
+			if(self.playerTwo()._id() == "custom2") {
+				$("#newPlayerPopupTwo").popup( "open", { transition: "pop", shadow: true, positionTo:"#select-2" });
+			}
+			$('#select-1').selectmenu("refresh");
+			$('#select-2').selectmenu("refresh");
 		}
 		
-	}).extend({throttle: 350 });
+	}).extend({throttle: 50 });
+	
+	self.updatePlayerListOne = function() {
+		//self.playerList.pop();
+		self.customPlayerOne()._id("0");
+		//self.playerList.push(self.customPlayer());
+		self.playerOne(self.customPlayerOne());
+		$("#newPlayerPopupOne").popup( "close", { transition: "pop", reverse: "true" });
+	}
+	
+	self.updatePlayerListTwo = function() {
+		//self.playerList.pop();
+		self.customPlayerTwo()._id("1");
+		//self.playerList.push(self.customPlayer());
+		self.playerTwo(self.customPlayerTwo());
+		$("#newPlayerPopupTwo").popup( "close", { transition: "pop", reverse: "true" });
+	}
+	
+	self.closeNewPlayerPopupOne = function() {
+		$("#newPlayerPopupOne").popup( "close", { transition: "pop", reverse: "true" });
+		self.playerOne(self.playerListOne()[0]);
+		self.customPlayerOne()._id("custom1");
+		self.customPlayerOne().name("Uusi pelaaja...");
+		
+		
+	}
+	
+	self.closeNewPlayerPopupTwo = function() {
+		$("#newPlayerPopupTwo").popup( "close", { transition: "pop", reverse: "true" });
+		self.playerTwo(self.playerListTwo()[0]);
+		self.customPlayerTwo()._id("custom2");
+		self.customPlayerTwo().name("Uusi pelaaja...");
+	}	
 	
 	self.updateRankinglist = function(win, lose) {
 	
@@ -185,6 +244,12 @@ function viewModel () {
 	
 		var startTime = ko.toJS(self.startTime());
 		var event_id = ko.toJS(self.event_id());
+
+
+		if(self.session.username() == 'testi') {
+			return;
+		}
+
 		
 		if (self.matchSet() === "p1") {
 			self.updateRankinglist(self.playerOne(), self.playerTwo());
@@ -197,6 +262,8 @@ function viewModel () {
 		
 		var endTime = ko.toJS(self.endTime());
 		
+
+	
 		sqEventProxy.updateGameScores(
 			{
 				scores 			: scores,
@@ -225,6 +292,7 @@ function viewModel () {
 	
 	
 	self.startMatch = function() {
+
 		var id;
 		if (self.matchId() !== 'undefined') {
 			self.scoreBoard().id = self.matchId();
@@ -245,6 +313,12 @@ function viewModel () {
 		var scores = ko.toJS(self.scoreBoard());
 		
 		var event_id = ko.toJS(self.event()._id);
+		
+		
+		if(self.session.username() == 'testi') {
+			$.mobile.changePage('#app', { transition: "flip"});
+			return;
+		}
 
 //		console.log(ko.toJSON(self.scoreBoard), null, 2);
 //		console.log(self.scoreBoard());
@@ -739,24 +813,36 @@ function viewModel () {
 	});
 	
 	self.matchBall = ko.computed(function() {
-		var p1 = self.playerOneScore();
-		var p2 = self.playerTwoScore();
+
+			var p1 = self.playerOneScore();
+			var p2 = self.playerTwoScore();
 		
-		if ((self.gameBall() === true) && (p1 === 10 && p2 < 10) || (self.gameBall() === true) && (p2 === 10 && p1 < 10)) {
-			var x = Math.abs(p1 - p2);
-			if (x >= 1) {
-				return true;
+			var bestof = parseInt(self.bestOf());
+		
+			if (bestof === 3) toWin = 2;
+			else toWin = 3;
+		
+			if(parseInt(self.playerOneGamesWon()) + 1 !== toWin && parseInt(self.playerTwoGamesWon()) + 1 !== toWin) {
+				//console.log(self.playerOneGamesWon() + " " + toWin);
+				//console.log(self.playerTwoGamesWon() + " " + toWin);				
+				return false;
+			}
+		
+			if ((self.gameBall() === true) && (p1 === 10 && p2 < 10) || (self.gameBall() === true) && (p2 === 10 && p1 < 10)) {
+				var x = Math.abs(p1 - p2);
+				if (x >= 1) {
+					return true;
+				}
+				else return false;
+			}
+			else if (p1 >= 10 && p2 >= 10 && self.gameBall() === true) {
+				var y = Math.abs(p1 - p2);
+				if (y >= 1) {
+					return true;
+				}
+				else return false;
 			}
 			else return false;
-		}
-		else if (p1 >= 10 && p2 >= 10 && self.gameBall() === true) {
-			var y = Math.abs(p1 - p2);
-			if (y >= 1) {
-				return true;
-			}
-			else return false;
-		}
-		else return false;
 	});
 	
 	self.gameSet = ko.computed(function() {
@@ -895,11 +981,9 @@ function viewModel () {
 						
 				if (y < 0) {
 					self.myScroll['app'].scrollTo(0, self.myScroll['app'].maxScrollY, 0);
-					}
 				}
-			
+			}
 		}
-		
 		
 		var tuom = document.getElementById("tuom");
 		
@@ -955,8 +1039,8 @@ function viewModel () {
 								
 						if (y < 0) {
 							self.myScroll['app'].scrollTo(0, self.myScroll['app'].maxScrollY, 0);
-							}
 						}
+					}
 				}
 			});
 			

@@ -11,6 +11,8 @@ function viewModel() {
 	self.user.rememberMe = ko.observable(true);
 	
 	self.session = ko.observable();
+	
+	self.title = ko.observable("Sisäänkirjautuminen - Pokanikki");	
 
 	self.session = ({
 		name	: ko.observable($('#sessname').val()),

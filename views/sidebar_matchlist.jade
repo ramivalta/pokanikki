@@ -13,7 +13,7 @@ div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2p
 	hr
 
 	// /ko
-	div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible")
+	div.large-12.small-12.columns.gameListHeader(data-bind="click: $root.toggleVisible")
 			div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
 			div.large-4.small-4.columns.site_gameList(style="text-align: center")
 				span(data-bind="text: p1GamesWon")
@@ -31,3 +31,4 @@ div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2p
 					span(data-bind="text: p2score")
 					span(data-bind="if: ($index() !== ($parent.gameScores().length - 1))")
 						|,&nbsp;
+						

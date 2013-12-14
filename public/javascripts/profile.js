@@ -12,8 +12,8 @@ function viewModel() {
 		username: ko.observable($('#sessuser').val()),
 		clubShort	: ko.observable($('#sessclub').val()),
 		clubName	: ko.observable($('#sessclubshort').val()),				
-	});	
-		
+	});
+	
 	self.playerList = ko.observableArray();
 	self.matchList = ko.observableArray([]);
 	
@@ -22,8 +22,6 @@ function viewModel() {
 	self.activePage = ko.observable("profile");
 	
 	self.oldPassFail = ko.observable(false);
-	
-	self.playerMatches = ko.observableArray();
 
 	self.match = ko.observable();
 	
@@ -33,13 +31,50 @@ function viewModel() {
 	self.saveInProgress = ko.observable(false);
 	self.saveSucceeded = ko.observable(false);
 	
+	self.title = ko.observable("Profiili");
+	self.profiili = ko.observableArray();
+	
+	self.getMatchesByPlayer = function(id) {
+		var player_id = id;
+		sqEventProxy.getMatchesByPlayer(
+			{ player_id : player_id },
+			function(data) {
+				ko.mapping.fromJS(data.scores, {}, self.matchList);
+			}
+		);
+	}	
+	
+	self.getProfile = function () {
+		if (typeof jshare !== 'undefined') {
+			ko.mapping.fromJS(jshare.profile, {}, self.profiili);
+			self.getMatchesByPlayer(jshare.profile._id);
+			var title = "Profiili: " + jshare.profile.name + " - Pokanikki";
+			self.title(title);
+		
+		}
+		else if (typeof jshare == 'undefined' && self.session._id() == undefined) {
+			window.location.href = "/seurat";
+		}
+	}
+	
+	self.getProfile();
+	
+/*	var p_name = self.profiili().name;
+	
+	var title = "Profiili: " + p_name + " - Pokanikki"; */
+
+
 	self.visiblePage = ko.observable('profiili');
+	
+	self.profilePic = ko.observable();
+	
 	
 	self.showMatch = function(id) {
 		for(var i = 0; i < self.matchList().length; i++) {
 			if (id() == self.matchList()[i]._id()) {
 				self.match(self.matchList()[i]);
 				self.getStats();
+				$('html, body').scrollTo('#scores', 250);				
 				
 				//self.playerListTwo(self.playerList().slice(0)); 				
 				
@@ -126,6 +161,37 @@ function viewModel() {
 			console.log("väärä pass");
 		} */
 	}
+	
+
+	self.id = ko.observable();
+	
+	/* self.getProfile = function() {
+		var id;
+		if (self.id() !== 'undefined') {
+			id = ko.toJS(self.id);
+		}
+		else if (self.session._id() !== undefined) {
+			id = self.session._id();
+			//console.log(self.session._id());
+		}
+		else {
+			window.location.href="/seurat";
+			return;
+		}
+		
+		sqEventProxy.getProfile(
+			{id:id},
+			function(data) {
+				self.profiili(data);
+				self.getMatchesByPlayer(data._id);
+				var title = "Profiili: " + data.name + " - Pokanikki";
+				self.title(title);
+			}
+		);
+
+	} */
+	
+	//self.getProfile(self.id);
 
 
 	function getMatches() {
@@ -133,7 +199,7 @@ function viewModel() {
 		sqEventProxy.getMatchList(
 			{ data: data },
 			function(data) {
-				var x = data.scores;
+				//console.log(data);
 				ko.mapping.fromJS(data.scores, {}, self.matchList);
 			}
 		);
@@ -142,15 +208,18 @@ function viewModel() {
 	//getMatches();
 
 
-	self.getMatchesByPlayer = function() {
-		if (!self.session.name) return
-		var player_id = self.session._id();
+	self.getMatchesByPlayer = function(id) {
+		//console.log(id);
+		//if (!self.session.name) return
+		//var player_id = self.session._id();
+		var player_id = id;
 		
 		//console.log("sending player_id :" + player_id);
 
 		sqEventProxy.getMatchesByPlayer(
 			{ player_id : player_id },
 			function(data) {
+				//console.log(data);
 				//console.log(data.message);
 				ko.mapping.fromJS(data.scores, {}, self.matchList);
 			}
@@ -158,7 +227,7 @@ function viewModel() {
 	}
 	
 	
-	self.getMatchesByPlayer();
+	//self.getMatchesByPlayer();
 	
 
 	self.stats = ko.observable({
@@ -223,7 +292,7 @@ function viewModel() {
 						self.stats().p1matchBalls(self.stats().p1matchBalls() + 1);
 				}					
 
-				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' && parseInt(self.match().scores()[i].playerTwoScore()) > parseInt(self.match().scores()[i].playerOneScore()) ) {
+				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' &&  parseInt(self.match().scores()[i].playerTwoScore()) > parseInt(self.match().scores()[i].playerOneScore()) ) {
 					self.stats().p2matchBalls(self.stats().p2matchBalls() + 1);
 				}
 			}
@@ -318,6 +387,7 @@ $(document).ready(function() {
 	
 	window.vm = new viewModel();
 	ko.applyBindings(vm, document.getElementById("main"));
+	//vm.getProfile();
     $(document).foundation();
     
 //$(document).foundation({dropdown: {is_hover: false}});    

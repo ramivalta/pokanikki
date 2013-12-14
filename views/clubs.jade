@@ -10,7 +10,7 @@ block append site_scripts
 block content
 	include navbar
 
-	div(class="large-4 medium-4 small-12 columns")
+	div.large-2.medium-2.small-12.columns
 		// dl.sub-nav(class="large-12 small-12 columns", style="padding-top: 16px")
 			dd.active
 				a(href="#") Profiili
@@ -22,24 +22,26 @@ block content
 			h3.subheader Seura
 			div(data-bind="foreach: clubList")
 				h5.subheader
-					a(data-bind="text: name, click: $root.getClubData.bind($data, _id)")
+					span(data-bind="text: name")
+					//, click: $root.getClubData.bind($data, _id)")
 					//span(data-bind="text: _id")
 					br
-			h5.subheader
-				|...
-				br
-				|...
-				br
-				|...
-				br
 
-	div(class="large-4 medium-4 small-12 columns")
+	div.large-3.medium-3.small-12.columns
 		h3.subheader Pelaajat
-		
 		div(data-bind="if: playerList().length > 0")
 			h5.subheader
 				ul.no-bullet(data-bind="foreach: playerList")
-					li(data-bind="text: name")
+					li
+						a(data-bind="text: name, click: function() { window.location.href='/profile/' + _id() }")
+						
+	div.large-3.medium-3.small-12.columns						
+		h3.subheader Tapahtumat
+		div(data-bind="if: eventList().length > 0")
+			h5.subheader
+				ul.no-bullet(data-bind="foreach: eventList")
+					li	
+						a(data-bind="text: name, click: function() { window.location.href='/events/' + _id() }")
 		
 		
 			//h5.subheader Aktiivisia pelaajia: 
@@ -47,18 +49,11 @@ block content
 			//h5.subheader Tallennettujen otteluiden määrä: 
 				span(data-bind="text: matchList().length")
 		
-		div.large-12.small-12.columns(data-bind="foreach: playerList", style="padding: 2px")
-
-			//div(data-bind="text: name")
-	div(class="large-4 medium-4 small-12 columns")
+	div.large-4.medium-4.small-12.columns
 		h3.subheader Pelit
-		
-		div(data-bind="if: matchList().length > 0")
-			include sidebar_matchlist.jade		
-
-	//div.row
-		div.large-12
-			pre(data-bind="text: ko.toJSON(matchList, null, 2)")
+		include sidebar_matchlist.jade
+	
+	
 					
 	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
 		&nbsp;

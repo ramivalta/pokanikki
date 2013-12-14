@@ -2,6 +2,11 @@ h1, h2, h3, h4, h5 {
 	font-family: helvetica, arial, sans-serif;	
 }
 
+@font-face {
+	font-family: 'League Gothic Regular';
+	src: url('/stylesheets/LeagueGothic-Regular.otf');
+}
+
 .hidden {
 	display: none;
 }
@@ -9,6 +14,11 @@ h1, h2, h3, h4, h5 {
 .visible {
 	display: block;
 }
+
+#matchList:first-letter {
+	text-transform: capitalize;
+}
+
 
 .main_header {
 	background: gray;
@@ -39,12 +49,12 @@ h1, h2, h3, h4, h5 {
 
 #club_title
 {
-	position: absolute;
+	//position: absolute;
 	display: inline;
 	text-shadow: 0px 1px 1px #000, 0px -1px 0px #000;
-	//color: #fff;
+	color: #fff;
 	opacity: 0.25;
-	right: 2px;
+	//right: 2px;
 	font-weight: 700;
 }
 
@@ -207,6 +217,11 @@ body {
 	
 }
 
+.scoreCellHeader {
+	font-size: 13px;
+	font-weight: 700;
+}
+
 .site_scoreCell {
 	background: #333;
 	color: #fff;
@@ -297,15 +312,18 @@ body {
 	padding-right: 0px;
 }
 
-
-
 hr {
 	padding: 0px;
 	margin: 4px;
 }
 
 .gameListHeader {
-	cursor: pointer;	
+	cursor: pointer;
+	margin-bottom: 1px;
+}
+
+.cursor_grab {
+	cursor: url(https://mail.google.com/mail/images/2/openhand.cur), default !important;
 }
 
 .gameListHeader > div:hover {
@@ -341,7 +359,11 @@ hr {
 	border-top-width: 1px;
 	border-top-color: #ccc;
 	border-top-style: solid;
-//	width: 20%;
+
+}
+
+.scoreCell:hover {
+	text-decoration: underline;
 }
 
 .scoreCellGrey {
@@ -624,8 +646,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc63b6db', e
 }
 	
 .highlight {
-	background-color: pink !important;
+	//background-color: pink !important;
+	background: rgba(250, 175, 190, 0.35) !important;
 	border-radius: 4px;
+}
+
+.orange_highlight {
+	background-color: #FFBC93 !important;
+	border-radius: 4px;
+
+}
+
+.orange_highlight > div {
+	font-weight: 700 !important;	
 }
 
 .highlight > div {
@@ -652,4 +685,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc63b6db', e
 	height: 40px;
 	top: -24px !important;
 	//padding-top: 12px !important;
+}
+
+#gameTable tr th, #gameTable tr td {
+	padding: 2px !important;
+	
 }

@@ -101,9 +101,27 @@ body {
 	max-width: 80px !important;
 } */
 
-* .ui-controlgroup-horizontal.ui-mini .ui-btn-inner {
-	max-width: 5.5em !important;
+#playerSel > div > div > .ui-btn {
+	//max-width: 5.5em !important;
+	max-width: 125px !important;
 }
+
+#eventSel > div > div > .ui-btn {
+	width: 250px !important;
+	max-width: 250px !important;
+}
+
+#bestOfSel > div > div > .ui-btn {
+	width: 122px !important;
+}
+
+/* * .ui-select .ui-btn-inner {
+	width: 250px !important;
+} */
+
+/* .ui-select > .ui-btn  {
+	width: 250px !important;
+} */
 
 .topAddedToHome {
 	position: absolute;

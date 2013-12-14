@@ -1,3 +1,7 @@
+block append title 
+	title(data-bind="text: title")
+
+
 div(class="large-12 columns main_header")
 	// ko if: window.navigator.standalone === true
 	div(class="large-12 small-12 columns launchedFromHomeIos")
@@ -5,7 +9,7 @@ div(class="large-12 columns main_header")
 
 	div(class="large-12 small-12 columns header_top", data-bind="css: { header_top_ios : window.navigator.standalone === true } ")
 		span.left
-			|Pokanikki 0.3
+			|Pokanikki 1.0 &copy; Rami Valta
 
 
 		include hidden_forms.jade
@@ -19,16 +23,20 @@ div(class="large-12 columns main_header")
 		- }
 
 	div(class="large-12 small-12 columns left", style="white-space:nowrap; overflow: hidden")
-		h1(style="display: inline")
+		h2(style="display: inline")
 			a(href="/home")
-				span#main_title.left(style="text-overflow: ellipsis !important")
-					i(class="fi-home") &nbsp;
-					| POKANIKKI
+				img.left.show-for-medium-up(src="/images/logo_s.png", style="height: 52px; position: absolute; z-index: 100")
+				img.left.show-for-small-only(src="/images/logo_vs.png", style="height: 37px; position: absolute; z-index: 100")
+				span.left.show-for-medium-up(style="text-overflow: ellipsis !important; margin-left: 38px")
+					span#main_title POKANIKKI
+				span.left.show-for-small-only(style="text-overflow: ellipsis !important; margin-left: 24px")				
+					//i(class="fi-home") &nbsp;
+					span#main_title POKANIKKI
 		
-			span#club_title.right(data-bind="if: session.name")
+			span#club_title.left(data-bind="if: session.name")
 				span
-					a(href="/seurat", data-bind="text: session.clubShort", style="text-transform: uppercase")
-					//|LSQ
+					|&bull;
+					a(href="/seurat", data-bind="text: session.clubShort", style="text-transform: lowercase")
 
 div(class="large-12 small-12 columns", style="padding-left: 0; padding-right: 0; margin-bottom: 0px; box-shadow: 0px 1px 4px #000")
 	nav(class="top-bar", style="max-width: 1920px", data-topbar)
@@ -40,21 +48,16 @@ div(class="large-12 small-12 columns", style="padding-left: 0; padding-right: 0;
 						li
 							a(href="/seurat")
 								span Seurat
-								
 				li(class="toggle-topbar menu-icon")
 					a(href="#")
 						span Menu
 			section.top-bar-section
 				ul.left
 					li.divider
-
-		
 				ul.right(data-bind="ifnot: session.name")
 					li
 						a(href="/autoLogin") Kirjaudu sisään
-					
 		- }
-		
 		
 		- { if (session.user != null)		
 			ul.title-area
@@ -62,7 +65,7 @@ div(class="large-12 small-12 columns", style="padding-left: 0; padding-right: 0;
 					h1
 						li.divider
 						li(data-bind="css : { custom_active : activePage() === 'profile' }")
-							a(href="/profile")
+							a(href="/profile/#{session.user._id}")
 								span #{ session.user.name }
 								i(class="fi-torso", style="font-size: 18px;  float: left; color: #e3e3e3; padding-right: 3px; margin: 0px")
 
