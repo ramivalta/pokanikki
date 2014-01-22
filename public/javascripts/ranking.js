@@ -9,24 +9,103 @@ function viewModel() {
 	self.rankingList = ko.observableArray();
 	
 	self.visiblePage = ko.observable("current");
-	self.oldRankings = ko.observableArray();
 	self.session = ko.observable();
 	self.historySlider = ko.observable(1);
+
+
+	self.oldRankings = ko.observableArray();
+	self.altRankings = ko.observableArray();	
 	
 	self.oldRankingList = ko.observableArray();
 	self.oldRankingDate = ko.observable();
 	self.oldRankingFirstDate = ko.observable();
 	self.oldRankingLastDate = ko.observable();
 	
-	self.sliderVis = ko.observable(false);
+	self.altRankingList = ko.observableArray();
+	self.altRankingDate = ko.observable();
+	self.altRankingFirstDate = ko.observable();
+	self.altRankingLastDate = ko.observable();	
 	
-	self.historySliderMove = function() {
-		var v = self.historySlider() - 1;
-		ko.mapping.fromJS(self.oldRankings()[v].ranking, {}, self.oldRankingList);
-		self.oldRankingDate(self.oldRankings()[v].date());
-	}
+	self.visibleRanking = ko.observable("new");
+	self.doneLoading = ko.observable(false);
+	
+	self.ios = ko.observable(navigator.userAgent.match(/(iPhone|iPod)/g) ? true : false);
 	
 
+	self.blockMouseOver = ko.observable(false);
+	
+	self.sliderVis = ko.observable(true);
+	
+	self.sliderHelper = ko.observable();
+	self.sliderHasMoved = ko.observable();	
+	
+	self.showLoadingAnim = ko.observable(false);
+	
+	self.historySliderMove = function() {
+		$('#ranking').css({ opacity: 0.5 });	
+		var v = self.historySlider() - 1;
+		
+		if (self.historySlider() < 3) {
+			self.sliderHelper(2);
+		}
+		else self.sliderHelper(self.historySlider());
+		
+		//ko.mapping.fromJS(self.oldRankings()[v].ranking, {}, self.oldRankingList);
+
+		self.oldRankingDate(self.oldRankings()[v].date());
+		self.sliderHasMoved(true);
+	}
+	
+	self.showTooltip = function() {
+		//$('#tooltip').css('display', 'block');		
+	}
+	
+	self.hideTooltip = function() {
+		//$('#tooltip').css('display', 'none');	
+	}
+
+	self.sliderHasMoved = ko.observable();
+	
+	self.loadRanking = ko.computed(function() {
+		if (self.oldRankings().length > 0 && self.sliderHasMoved() == true && self.doneLoading() == true ) {
+			var v;
+			v = self.historySlider() -1;
+			ko.mapping.fromJS(self.oldRankings()[v].ranking, {}, self.oldRankingList);
+			self.oldRankingDate(self.oldRankings()[v].date());
+			$('#ranking').css({ opacity: 1 });
+			self.sliderHasMoved(false);
+		}
+	}).extend({ throttle: 500 });
+	
+	self.highlightId = ko.observable("00");	
+
+	
+	self.hoverIn = function(data, event, id) {
+		/*console.log(event);
+		console.log(typeof id); */
+		var t;
+		if(event) {
+			if(typeof id == "function") {
+				t = event.target;
+				if($(t).hasClass("rankingCell") == true)
+					self.highlightId(id());					
+			}
+		}
+	}
+	
+	self.decSlider = function() {
+		var e = self.historySlider() - 1;
+		self.historySlider(e);
+		$('#historySlider').slider('value', e);
+		self.historySliderMove();
+	}
+	
+	self.incrSlider = function() {
+		var e = self.historySlider() + 1;
+		self.historySlider(e);
+		$('#historySlider').slider('value', e);
+		self.historySliderMove();
+	}
 	
 	self.filteredMatches = ko.observableArray();
 
@@ -48,7 +127,6 @@ function viewModel() {
 			//self.filteredMatches.valueHasMutated();
 			self.filteredMatches([]);
 			self.filteredMatches.push.apply(self.filteredMatches, filt);
-
 		}
 
 	}).extend({ throttle: 250 });
@@ -77,7 +155,7 @@ function viewModel() {
 	self.noOfGames = function(player_id) {
 		var count = 0;
 		for(var i = 0; i < self.filteredMatches().length; i++) {
-			if(self.matchList()[i].playerOneId() == player_id() || self.matchList()[i].playerTwoId() == player_id()) {
+			if(self.filteredMatches()[i].playerOneId() == player_id() || self.filteredMatches()[i].playerTwoId() == player_id()) {
 				count++;
 			}
 		}
@@ -177,6 +255,8 @@ function viewModel() {
 		sqEventProxy.getPastRankings(
 			{data:data},
 			function(data) {
+				self.oldRankings([]);
+				self.oldRankingList([]);				
 				//console.log(data.rankings.length);
 				var l = data.rankings.length;
 				ko.mapping.fromJS(data.rankings, {}, self.oldRankings);
@@ -185,23 +265,63 @@ function viewModel() {
 				
 				$('#historySlider').slider( { value: l, min: 1, max: l, step : 1, animate: 'true' });
 				
-				ko.mapping.fromJS(data.rankings[l-1].ranking, {}, self.oldRankingList);
+				self.historySlider(l);
+				self.sliderHelper(l);				
 				
+				ko.mapping.fromJS(data.rankings[l-1].ranking, {}, self.oldRankingList);
 				self.oldRankingDate(data.rankings[l-1].date);
-				//.format('dddd, DoMoYYYY'));
+				
+				self.doneLoading(true);
 			}
 		);
 	}
 	
-	self.getPastRankings();
+	self.toggleLoading = function() {
+		self.doneLoading(false);
+	}
+
+
+	self.getAltRankings = function() {
+		var data;
+		sqEventProxy.getAltRankings(
+			{data:data},
+			function(data) {
+				self.oldRankings([]);
+				self.oldRankingList([]);
+				//console.log(data.rankings.length);
+				var l = data.rankings.length;
+				ko.mapping.fromJS(data.rankings, {}, self.oldRankings);
+				self.oldRankingFirstDate(moment(data.rankings[0].date).format('DoMo'));
+				self.oldRankingLastDate(moment(data.rankings[l-1].date).format('DoMo'));
+				
+				$('#historySlider').slider( { value: l, min: 1, max: l, step : 1, animate: 'true' });
+				
+				self.historySlider(l);
+				self.sliderHelper(l);
+				
+				setSliderTicks();				
+				
+				ko.mapping.fromJS(data.rankings[l-1].ranking, {}, self.oldRankingList);
+				self.oldRankingDate(data.rankings[l-1].date);
+				
+				self.doneLoading(true);				
+			}
+		);
+	}
+	
+	self.getAltRankings();
+	//self.getPastRankings();
 	
 	
 	function getMatches() {
-		var data;
-		sqEventProxy.getMatchList(
-			{ data: data },
+		self.showLoadingAnim(true);		
+		//var data = { clubShort : 'LSQ' };
+		
+		sqEventProxy.getMatchesByClub(
+			{ clubShort: 'LSQ' },
 			function(data) {
 				ko.mapping.fromJS(data.scores, {}, self.matchList);
+				self.showLoadingAnim(false);					
 			}
 		);
 	}
@@ -254,6 +374,24 @@ function viewModel() {
 		}
 	}
 	
+	function setSliderTicks() {
+		return;
+		var $slider = $('#historySlider');
+		var max = self.oldRankings().length;
+		console.log(max);
+		var spacing = $slider.width() / (max -1);
+		
+		console.log("herpdepr");
+		
+		$('#sliderContainer').find('.ui-slider-ticks').remove();
+		for (var i = 0; i < max; i++) {
+			console.log("appendix");
+			$('<span class="ui-slider-ticks"></span>').css('left', (spacing * i) + '%').appendTo($('#sliderTicks'));
+		}
+	}
+	
+	
+	
 	ko.bindingHandlers.uislider = {
 	
 		init: function (element, valueAccessor, allBindingsAccessor) {
@@ -261,7 +399,13 @@ function viewModel() {
 			
 			//$(element).slider(options);
 			
-			$(element).slider( { value: 0, min: 0, max: 50, step : 1, animate: 'true' });
+			//console.log(options);
+			
+			//$(element).slider();
+			
+			$(element).slider( {  value: 1, min: 1, max: 100, step : 1, animate: 'true' });
+			
+			//console.log($(element).slider());
 			
 	//		$(element).slider( { animate: 'slow' });
 
@@ -287,7 +431,8 @@ function viewModel() {
 				var observable = valueAccessor();
 				observable(ui.value);
 			});
-
+			
+			
 			/* var obs  = valueAccessor();
 			var value = ko.unwrap(obs);
 			
@@ -297,7 +442,7 @@ function viewModel() {
 			
 			obs.subscribe(function(value) {
 				if (isNaN(value)) value = 0;
-				console.log("herpderp");
+				console.log("sliderHelperderp");
 				$(element).slider('option', 'value', value);
 				obs(value);
 			}); */

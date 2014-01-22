@@ -7,7 +7,6 @@ block append site_scripts
 	script(src="/javascripts/ranking.js")
 	script(src="/javascripts/vendor/jquery-ui-1.10.3.custom.min.js")
 	script(src="/javascripts/vendor/jquery.ui.touch-punch.min.js")
-	script(src="/javascripts/vendor/foundation/foundation.tooltip.js")
 	script(src="/javascripts/vendor/lodash.min.js")	
 
 block content
@@ -16,73 +15,201 @@ block content
 	div(class="large-7 medium-7 small-12 columns")
 		h4.subheader Seuraranking - LSQ
 		
-		div#current.large-12.medium-12.small-12.columns.panel.radius(data-bind="css : { hidden : visiblePage() !== 'current' }")
-
-			div(data-bind="click: toggleHistory")
+		dl.sub-nav
+			//dd.active(data-bind="css: { active : visibleRanking() == 'new' }")
+				a(data-bind="click: function() { getAltRankings(); toggleLoading(); return visibleRanking('new') }") 
+					|Uuden systeemin mukaan
+			//dd(data-bind="css: { active : visibleRanking() == 'old' }")
+				a(data-bind="click: function() { getPastRankings(); toggleLoading(); return visibleRanking('old') }")
+					|Vanhan systeemin mukaan
+	
+		div.large-12.medium-12.small-12.columns.panel.radius
+		
+			//div(data-bind="click: toggleHistory")
 				a(data-bind="if: sliderVis() == false") Näytä vanhat...
 				a(data-bind="if: sliderVis() == true") Piilota vanhat...
 
-		
-			div#sliderContainer.large-12.small-12.columns(style="padding-left: 0; padding-right: 0; padding-top: 8px; display: none")
-				div.left(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; left: 26px; font-weight: 400")
-					span(data-bind="text: oldRankingFirstDate", style="text-shadow: 0px 1px 2px #fff")
-				div.right(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; right: 26px; font-weight: 400")
-					span(data-bind="text: oldRankingLastDate", style="text-shadow: 0px 1px 2px #fff")
-				div#sliderWrap.large-12.small-12.columns
-					div#slider.large-12.small-12.columns
-						div.large-12.small-12.columns(data-bind="value: historySlider, uislider: historySlider, event: { slide: historySliderMove }", name="historySlider", id="historySlider")
-							//div#tooltip.has-tip(data-tooltip, data-bind="event: { mouseover : tooltipVisible }, attr: { title : moment(oldRankingDate()).format('DoMoYY, HH:MM')}")
-
-							div.ui-slider-handle.cursor_grab
-									//, style="position: absolute; top: -40px; text-align: center; width: 50px; border: 1px solid black; left: -20px; visibility: hidden")
-				p
-			div.large-12.small-12.columns
-				h5.subheader(style="text-align: center")
-					span(data-bind="text: moment(oldRankingDate()).format('dddd, DoMoYYYY')", style="text-transform: capitalize")
-			table(style="width: 100%", style="border-collapse: collapse")
-				thead
-					tr
-						th.scoreCellHeader #
-						th.scoreCellHeader &nbsp;
-						th.scoreCellHeader.left Pelaaja
-						th.scoreCellHeader Vastustajia
-						th.scoreCellHeader.show-for-landscape Pelejä
-				tbody(data-bind="foreach: oldRankingList")
-					tr.scoreCell(data-bind="click: $root.loadProfile.bind($data, _id)", style="cursor: pointer")
-						// ko if: rank
-						td.scoreCell(data-bind="text: rank")
-						td.scoreCell
-							div(data-bind="visible: hotness() === 'hot'")
-								i.fi-arrow-up
-							div(data-bind="visible: hotness() === 'cold'")
-								i.fi-arrow-down
-							div(data-bind="visible: hotness() === 'lukewarm' || hotness() === null")
-								div(style="background-color: black; border: 1px #000 solid; border-radius: 50%; width: 6px; height: 6px; margin: auto")
-						td.scoreCell(style="text-align: left; width: 100%")
-							div(data-bind="text: name")
+			div.row
+				div.large-2.small-2.columns(data-bind="click: decSlider", style="cursor: pointer")
+					i.fi-arrow-left.right.activeSliderButton(data-bind="css: { inactiveSliderButton : historySlider() <= 1 }")
+	
+				div#sliderContainer.large-8.small-8.columns(style="padding-left: 0; padding-right: 0; padding-top: 8px", data-bind="visible: matchList().length > 0" )
+					div.left(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; left: 26px; font-weight: 400")
+						span(data-bind="text: oldRankingFirstDate", style="text-shadow: 0px 1px 2px #fff")
+					div.right(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; right: 26px; font-weight: 400")
+						span(data-bind="text: oldRankingLastDate", style="text-shadow: 0px 1px 2px #fff")
+					
+					div#sliderWrap.large-12.small-12.columns(style="padding-left:0; padding-right:0 ")
+					
+						div#slider.large-12.small-12.columns
+							//div.left#sliderTicks(style=" z-index: 5; width: 100%; margin-left: 8px; margin-right: 8px")
 						
-						td.scoreCell(style="width: 1em")
-							div(data-bind="text: $root.gamesVsDifferentOpponents(_id)")						
+							div.large-12.small-12.columns(data-bind="value: historySlider, uislider: historySlider, event: { slide: historySliderMove, slidestop : hideTooltip }", name="historySlider", id="historySlider")
+
+								div.ui-slider-handle.cursor_grab
+									div#tooltip(data-bind="text:  moment(oldRankingDate()).format('DoMoYY, HH:MM')", style="position: absolute; top: -45px; left: -66px; z-index: 9000; width: 130px; border: 1px #222 solid; padding: 6px; margin: 6px; border-radius: 4px; opacity: 0.85; text-shadow: 0px 1px 2px #fff; box-shadow: 0px 0px 10px #333; background: #eee" )
+
+				div.large-2.small-2.columns(data-bind="click: incrSlider", style="cursor: pointer")
+					i.fi-arrow-right.left.activeSliderButton(data-bind="css: { inactiveSliderButton : historySlider() >= oldRankings().length  }")
+			
+			div.row
+				h4.subheader(style="text-align: center")
+					span(data-bind="text: moment(oldRankingDate()).format('MMMM')", style="text-transform: capitalize")
+					
+				div(data-bind="if: doneLoading() == false", style="text-align: center")
+					img(src="/images/loader.gif")
+					
+					
+				table#ranking(style="width: 100%; border-collapse: collapse; border-radius: 4px; border-bottom: 3px #87A96B solid !important", data-bind="if: oldRankingList().length > 0 && visibleRanking() == 'new' && doneLoading() == true")
+					thead
+						tr(style="background: #333; border: 3px #333 solid !important; ")
+							th.scoreCellHeader(style="color: #fff", data-bind="css: { smallRankingCell : $root.ios() == true }") #
+							th.scoreCellHeader(style="color: #fff", data-bind="css: { smallRankingCell : $root.ios() == true }") &nbsp;
+							th.scoreCellHeader.left(style="color: #fff", data-bind="css: { smallRankingCell : $root.ios() == true }") Pelaaja
+							th.scoreCellHeader(style="color: #fff", data-bind="visible: visibleRanking() == 'new', css: { smallRankingCell : $root.ios() == true }") Pisteet
+							th.scoreCellHeader.show-for-medium-up(style="color: #fff", data-bind="css: { smallRankingCell : $root.ios() == true }") Vastustajia
+							th.scoreCellHeader(style="color: #fff", data-bind="css: { smallRankingCell : $root.ios() == true }") Pelejä
+					
+									
+							
+					tbody(data-bind="foreach: oldRankingList", style="margin: 0px; padding: 0px")
+						tr.show-for-small-only(data-bind="if: ($index() == 3 || $index() == 7) && $root.visibleRanking() == 'new'", style="height: 0px !important; padding: 0; margin: 0; border: 0px transparent solid !important")
+
+							td.show-for-small-only(colspan=5, style="width: 100%; height: 100%; padding: 0; margin: 0; background: #ccc; border-left: 3px #72A0C1 solid; border-right: 3px #72A0C1 solid", data-bind="css: { smallRankingCell : $root.ios() == true }")
+							
+								span.show-for-small-only(style="height: 1px")
+								
+						tr.show-for-medium-up(data-bind="if: ($index() == 3 || $index() == 7) && $root.visibleRanking() == 'new'", style="height: 0px !important; padding: 0; margin: 0; border: 0px transparent solid !important")
+								
+								
+							td.show-for-medium-up(colspan=6, style="width: 100%; height: 100%; padding: 0; margin: 0; background: #ccc; border-left: 3px #72A0C1 solid; border-right: 3px #72A0C1 solid", data-bind="css: { smallRankingCell : $root.ios() == true }")
+							
+								span.show-for-medium-up(style="height: 1px; ")
+								
+					
+						tr.scoreCell.rankingRow(data-bind="visible: $root.visibleRanking() == 'new',    css: { orange_highlight : $root.highlightId() == _id(), highlight : $root.oldRankings()[$root.sliderHelper() - 2].ranking()[$index()].points() !== points(), tier1 : $index() < 3, tier2 : $index() > 2 && $index() < 7, tier3 : $index() >= 7  }, event: { mouseover : function($data, event) { $root.hoverIn($data, event, _id)  }}  ", style="cursor: pointer")
 						
-						td.scoreCell(style="width: 1em").show-for-landscape
-							div(data-bind="text: $root.noOfGames(_id)")
+							<!-- ko if: rank -->
 
-						// /ko
-
-
-
-			//div(style="background-color: #eee")
-				pre(data-bind="text: ko.toJSON(oldRankings, null, 2)")
-				pre(data-bind="text: ko.toJSON(matchList, null, 2)")				
+							td.rankingCell.scoreCell(data-bind="css: { smallRankingCell : $root.ios() == true, tier1_bg : $index() < 3, tier2_bg : $index() > 2 && $index() < 7, tier3_bg : $index() >= 7 }")
+								a(data-bind="attr: { href : '/profile/' + _id() }")
+									span(data-bind="text: rank")
+							td.rankingCell.scoreCell(data-bind="css: { smallRankingCell : $root.ios() == true }")
+								a(data-bind="attr: { href : '/profile/' + _id() }")
+									div(data-bind="visible: hotness() === 'hot'")
+										i.fi-arrow-up
+									div(data-bind="visible: hotness() === 'cold'")
+										i.fi-arrow-down
+									div(data-bind="visible: hotness() === 'lukewarm' || hotness() === null")
+										div(style="background-color: black; border: 1px #000 solid; border-radius: 50%; width: 6px; height: 6px; margin: auto")
+							td.rankingCell.scoreCell(style="text-align: left; width: 100%; text-overflow: ellipsis")
+								a(data-bind="attr: { href : '/profile/' + _id() }")
+									span(data-bind="text: name, css: { smallRankingCell : $root.ios() == true }")
 		
+							// ko if: typeof $data.points != "undefined"
+							td.rankingCell.scoreCell(data-bind="css: { smallRankingCell : $root.ios() == true }")
+								a(data-bind="attr: { href : '/profile/' + _id() }")
+									span(data-bind="text: points")
+							// /ko
+							
+							// ko if: typeof $data.pointsGained != "undefined"
+							
+							td.rankingCell.scoreCell(data-bind="css: { smallRankingCell : $root.ios() == true }")
+								a(data-bind="attr: { href : '/profile/' + _id() }")
+									span(data-bind="text: pointsGained")
+							// /ko
+							
+							// ko if: typeof $data.pointsGained == "undefined"
+							td.rankingCell.scoreCell(data-bind="css: { smallRankingCell : $root.ios() == true }")
+								a(data-bind="attr: { href : '/profile/' + _id() }")
+									span(data-bind="text: '0'")
+							// /ko
+							
+			
+							td.scoreCell.show-for-medium-up(style="width: 1em", data-bind="css: { smallRankingCell : $root.ios() == true }")
+								a(data-bind="attr: { href : '/profile/' + _id() }", style="color: #000")
+									span(data-bind="text: $root.gamesVsDifferentOpponents(_id)")
+		
+							td.scoreCell(style="width: 1em", data-bind="css: { smallRankingCell : $root.ios() == true }")
+								a(data-bind="attr: { href : '/profile/' + _id() }", style="color: #000")
+									span(data-bind="text: $root.noOfGames(_id)")
+								//.show-for-landscape
+
+							<!-- /ko -->						
+							
+			
+			div.row
+				div.large-12.medium-12.small-12.columns
+					small
+						span.highlight Pinkillä
+						span &nbsp;merkittyjen pelaajien pistemäärä tai ranking on muuttunut tässä päivityksessä
+
+					
+
+
+		div.row
+			div.large-12.small-12.medium-12.columns.guide
+				
+				h5.subheader Testikäytössä oleva uusi rankingsysteemi
+				
+				p Pisteet lasketaan viimeisen 90 päivän aikana pelatuista otteluista.
+
+				p Lista on jaettu kolmeen luokkaan:
+				ol
+					li Top-3:ssa tällä hetkellä olevat pelaajat
+					li Sijoilla 4-8 olevat pelaajat
+					li Loput pelaajat
+				
+				p Voitosta saa <strong>100</strong> pistettä, tappiosta saa <strong>25</strong> pistettä.
+			
+				p Lisäksi voittaja saa lisäpisteitä hänen ja vastustajan keskinäisen rankingsijoituksen mukaan seuraavasti: 
+				ul
+					li Jos vastustaja oli ylemmässä luokassa, voittopisteet <strong>tuplaantuvat</strong>.
+					li Jos vastustaja oli alemmassa luokassa, voittopisteet <strong>puolittuvat</strong>.
+					li Jos kolmannessa luokassa oleva pelaaja voittaa ensimmäisessä olevan, voittopisteet <strong>kolminkertaistuvat</strong>.
+			
+				p Lopuksi voittaja saa vielä bonuspisteitä vastustajan absoluuttisen sijoituksen mukaan.
+				ul
+					li Ykkösluokan pelaajan voittamisesta saa aina <strong>100 bonuspistettä</strong>.
+					li Kakkosluokan pelaajan voittamisesta saa aina <strong>50 bonuspistettä</strong>.
+					li Kolmosluokan pelaajan voitosta ei saa bonuksia.
+			
+				p Hypoteettisia esimerkkejä: 
+			
+				ol
+					li Kössäri Vallan ranking on 6, ja hän haastaa rankingissa sijalla 2 olevan kössäri Korhosen. Pelaaja Valta voittaa pelin ja saa pisteitä seuraavasti:
+						ul 
+							li Voitosta 100 pistettä, ja koska vastustaja oli ylemmässä luokassa voittopisteet tuplaantuvat, eli pisteitä tulee 200.
+							li Bonuspisteet ykkösluokan pelaajan voitosta, eli +100, yhteensä <strong>300</strong> pistettä.
+							li 	Kössäri Korhonen saa <strong>25</strong> pistettä.
+							
+					li 	Kössäri Annalan rankingsijoitus on 3, ja hän pelaa rankingpelin sijalle 10 rankattua kössäri Niemistä vastaan. Kössäri Annala voittaa pelin. Pisteitä tulee seuraavasti:
+						ul
+							li Voitosta 100 pistettä, mutta koska vastustaja oli alemmassa luokassa, pisteet puolittuvat. Kössäri Annala nettoaa siis <strong>50</strong> pistettä.
+							li Kössäri Nieminen saa <strong>25</strong> pistettä.
+						
+					li 	Kössärit Lehtola ja Selänne, rankingit 1. ja 2., pelaavat rankingpelin. Lehtola voittaa ja saa pisteitä seuraavasti:
+						ul
+							li Voitosta 100 pistettä.
+							li Koska pelaajat ovat samassa luokassa, kertoimia ei tule.
+							li  Top-3 -pelaajan voitosta 100 bonuspistettä. Lehtola nettoaa <strong>200</strong> pistettä.
+							li Hävinnyt pelaaja Selänne saa <strong>25</strong> pistettä.
+	
+	
+
 		
 	
 	div(class="large-5 medium-5 small-12 columns")
-		h4.subheader#matchList
-			span(data-bind="text: matchListLabel")
+	
+		div(data-bind="visible: showLoadingAnim() == true", style="text-align: center; min-height: 76px; padding: 2px; vertical-align: middle; padding-top: 36px").large-12.small-12.medium-12.columns
+			img(src="/images/loader.gif")
+	
+		div(data-bind="visible: showLoadingAnim() == false")
+			h4.subheader#matchList
+				span(data-bind="text: matchListLabel")
 		
 		
-		div.large-12.small-12.columns(data-bind="foreach: filteredMatches", style="padding: 2px")
+		div.large-12.small-12.columns(data-bind="visible: showLoadingAnim() == false, foreach: filteredMatches", style="padding: 2px")
 
 			// ko if: ($index() === 0)
 
@@ -97,7 +224,9 @@ block content
 			hr
 
 			// /ko
-			div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible")
+			
+			
+			div.large-12.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.toggleVisible, css: { orange_highlight : playerOneId() == $root.highlightId() || playerTwoId() == $root.highlightId() }")
 					div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
 					div.large-4.small-4.columns.site_gameList(style="text-align: center")
 						span(data-bind="text: p1GamesWon")
