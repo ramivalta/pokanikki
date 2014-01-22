@@ -20,6 +20,7 @@ function viewModel() {
 	self.matchList = ko.observableArray([]);
 	
 	self.eventList = ko.observableArray([]);
+	self.oldEventList = ko.observableArray([]);	
 	
 	self.showScores = ko.observable(false);
 	
@@ -64,7 +65,8 @@ function viewModel() {
 		sqEventProxy.getPastEvents(
 			{data:data},
 			function(data) {
-				ko.mapping.fromJS(data.events, {}, self.eventList);
+				ko.mapping.fromJS(data.current, {}, self.eventList);
+				ko.mapping.fromJS(data.past, {}, self.oldEventList);
 				/* if(typeof jshare !== 'undefined') {
 					self.getMatchesForEvent(id, name, match_id, true);
 					self.selectedEvent(id);
@@ -79,16 +81,16 @@ function viewModel() {
 	self.getPastEvents();	
 	
 	
-	self.getClubData = function(id) {
+	self.getClubData = function(id, clubShort) {
 		self.getPlayersByClub(id);
-		self.getMatchesByClub(id);
+		self.getMatchesByClub(clubShort);
 	}
 	
-	self.getMatchesByClub = function(id) {
+	self.getMatchesByClub = function(shortHand) {
 		sqEventProxy.getMatchesByClub(
-		{club_id:id},
+		{clubShort:shortHand},
 		function(data) {
-			ko.mapping.fromJS(data.matches, {}, self.matchList);
+			ko.mapping.fromJS(data.scores, {}, self.matchList);
 		});
 	}
 	
@@ -97,8 +99,13 @@ function viewModel() {
 		sqEventProxy.getClubs(
 		{ data:data},
 		function(data) {
-			ko.mapping.fromJS(data.clubs, {}, self.clubList);
-			self.getClubData(data.clubs[0]._id);
+			if(data.clubs.length > 0) {
+				ko.mapping.fromJS(data.clubs, {}, self.clubList);
+				self.getClubData(data.clubs[0]._id, data.clubs[0].nameShort);
+			}
+			else {
+				window.location.href="/home";
+			}
 		});
 	}
 
