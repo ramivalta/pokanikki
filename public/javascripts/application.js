@@ -2,8 +2,17 @@
 return ((this%n)+n)%n;
 }; */
 
+$(function() {
+    FastClick.attach(document.body);
+});
+
+
 function viewModel () {
 	var self = this;
+
+
+
+
 
 	self.session = ({
 		name	: ko.observable($('#sessname').val()),
@@ -29,6 +38,7 @@ function viewModel () {
 	
 	self.playerListOne = ko.observableArray([]);
 	self.playerListTwo = ko.observableArray([]);
+	self.playerMasterList = ko.observableArray([]);
 	
 	self.scoreBoard = ko.observableArray([]);
 	
@@ -48,7 +58,7 @@ function viewModel () {
 	self.user.rememberMe = ko.observable(true);
 	
 	self.playerOneGamesWon = ko.observable();
-	self.playerTwoGamesWon = ko.observable();	
+	self.playerTwoGamesWon = ko.observable();
 	
 	
 	self.login = function() {
@@ -139,26 +149,36 @@ function viewModel () {
 					return 0;
 				});
 				
-				ko.mapping.fromJS(data, {}, self.playerListTwo);				
-				ko.mapping.fromJS(data, {}, self.playerListOne);
-
-				self.playerListTwo.push(self.customPlayerTwo());				
+				ko.mapping.fromJS(data, {}, self.playerMasterList);
+				
+				self.playerListOne(self.playerMasterList().slice(0));
+				self.playerListTwo(self.playerMasterList().slice(0));
 				self.playerListOne.push(self.customPlayerOne());
+				self.playerListTwo.push(self.customPlayerTwo());
+				
 			}
 		);
 	};
 	
 	self.setupPlayers = ko.computed(function() {
 		
-		if (self.playerOne() === undefined || self.playerTwo() === undefined || typeof self.customPlayerOne == "undefined" || typeof self.customPlayerTwo == "undefined" || typeof self.playerOne == "undefined" || typeof self.playerTwo == "undefined" || self.playerListOne().length == 0 || self.playerListTwo().length == 0) {
+		if (self.playerOne() === undefined || self.playerTwo() === undefined || typeof self.customPlayerOne == "undefined" || typeof self.customPlayerTwo == "undefined" || typeof self.playerOne == "undefined" || typeof self.playerTwo == "undefined" || self.playerMasterList().length == 0) {
 		}
 		else {
 		
-			//self.playerListTwo(self.playerListOne().slice(0)); 
-			var sel_id = self.playerOne()._id();
-			
+		
+			if(_.contains(self.playerListOne(), self.customPlayerOne()) == false) {
+				self.playerListOne.push(self.customPlayerOne());
+			}
 
-			self.playerListTwo.remove(function(i) { return i._id() === sel_id });
+			if(_.contains(self.playerListTwo(), self.customPlayerTwo()) == false) {
+				self.playerListTwo.push(self.customPlayerTwo());
+			}
+
+			var sel_id = self.playerOne()._id();
+			self.playerListTwo.remove(function(i) {
+				return i._id() === sel_id }
+			);			
 			
 			if(self.playerOne()._id() == "custom1") {
 				$("#newPlayerPopupOne").popup( "open", { transition: "pop", shadow: true, positionTo: "#select-1" });
@@ -169,9 +189,22 @@ function viewModel () {
 			}
 			$('#select-1').selectmenu("refresh");
 			$('#select-2').selectmenu("refresh");
+
+			
+			if(self.playerListOne().length > self.playerListTwo().length + 1) {
+				var p2 = self.playerTwo();
+				self.playerListTwo(self.playerMasterList().slice(0));
+				
+				self.playerListTwo.remove(function(i) {
+					return i._id() === sel_id;
+				});
+				
+				self.playerListTwo.push(self.customPlayerTwo());
+				self.playerTwo(p2);
+			}
 		}
 		
-	}).extend({throttle: 50 });
+	}).extend({throttle: 1 });
 	
 	self.updatePlayerListOne = function() {
 		//self.playerList.pop();
@@ -816,28 +849,27 @@ function viewModel () {
 
 			var p1 = self.playerOneScore();
 			var p2 = self.playerTwoScore();
+			
+			var p1won = parseInt(self.playerOneGamesWon());
+			var p2won = parseInt(self.playerTwoGamesWon());
 		
 			var bestof = parseInt(self.bestOf());
 		
 			if (bestof === 3) toWin = 2;
 			else toWin = 3;
 		
-			if(parseInt(self.playerOneGamesWon()) + 1 !== toWin && parseInt(self.playerTwoGamesWon()) + 1 !== toWin) {
+			if(p1won + 1 !== toWin && p2won + 1 !== toWin) {
 				//console.log(self.playerOneGamesWon() + " " + toWin);
 				//console.log(self.playerTwoGamesWon() + " " + toWin);				
 				return false;
 			}
 		
-			if ((self.gameBall() === true) && (p1 === 10 && p2 < 10) || (self.gameBall() === true) && (p2 === 10 && p1 < 10)) {
-				var x = Math.abs(p1 - p2);
-				if (x >= 1) {
-					return true;
-				}
-				else return false;
+			if (self.gameBall() === true && ((p1 === 10 && p2 < 10 && p1won == toWin -1) || (p2 === 10 && p1 < 10 && p2won == toWin -1))) {
+				return true;
 			}
 			else if (p1 >= 10 && p2 >= 10 && self.gameBall() === true) {
 				var y = Math.abs(p1 - p2);
-				if (y >= 1) {
+				if (Math.abs(p1 -p2) >= 1 && ((p1won == toWin - 1 && p1 > p2) || (p2won == toWin -1 && p2 > p1)) ) {
 					return true;
 				}
 				else return false;
@@ -1093,11 +1125,11 @@ function viewModel () {
 	};
 	
 	self.openEndGamePopup = function() {
-		$("#endGamePopup").popup( "open", { transition: "flow", shadow: true, positionTo: "window" });
+		$("#endGamePopup").popup( "open", { transition: "fade", shadow: true, positionTo: "window" });
 	};
 	
 	self.closeEndGamePopup = function() {
-		$("#endGamePopup").popup( "close", { transition: "flow", reverse: true });
+		$("#endGamePopup").popup( "close", { transition: "fade", reverse: true });
 	};	
 	
 	self.closeCallsPopup = function() {
