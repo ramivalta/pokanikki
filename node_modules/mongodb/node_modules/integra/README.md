@@ -1,2 +1,0 @@
-An integration testing framework
-================================
