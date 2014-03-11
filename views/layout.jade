@@ -3,50 +3,55 @@ html#main
 	head
 		!= JShare()
 		//title= title
-		block title
-		
+		title(data-bind="text: title")
 
-		
 		block metatags
 			meta(charset="utf-8")
 			meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=5.0, minimum-scale=0.5, user-scalable=0")
 			meta(name='apple-mobile-web-app-title', content='Pokanikki')
+			meta(property="og:title", content="#{ title }")
+			meta(property="og:image", content="http://pokanikki.valta.me/images/logo_mid_color.jpg")
+			//meta(property="og:title", data-bind="attr: { content : title }")
 
-			
+
 		block styles
-						
+
 		block site_styles
 			link(rel="stylesheet" href="/stylesheets/vendor/foundation.css")
 			link(rel="stylesheet" href="/stylesheets/vendor/foundation-icons.css")
 			link(rel="stylesheet" href="/stylesheets/site_styles.css")
-			
+
 			link(rel="apple-touch-icon" sizes="120x120" href="/images/apple-touch-icon-120x120.png")
 			link(rel="apple-touch-icon" sizes="57x57" href="/images/apple-touch-icon-57x57.png")
 			link(rel="apple-touch-icon" sizes="76x76" href="/images/apple-touch-icon-76x76.png")
 			link(rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png")
 			link(rel="apple-touch-icon" sizes="120x120" href="/images/apple-touch-icon-120x120.png")
 			link(rel="apple-touch-icon" sizes="144x144" href="/images/apple-touch-icon-144x144.png")
-			link(rel="apple-touch-icon" sizes="152x152" href="/images/apple-touch-icon-152x152.png")			
-			
-		
+			link(rel="apple-touch-icon" sizes="152x152" href="/images/apple-touch-icon-152x152.png")
+
+
 		block scripts
-			script(src='/javascripts/vendor/jquery.js')
+			script(src='/javascripts/vendor/jquery-2.0.3.min.js')
+			//script(src='/javascripts/vendor/jquery-1.10.2.min.js')
+			//script(src='/javascripts/vendor/jquery-migrate-1.2.1.min.js')
 			script(src='/javascripts/vendor/knockout-3.0.0.js')
 			script(src='/javascripts/vendor/knockout.mapping-latest.js')
 			script(src="/javascripts/vendor/moment.min.js")
 			script(src="/javascripts/vendor/langs.min.js")
 			script(src='/javascripts/vendor/jquery.transit.js')
 			script(src='/javascripts/global.js')
+			script(src="/javascripts/vendor/lodash.min.js")
 
 	body
-	
+
 		block site_scripts
 			script(src="/javascripts/vendor/custom.modernizr.js")
 			script(src="/javascripts/vendor/foundation/foundation.js")
 			//script(src="/javascripts/vendor/foundation/foundation.forms.js")
 			script(src="/javascripts/vendor/foundation/foundation.topbar.js")
-			script(src='/javascripts/vendor/jquery.scrollTo.min.js')			
-	
+			script(src='/javascripts/vendor/jquery.scrollTo.min.js')
+			//script(src="/javascripts/vendor/fastclick.js")
+
 		block content
 
 

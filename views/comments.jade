@@ -1,0 +1,50 @@
+p
+
+div.row(data-bind="fadeVisible: saveInProgress() == false")
+	div.large-12.medium-12.small-12.columns(data-bind="foreach: commentList")
+		div.row.commentRow.show-for-medium-up(data-bind="css: { commentRowOdd : ($index() % 2 !== 0), commentRowLast : ($index() == $root.commentList().length -1) } ")
+			div.large-2.medium-2.small-12.columns(style="padding-left: 0 !important; padding-right: 0 !important; font-weight: 700")
+				div.show-for-medium-up.right(style="display: inline-block; color: teal; ")
+					div(data-bind="text: author").comment_text
+				//div.show-for-small-only.left(style="display: inline-block; color: teal")
+					span(data-bind="text: author", style="margin: 6px")
+			div.large-7.medium-6.small-6.columns(style="padding-left: 0 !important; padding-right: 0 !important; color: #333")
+				div(data-bind="text: comment").comment_text
+			div.large-3.medium-4.small-6.columns(style="padding-left: 0 !important; padding-right: 0 !important; color: #777; text-align: right")
+				span(data-bind="text: moment(date()).calendar()").comment_text
+				
+		div.row.commentRow.show-for-small-only(data-bind="css: { commentRowOdd : ($index() % 2 !== 0), commentRowLast : ($index() == $root.commentList().length -1) }")
+			div.small-5.columns(style="padding-left: 0 !important; padding-right: 0 !important; font-weight: 700")
+				span(data-bind="text: author", style="margin: 6px; color: teal; font-size: 12px; line-height: 14px")
+			div.small-7.columns(style="padding-left: 0 !important; padding-right: 0 !important; color: #333; text-align: right")
+				span(style="padding-left: 0 !important; padding-right: 0 !important; color: #777; text-align: right; margin: 6px; white-space: nowrap; text-overflow: ellipsis !important; overflow: hidden; font-size: 11px", data-bind="text: moment(date()).calendar()")
+			div.small-12.columns(style="padding-left: 0 !important; padding-right: 0 !important; color: #333")
+				div(data-bind="text: comment")
+				
+			
+					
+div.row(data-bind="fadeVisible: saveInProgress() == true")
+	div.large-12.medium-12.small-12.columns(style="text-align: center")
+		img(src="/images/loader.gif", style="margin: left: auto; margin-right: auto")
+
+					
+div(style="line-height: 24px !important") &nbsp;
+
+div.row(data-bind="if: session.username")
+	div.large-9.medium-9.small-12.columns(style="padding-left: 0 !important; padding-right: 0 !important")
+		form(data-bind="submit: $root.createComment")
+			input(type="text", data-bind="value: $root.comment", cols="80", placeholder="Jätä kommentti...", style="height: 2.5em; width: 100%").left
+		//div(style="position: absolute; right: 50%; top: -42px", data-bind="fadeVisible: saveInProgress() == false")
+			img(src="/images/loader.gif")
+			
+	div.large-3.medium-3.small-12.columns(style="padding-right: 0 !important; padding-left: 0 !important")
+		button.tiny(data-bind="click: $root.createComment", style="width: 100%").right Kommentoi
+		
+div.row(data-bind="ifnot: session.username")
+	div.large-12.medium-12.small-12.columns
+		h5.subheader Rekisteröityneet käyttäjät voivat jättää kommentteja. 
+			a(href="/autoLogin/") Kirjaudu sisään
+			// , style="background: #ccc; border-radius: 6px; padding: 4px")
+			span &nbsp;
+			span tai  
+			a(href="/newuser/") käy rekisteröitymässä.

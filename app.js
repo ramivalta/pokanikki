@@ -3,13 +3,15 @@
  * Module dependencies.
  */
 
+var scribe = require('./scribe');
+
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var http = require('http');
 var path = require('path');
 var crypto = require('crypto');
-
+var sanitizer = require('sanitizer');
 
 var mongo = require('mongodb');
 var monk = require('monk');
@@ -18,14 +20,15 @@ var db = monk('localhost:27017/pokanikki');
 var app = express();
 
 
-
+var _ = require('lodash');
 
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(express.favicon());
-app.use(express.logger('dev'));
+//app.use(express.logger('dev'));
+app.use(express.logger(':date :method :url :status :res[content-length] :user-agent :remote-addr'));
 
 app.use(express.compress());
 
@@ -49,6 +52,8 @@ app.use(function(req, res, next) {
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(scribe.logger);
+
 
 app.configure('development', function() {
 	app.use(express.errorHandler( { dumpExceptions: true, showStack: true }));
@@ -63,17 +68,16 @@ var cronJob = require('cron').CronJob;
 
 var monthly_ranking = new cronJob('0, 0, 1, *, *', function() {
 	console.log("running cron task");
-	// todo: loopataan kaikki seurat läpi
 	var list = db.get('users');
 	var rank = db.get('monthly_rankings');
 	var date = new moment().toJSON();
-	
+
 	list.find( { rank : { $ne: null }}, { sort: { rank : 1}, fields: { password: 0, email: 0, lastLogin: 0, addedDate: 0, username: 0 }}, function(err, doc) {
 			if(doc) {
 				var list = {};
 				list.ranking = doc;
 				list.date = date;
-				
+
 				rank.insert(list, function(err, doc) {
 					if (doc) {
 						console.log("ranking saved");
@@ -85,7 +89,7 @@ var monthly_ranking = new cronJob('0, 0, 1, *, *', function() {
 			}
 			if (err) console.log(err);
 		});
-		
+
 	}, function() {
 		console.log("ranking save task finished");
 	}
@@ -101,7 +105,7 @@ var monthly_ranking = new cronJob('0, 0, 1, *, *', function() {
 	res.header("Pragma", "no-cache");
 	res.header("Expires", 0);
 	//next();
-	
+
     res.header( {
 		'cache-control': 'private',     // only cache on the browser, not intermediate proxies
 		maxAge: 3600,                     // 60sec (*60)
@@ -126,8 +130,8 @@ app.get('/profile', routes.profile(db));
 app.get('/profile/:id', routes.profile(db));
 app.get('/ranking', routes.ranking);
 app.get('/admin', routes.admin);
-app.get('/matches', routes.matches);
 app.get('/seurat', routes.clubs);
+
 
 
 app.get('/sup', routes.sup);
@@ -135,6 +139,8 @@ app.get('/users', routes.users(db));
 app.get('/getMatches', routes.getMatches(db));
 app.get('/getClubs', routes.getClubs(db));
 app.get('/monthMatches', routes.monthMatches(db));
+app.get('/getAllUsers', routes.getAllUsers(db));
+app.get('/getDroppedMatches', routes.getDroppedMatches(db));
 
 
 app.get('/logout', routes.logout);
@@ -143,6 +149,10 @@ app.get('/getActiveEvents', routes.getActiveEvents(db));
 app.get('/getAllEvents', routes.getAllEvents(db));
 app.get('/getPastEvents', routes.getPastEvents(db));
 app.get('/getPastRankings', routes.getPastRankings(db));
+app.get('/getAltRankings', routes.getAltRankings(db));
+app.get('/generateRankingList', routes.generateRankingList(db));
+app.get('/getComments', routes.getComments(db));
+app.get('/generateRankingArchive', routes.generateRankingArchive(db));
 
 app.post('/adduser', routes.adduser(db));
 app.post('/login', routes.login(db));
@@ -160,12 +170,27 @@ app.post('/getMatchesByClub', routes.getMatchesByClub(db));
 app.post('/checkPass', routes.checkPass(db));
 app.post('/changePassword', routes.changePassword(db));
 app.post('/saveRankingList', routes.saveRankingList(db));
+app.post('/createComment', routes.createComment(db, sanitizer));
 
+
+var updateRanking = new cronJob('1, 0, *, *, *', function() {
+	// daily
+
+	console.log("generating rankinglist");
+
+
+	routes.generateRankingList(db);
+
+	}, function() {
+		console.log("ranking save task finished");
+	},
+	true
+);
 
 app.get('/lsq.xml', function(req, res) {
-	var list = db.get('rankings');
+	var list = db.get('newRanking');
 	list.find( {}, { sort: { date: -1 }, limit : 1}, function(err, doc) {
-		if(doc.length == 0) {			
+		if(doc.length == 0) {
 			console.log(err);
 			res.send("ranking empty");
 		}
@@ -247,12 +272,12 @@ app.get('/lsq.xml', function(req, res) {
 				date : date,
 				guid: 'asd'+unix,
 			});
-			
+
 			var xml = feed.xml('\t');
-			
+
 			res.header("Cache-Control", "no-cache, no-store, must-revalidate");
 			res.header("Pragma", "no-cache");
-			res.header("Expires", 0);				
+			res.header("Expires", 0);
 
 			res.set('Content-Type', 'text/xml');
 			res.send(xml);
@@ -277,9 +302,9 @@ app.get('/lsq_monthly.xml', function(req, res) {
 			var date = doc[0].date;
 			var unix = moment(date).unix();
 			unix = unix + 'asd';
-			
+
 			var formatted_date = moment(date).format('DD.MM.YYYY');
-			
+
 			var html = "";
 			html += "<div id='rssRanking'>";
 			html += "<h3 id='rss_header'> Seuraranking ";
@@ -288,7 +313,7 @@ app.get('/lsq_monthly.xml', function(req, res) {
 			html += '#rssTable { border: 1px solid #333; border-collapse: collapse; }';
 			html += '.rssTableCell { border: 1px solid #ccc; }';
 			html += '</style>';
-			
+
 			html += "<table id='rssTable'>";
 			for (var i = 0; i < items.length; i++) {
 				html += '<tr>'
@@ -300,7 +325,7 @@ app.get('/lsq_monthly.xml', function(req, res) {
 			}
 			html += '</tr> </table>';
 			html += "<a id='rssLink' href='http://pokanikki.valta.me/ranking'>Pokanikki</a></div>";
-			
+
 			console.log(unix);
 
 			var feed = new RSS( {
@@ -312,26 +337,26 @@ app.get('/lsq_monthly.xml', function(req, res) {
 				pubDate : date,
 				description: 'LSQ:n rankinglista'
 
-			});				
-			
+			});
+
 			feed.item( {
 				title: 'Ranking',
 				description: html,
 				date : date,
 				guid: 'asd'+unix,
 			});
-			
+
 			var xml = feed.xml('\t');
-			
+
 			res.header("Cache-Control", "no-cache, no-store, must-revalidate");
 			res.header("Pragma", "no-cache");
-			res.header("Expires", 0);				
+			res.header("Expires", 0);
 
 			res.set('Content-Type', 'text/xml');
 			res.send(xml);
 		}
 	});
-	
+
 
 });
 

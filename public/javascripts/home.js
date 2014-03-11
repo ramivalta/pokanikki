@@ -140,7 +140,7 @@ function viewModel() {
 	
 
 $(document).ready(function() {
-	
+	window.location.href="/seurat";
 	window.vm = new viewModel();
 	ko.applyBindings(vm, document.getElementById("main"));
 	

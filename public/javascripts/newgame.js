@@ -20,6 +20,7 @@ function viewModel() {
 	
 	self.playerListOne = ko.observableArray([]);
 	self.playerListTwo = ko.observableArray([]);
+	self.playerMasterList = ko.observableArray([]);
 	
 	self.matchList = ko.observableArray([]);
 	self.showScores = ko.observable(false);
@@ -97,6 +98,8 @@ function viewModel() {
 	self.saveInProgress =  ko.observable(false);
 
 	self.validateMatch = function() {
+		if (self.event() == undefined) return;
+	
 		self.p1GamesWon(0);
 		self.p2GamesWon(0);
 		var p1, p2, toWin;
@@ -151,7 +154,6 @@ function viewModel() {
 					
 				self.saveScores();
 				
-				return;
 			}	
 				
 		}
@@ -225,11 +227,12 @@ function viewModel() {
 				
 				//console.log(self.customPlayer()._id());
 			
-				ko.mapping.fromJS(data, {}, self.playerListOne);
-				ko.mapping.fromJS(data, {}, self.playerListTwo);
+				ko.mapping.fromJS(data, {}, self.playerMasterList);
 				
+				self.playerListOne(self.playerMasterList().slice(0));
+				self.playerListTwo(self.playerMasterList().slice(0));
 				self.playerListOne.push(self.customPlayerOne());
-				self.playerListTwo.push(self.customPlayerTwo());				
+				self.playerListTwo.push(self.customPlayerTwo());
 			}
 		);
 	}
@@ -251,6 +254,18 @@ function viewModel() {
 			
 			if(self.playerTwo()._id() == "custom2") {
 				$('#newPlayerModalTwo').foundation('reveal', 'open');
+			}
+			
+			if(self.playerListOne().length > self.playerListTwo().length + 1) {
+				var p2 = self.playerTwo();
+				self.playerListTwo(self.playerMasterList().slice(0));
+				
+				self.playerListTwo.remove(function(i) {
+					return i._id() === sel_id;
+				});
+				
+				self.playerListTwo.push(self.customPlayerTwo());
+				self.playerTwo(p2);
 			}
 		}
 		
@@ -301,8 +316,6 @@ function viewModel() {
 	self.saveScores = function() {
 		//console.log("saving scores");
 	
-	
-	
 		var playerOne = ko.toJS(self.playerOne());
 		var playerTwo = ko.toJS(self.playerTwo());
 		
@@ -341,6 +354,7 @@ function viewModel() {
 				
 				self.saveSucceeded(true);
 				getRankings();
+				getPlayers();
 				
 				setTimeout(function() {
 					self.saveSucceeded(false);
@@ -354,8 +368,33 @@ function viewModel() {
 				//console.log(e);
 //				console.log("err");
 			}
-		);		
+		);
 	}
+	
+	
+	ko.bindingHandlers.fadeVisible = {
+		init: function(element, valueAccessor) {
+			var shouldDisplay = valueAccessor();
+			var el = $(element);			
+			el.toggle(shouldDisplay);
+		},
+		update: function(element, valueAccessor) {
+			// On update, fade in/out
+			var shouldDisplay = valueAccessor();
+			var el = $(element);
+        
+			if (shouldDisplay == true) {
+				el.css({ display: 'block'});
+				el.transition({ opacity: 1 });
+			}
+			else {
+				el.transition({ opacity: 0 });
+				el.css({ display: 'none'});
+			}
+		} 
+	};	
+		
+	
 	
    	getMatches();
 	getPlayers();

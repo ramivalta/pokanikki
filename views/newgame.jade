@@ -9,151 +9,160 @@ block append site_scripts
 block content
 	include navbar
 	
-	div.small.reveal-modal#newPlayerModalOne.panel(data-reveal)
+	div.small.reveal-modal#newPlayerModalOne(data-reveal)
 		h5.subheader Pelaajan nimi:
 		span(data-bind="if: playerOne && playerTwo")
 			input(data-bind="value: customPlayerOne().name, valueUpdate : 'afterkeydown', click: function() { return $element.setSelectionRange(0, 9999) }", type="text")
 		a.close-reveal-modal &#215;
 
-	div.small.reveal-modal#newPlayerModalTwo.panel(data-reveal)
+	div.small.reveal-modal#newPlayerModalTwo(data-reveal)
 		h5.subheader Pelaajan nimi:
 		span(data-bind="if: playerOne && playerTwo")
 			input(data-bind="value: customPlayerTwo().name, valueUpdate : 'afterkeydown', click: function() { return $element.setSelectionRange(0, 9999) }", type="text")
 		a.close-reveal-modal &#215;
-	
+		
 
 	div.row
 		div(class="large-12 small-12 columns", data-bind="ifnot: session.name")
-			h4.subheader Halloo
+			h4.subheader Kirjaudu sisään jatkaaksesi
 			
 			p Rekisteröityneet käyttäjät voivat lisätä uusia pelejä. Jos olet jo rekisteröitynyt, kirjaudu sisään lisätäksesi pelejä.
-	
+			
 		div(class="large-12 small-12 columns", data-bind="if: session.name")
 			div(class="large-12 small-12 columns", style="height: 6px")
 			h4.subheader(style="display: inline") Uusi peli
 			a(href="/application" ,style="display: inline").button.success.radius.right.small
 				| Avaa tuomarointisovellus
 			
-			div(id="useapp", class="large-12 medium-12 small-12 columns panel radius")
+			div(id="useapp", class="large-12 medium-12 small-12 columns")
 				p Avaa tuomarointisovellus painamalla ylhäällä olevaa nappia tai syötä jo pelatun pelin tulos alapuolella olevalla lomakkeella.
+				
+			hr
+			p
+		
+			div.newGameForm
+				div.panel(style="padding: 6px")
+
+					div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-right: 2px")
+						label.text-center(for="p1name")
+							h5.subheader Pelaaja 1
+							select.right.select_custom(id="p1name", class="small", data-bind="options: playerListOne, optionsText: 'name', value: playerOne")
+				
+					div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-left: 2px")
+						label.text-center(for="p2name")
+							h5.subheader Pelaaja 2
+							select.left.select_custom(id="p2name", class="small", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo")
+							
+					div.row
+						div(class="large-12 small-12 columns")
+							span(style="margin-bottom: 0px")
+								label(for="eventSelect", style="color: #333; font-weight: 300") Tapahtuma johon peli kuuluu...
+								select.select_custom(id="eventSelect", class="small", data-bind="options: eventList, optionsText: 'name', value: event")
+							div(data-bind="if: eventList().length > 0", style="text-align: center")
+								div(data-bind="if: event().affectsRanking() === 'false'")
+									div(style="text-align: center; font-size: 13px; margin-bottom: 6px; margin-top: 0px; padding-top: 0px; color: green") Ei vaikuta rankingiin
 			
-			div(id="byhand" class="large-12 medium-12 small-12 columns panel radius")
-				div.newGameForm
-					div(class="large-12 small-12 columns")
+					div.row
+						div(class="large-12 small-12 columns")
+							div(style="text-align: center;")
+				
+								div.row(style="margin-left: 0px")
+									span.left(style="color: #333; font-weight: 300") Pelataan paras...
+								div.row
 
-						div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-right: 4px")
-							label(for="p1name", style="text-align: right; padding: 2px")
-								h5.subheader Pelaaja 1
-								select.right(id="p1name", class="small", data-bind="options: playerListOne, optionsText: 'name', value: playerOne", style="text-overflow: ellipsis")
-						
-						div.large-6.small-6.columns(style="padding: 0px; margin:0px; padding-left: 4px")
-							label(for="p2name", style="text-align: left; padding: 2px")
-								h5.subheader Pelaaja 2
-								select.left(id="p2name", class="small", data-bind="options: playerListTwo, optionsText: 'name', value: playerTwo", style="text-overflow: ellipsis")
+									input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
+									label(for="bestof3", style="color: #333; font-weight: 300; padding: 6px 0px 6px 0px") kolmesta								
 
-					div(class="large-12 small-12 columns")
-						span(style="margin-bottom: 0px")
-							label(for="eventSelect", style="color: #333; font-weight: 300; font-size: 13px") Tapahtuma johon peli kuuluu...
-							select(id="eventSelect", class="small", data-bind="options: eventList, optionsText: 'name', value: event", style="text-overflow: ellipsis")
-						div(data-bind="if: eventList().length > 0", style="text-align: center")
-							div(data-bind="if: event().affectsRanking() === 'false'")
-								div(style="text-align: center; font-size: 12px; margin-bottom: 6px; margin-top: 0px; padding-top: 0px; color: green") Ei vaikuta rankingiin
-							
-							
-							
-					//div(data-bind="text: event().affectsRanking")
+			
+									input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
+									label(for="bestof5", style="color: #333; font-weight: 300; padding: 6px 0px 6px 0px") viidestä
+			
+								span 
+							//span(data-bind="text: selectedSwitch")
+			
 
-					div(class="large-12 small-12 columns")
-						div(style="text-align: center; width: 100%; margin-left: auto; margin-right: auto; padding: 4px; font-size: 13px")
-						
-						
-							span.left(style="color: #333; font-weight: 300") Pelataan paras...
-							p
-
-
-							input#bestof3(name="switch-x", type="radio", data-bind=" checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof3")
-							label(for="bestof3", style="color: #333; font-weight: 300") kolmesta
-					
-							input#bestof5(name="switch-x", type="radio", data-bind="checked: selectedSwitch, click: updateScoreEntry(function() { event.preventDefault() })", value="bestof5")
-							label(for="bestof5", style="color: #333; font-weight: 300") viidestä
-					
-					
-							span 
-						//span(data-bind="text: selectedSwitch")
-					
-	
-					div#scoreEntryTable(class="large-12 small-12 columns", style="text-align: center")
-						table(data-bind="if: playerListOne().length > 0 && playerListTwo().length > 0", style="margin: auto; text-align: center; max-width: 640px; padding: 0px; border-spacing: 0 ")
-							thead
-								tr
-									//th(style="background: #333; border-top-left-radius: 2px" )
-									th.text-right(colspan=2, style="background: #333; max-width: 120px; border-top-left-radius: 2px")
-										span(data-bind="text: playerOne().name()", style="color: #fff")
-									th.text-left(colspan=2, style="background: #333; max-width: 120px; border-top-right-radius: 2px")
-										span(data-bind="text: playerTwo().name()", style="color: #fff")
-									//th(style="background: #333; border-top-right-radius: 2px")
-							tfoot
-								tr
-									td(colspan=4).scoreEntryCell
-										// | Päiväys
-										// input(type="date")
-										span.error_custom(data-bind="visible: scoreEntryError() === 	true", style="text-align: center")
+						div#scoreEntryTable.large-12.small-12.columns(style="text-align: center")
+							table(data-bind="if: playerListOne().length > 0 && playerListTwo().length > 0", style="margin: auto; text-align: center; max-width: 640px; width: 100%; padding: 0px; border-spacing: 0 ")
+								thead
+									tr
+										//th(style="background: #333; border-top-left-radius: 2px" )
+										th(colspan=5, style="background: #333;  border-top-left-radius: 2px; border-top-right-radius: 2px")
+											div.left(style="text-align: right; width: 50%")
+												span.right(data-bind="text: playerOne().name()", style="color: #fff")
+												span.right &nbsp;
+												span.right &nbsp;
+												span.right &nbsp;
+												span.right &nbsp;
+												
+											div.right(style="text-align: left; width: 50%")
+												span.left &nbsp;
+												span.left &nbsp;
+												span.left &nbsp;
+												span.left &nbsp;
+												span.left(data-bind="text: playerTwo().name()", style="color: #fff")
+										//th(style="background: #333; border-top-right-radius: 2px")
+								tfoot
+									tr
+										td(colspan=4).scoreEntryCell
+											// | Päiväys
+											// input(type="date")
+											span.error_custom(data-bind="visible: scoreEntryError() === true", style="text-align: center")
 												|Virhe tuloksissa
 											
-										
-										hr
-										
-										div.left(data-bind="visible: saveSucceeded() === true")
-											img.right(src="/images/loader.gif", data-bind="visible: saveInProgress() === true");
-										
-											h5.subheader(style="color: green")
-												|Tallennus onnistui!
-											
-										div.left(data-bind="visible: session.username() == 'testi'")
-												| Tällä käyttäjällä ei ole oikeuksia lisätä pelejä.
-										
-										div.button.right.radius.small.disabled(data-bind="visible: session.username() == 'testi'")
-												|Tallenna
-											div.button.right.radius.small(data-bind="visible: session.username() != 'testi', click: validateMatch")
-												|Tallenna
+						
+								tbody(data-bind="foreach: scoreEntry")
+									tr(style="padding: 4px; margin: 4px")
+										td.scoreEntryCell(style="width: 60px", data-bind="click: $root.setupScoreEntry.bind($data, 'remove' )")
+											//(style="width: 30px; padding: 4px; max-width: 30px !important")
+											div(data-bind="visible: $index() === $root.scoreEntry().length -1")
+												div(data-bind="if: ($root.selectedSwitch() === 'bestof5' && $index() === 4) || ($root.selectedSwitch() === 'bestof5' && $index() === 3) || ($root.selectedSwitch() === 'bestof3' && $index() === 2)")
+													a.scoreEntryAddRemoveButton
+														img(src="/images/minus_icon.png")
+														//i.fi-minus.scoreEntryAddRemoveButtonInner										
 								
-							tbody(data-bind="foreach: scoreEntry")
-								tr
-									td.scoreEntryCell(style="width: 25%")
-										span(data-bind="text: $index() +1")
-										|.&nbsp;er&auml;
-									td.scoreEntryCell
-										input(type="tel", pattern="[0-9]", data-bind="value: p1score", min="0")
-									td.scoreEntryCell
-										input(type="tel", pattern="[0-9]", data-bind="value: p2score", min="0")
-									td.scoreEntryCell(data-bind="if: ($index() === ($parent.scoreEntry().length - 1))", style="width: 25%; min-width: 60px")
-										div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 4 ")
-											a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'remove' )")
-												i.fi-minus
+										td.scoreEntryCell
+											span(data-bind="text: $index() +1")
+											|.
 										
-										div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 2")
-											a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add')")
-												i.fi-minus(style="visibility: hidden")
-												i.fi-plus																						
-										
-										div.left(data-bind="if: $root.selectedSwitch() === 'bestof5' && ($index()) === 3")
+										td.scoreEntryCell
+											input(type="tel", pattern="[0-9]", data-bind="value: p1score", min="0", style="width: 100%; text-align: center; font-size: 22px; font-weight: 700").right
+										td.scoreEntryCell
+											input(type="tel", pattern="[0-9]", data-bind="value: p2score", min="0", style="width: 100%; text-align: center; font-size: 22px; font-weight: 700").left
+
+
+										td.scoreEntryCell(style="width: 60px", data-bind="click: $root.setupScoreEntry.bind($data, 'add' )")
+											//(style="width: 30px; padding: 4px; max-width: 30px !important")
+											div(data-bind="visible: $index() === $root.scoreEntry().length - 1")
+												div(data-bind="if: ($root.selectedSwitch() === 'bestof5' && $index() === 2) || ($root.selectedSwitch() === 'bestof5' && $index() === 3) || ($root.selectedSwitch() === 'bestof3' && $index() < 2)")
+													a.scoreEntryAddRemoveButton
+														img(src="/images/plus_icon.png")													
+														//i.fi-plus.scoreEntryAddRemoveButtonInner
+
 									
-											a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'remove' )")
-												i.fi-minus
-											&nbsp;&nbsp;
-											a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add' )")
-												i.fi-plus
-										div.left(data-bind="if: $root.selectedSwitch() === 'bestof3' && ($index()) === 2 ")
-											a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'remove')")
-												i.fi-minus
-										div.left(data-bind="if: $root.selectedSwitch() === 'bestof3' && ($index()) < 2 ")
-											a.scoreEntryAddRemoveButton(data-bind="click: $root.setupScoreEntry.bind($data, 'add')")
-												i.fi-minus(style="visibility: hidden")
-												i.fi-plus
+										
+											
+				div.large-12.medium-12.small-12.columns
+
+					h5.subheader.left(style="color: green", data-bind="fadeVisible: saveSucceeded() === true")
+						|Tallennus onnistui!
+			
+					div.left(data-bind="visible: session.username() == 'testi'")
+							| Tällä käyttäjällä ei ole oikeuksia lisätä pelejä.
+		
+					div.button.right.radius.small.disabled(data-bind="visible: session.username() == 'testi'", style="right: 0px; position: absolute")
+							|Tallenna
+					div.button.right.radius.small(data-bind="visible: session.username() != 'testi', click: validateMatch", style="right: 0px; position: absolute")
+						|Tallenna
+				
+					img.left(src="/images/loader.gif", data-bind="fadeVisible: saveInProgress() === true", style="padding: 6px")
+					
+					p &nbsp;
+					p &nbsp;
+					
+					
+						
 
 
-	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
-		&nbsp;
 	
 	//div(data-bind="text: matchList.scores")
 

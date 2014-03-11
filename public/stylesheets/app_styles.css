@@ -74,15 +74,7 @@ body {
 	padding-bottom: 0px;
 	margin: 0px;
 
-/*
-	background: -moz-linear-gradient(top,  rgba(132,0,95,0.9) 0%, rgba(130,67,112,0.8) 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(132,0,95,0.9)), color-stop(100%,rgba(130,67,112,0.8))); 
-	background: -webkit-linear-gradient(top,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%);
-	background: -o-linear-gradient(top,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%); 
-	background: -ms-linear-gradient(top,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%); 
-	background: linear-gradient(to bottom,  rgba(132,0,95,0.9) 0%,rgba(130,67,112,0.8) 100%); 
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e684005f', endColorstr='#cc824370',GradientType=0 );
-*/
+
 	background: -moz-linear-gradient(top,  rgba(0,89,178,0.95) 0%, rgba(14,103,186,0.7) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,89,178,0.95)), color-stop(100%,rgba(14,103,186,0.85)));
 	background: -webkit-linear-gradient(top,  rgba(0,89,178,0.95) 0%,rgba(14,103,186,0.85) 100%);
@@ -91,10 +83,13 @@ body {
 	background: linear-gradient(to bottom,  rgba(0,89,178,0.95) 0%,rgba(14,103,186,0.85) 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e60059b2', endColorstr='#b30e67ba',GradientType=0 );
 
+
 	
 	text-align: center;
 	z-index: 100;
 }
+
+
 
 
 /* * .ui-select .ui-btn select {
@@ -156,7 +151,7 @@ body {
 	top: 2px !important;
 }
 
-#asetukset {
+#endBtn {
 	//top: 2px;
 }
 
@@ -165,14 +160,13 @@ body {
 }
 
 .dialogBtn {
-	top: 0px !important;
-	height: 44px;
-	background: transparent;
-	border-color: transparent;
-	box-shadow: none;
-	padding: 0px;
-	border: 0px;
-	margin: 0px;
+	top: 2px !important;
+//	height: 44px;
+	font-size: 13px;
+	margin-top: auto !important;
+	margin-bottom: auto !important;
+	color: white !important;
+	text-shadow: 0px 0px 2px black;
 }
 
 .dialogBtn .ui-btn-inner{
@@ -517,17 +511,19 @@ body {
 	width: 75px;
 	margin: auto;
 	text-align: center !important;
+	vertical-align: middle !important;
 }
 
 
 #tuomiot {
-	margin: 0px !important;
+/*	margin: 0px !important;
 	padding-right: 0px;
 	margin-right: 0px;
-	padding: 0px !important;
+	padding: 0px !important; */
 }
 
-#tuom_arrow {
+
+#tuom_text {
 	float: right;
 	margin-top: 11px;
 	margin-bottom: 10px;
@@ -543,37 +539,46 @@ body {
 	//font-family: "andale mono";
 	//width: 10px;
 	//height: 10px;
+	text-decoration: none !important;
+}
+
+#tuom_arrow {
+	display: inline-block;
 }
 
 .callButton {
-	width: 60px;
+	width: 65px;
+	padding: 1px;
+	padding-top: 1px;
+	padding-bottom: 1px;
 }
 
 .callButton .ui-btn-inner {
 	min-width: 10px !important;
-	padding: 3px 3px 3px 3px !important;
+	padding: 1px 1px 1px 1px !important;
+	
 }
 
 .yesLetBtn {
-	border-left-style: solid;
-	border-left-color: rgba(19,142,0,1);
-	border-right-color: rgba(19,142,0,1);	
-	border-right-width: 3px;
-	border-left-width: 3px;
+	border-left-style: solid !important;
+	border-left-color: rgba(19,142,0,1) !important;
+	border-right-color: rgba(19,142,0,1) !important;
+	border-right-width: 3px !important;
+	border-left-width: 3px !important;
 }
 
 .noLetBtn {
-	border-left-width: 3px;
-	border-right-width: 3px;
-	border-left-color: rgba(255,116,0,1);
-	border-right-color: rgba(255,116,0,1);
+	border-left-width: 3px !important;
+	border-right-width: 3px !important;
+	border-left-color: rgba(255,116,0,1) !important;
+	border-right-color: rgba(255,116,0,1) !important;
 }
 
 .strokeBtn {
-	border-left-width: 3px;
-	border-right-width: 3px;
-	border-left-color: rgba(160,2,0,1);
-	border-right-color: rgba(160,2,0,1);
+	border-left-width: 3px !important;
+	border-right-width: 3px !important;
+	border-left-color: rgba(160,2,0,1) !important;
+	border-right-color: rgba(160,2,0,1) !important;
 	
 }
 
@@ -659,10 +664,10 @@ body {
 	outline: none;
 	border-radius: 0px !important;
 	border: 0px;
-	background: url('../images/handle_b.png');
+	background: url('../images/handle_b8.png?12323');
 	background-repeat: no-repeat;
 	background-size: 100%;
-	margin-left: -60px !important;
+	margin-left: -54px !important;
 	margin-top: 0px !important;
 	margin-bottom: 0px !important;
 	z-index: 50;

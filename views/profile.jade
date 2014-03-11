@@ -1,24 +1,24 @@
 extends layout
 
 block append scripts
-	
+
 block append site_scripts
 	script(src="/javascripts/vendor/foundation/foundation.abide.js")
 	script(type="text/javascript", src="https://www.google.com/jsapi")
 	<script>google.load('visualization', '1.0', {'packages':['corechart']});
 	</script>
-	
-	script(src="/javascripts/profile.js")	
+
+	script(src="/javascripts/profile.js")
 
 	//script(src="http://d3js.org/d3.v3.min.js")
-	
+
 
 block content
 
 	include navbar
 
 	input(type="hidden", id="pid", value="#{session.pid}", data-bind="text: id('#{session.pid}')")
-	
+
 
 	div(class="large-12 medium-12 small-12 columns", style="z-index: 0")
 		dl.sub-nav(class="large-12 small-12 columns", style="padding-top: 16px", data-bind="visible: (( session != undefined) && (session._id() == profiili()._id() || profiili()._id() == undefined)) ")
@@ -29,49 +29,169 @@ block content
 				a(data-bind="click: function() { return visiblePage('edit') }")
 					|Käyttäjätilin asetukset
 
+		div.row
+			div.large-12.small-12.columns(data-bind="css: { hidden : visiblePage() !== 'profiili' }")
+				h3.subheader(style="text-align: center")
+					span(data-bind="text: profiili().name")
 
-		div.large-12.small-12.columns#profiili(data-bind="css: { hidden : visiblePage() !== 'profiili' }")
-			h4.subheader
-				|Pelaaja
-				
-			//h5.subheader(data-bind="text: profiili")
-		
-			div.large-12.medium-12.small-12.columns.radius.panel(style="padding: 0")
-			
-				div.row.eventListHeader(style="border-bottom: 1px solid #acacac; width: 100%; max-width: 100%")
+
+		div.large-12.small-12.columns#profiili(data-bind="css: { hidden : visiblePage() !== 'profiili' }", style="z-index: 0 !important")
+			div(data-bind="fadeVisible: doneLoading() == true", style="z-index: 0 !important")
+
+				//dl.tabs.tabit.text-center(style="text-align: center; margin-left: auto; margin-right: auto; width: 232px")
+
+					div(style="position: absolute; width: 112px; height: 68px; box-shadow: 0px 0px 10px #999; z-index: 0; top: 6px; ")
+
+					dd.text-center.radius(data-bind="css: { active_tab_dd : visibleTab() == 'info' }")
+						a(data-bind="css: { active_tab : visibleTab() == 'info' }, click: function() { return visibleTab('info') }")
+							|Tiedot
+
+
+					div(style="position: absolute; width: 112px; height: 68px; box-shadow: 0px 0px 6px #999; z-index: 0; top: 6px; ")
+
+
+					dd.text-center.radius(data-bind="css: { active_tab_dd : visibleTab() == 'stats' }")
+						a(data-bind="css: { active_tab : visibleTab() == 'stats' }, click: function() { return visibleTab('stats') }")
+							|Tilastot
+
+					div(style="position: absolute; width: 112px; height: 68px; box-shadow: 0px 0px 10px #999; z-index: 0; top: 6px; margin-left: 118px")
+
+
+
+
+
+
+
+
+
+
+			div#info.large-12.medium-12.small-12.columns.radius.panel(style="padding: 0", data-bind="visible: visibleTab() == 'info'")
+
+				div.row.eventListHeader(data-bind="fadeVisible: doneLoading() == true", style="border-bottom: 1px solid #acacac; width: 100%; max-width: 100%")
 					div.large-12.medium-12.small-12.columns(style="margin: 4px; padding: 4px")
 						//(style="padding: 6px")
-		
+
 						//div.large-3.medium-5.small-6
 							img.left(src="/images/derp.png", style="width: 120px")
 							input(type="file", accept="image/*", capture="camera", data-bind="value: profilePic")
-					
+
 							span(data-bind="text: profilePic")
-					
+
+						div.large-6.medium-6.small-12.columns(style="padding: 2px")
+							span(style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Nimi&nbsp;
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="text: profiili().name")
+
+						div.large-6.medium-6.small-12.columns(style="padding: 2px")
+							span(style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Seura&nbsp;
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="text: profiili().clubName")
+
+						div.large-6.medium-6.small-12.columns(style="padding: 2px")
+							span(data-bind="visible: session.rank() !== 'null'", style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Seuraranking&nbsp;
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="text: profiili().rank");
+						div.large-6.medium-6.small-12.columns(style="padding: 2px")
+							span(style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Pelien määrä&nbsp;
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="text: matchList().length")
+
+
+					div.large-12.medium-12.small-12.columns(style="margin: 4px; padding: 4px")
+
 						div.large-6.medium-6.small-12.columns
-							h5.subheader(style="color: #111; text-shadow: 0px 1px 2px #fff")
-								|Nimi: 
-								span(data-bind="text: profiili().name")
-							h5.subheader(style="color: #111; text-shadow: 0px 1px 2px #fff")
-								|Seura: 
-								span(data-bind="text: profiili().clubName")
-						
+							span(data-bind="if: typeof commonestOpponent() !== 'undefined'" style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Yleisin vastustaja&nbsp;
+
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="visible: commonestOpponent().matches !== 0")
+										span(data-bind="if: commonestOpponent()._id != 1")
+											a(data-bind="text: commonestOpponent().name, attr: { href : '/profile/' + commonestOpponent()._id }")
+										span(data-bind="if: commonestOpponent()._id == 1")
+											span(data-bind="text: commonestOpponent().name")
+										span &nbsp;
+										span (
+										span(data-bind="text: commonestOpponent().matches")
+										span &nbsp;
+										span(data-bind="visible: commonestOpponent().matches == 1") peli
+										span(data-bind="visible: commonestOpponent().matches > 1") peliä
+										span )
+									span(data-bind="visible: commonestOpponent().matches == 0") -
+
+							p
+
+							span.subheader
+
+
 						div.large-6.medium-6.small-12.columns
-							h5.subheader(data-bind="visible: session.rank() !== 'null'", style="color: #111; text-shadow: 0px 1px 2px #fff")
-								|Seuraranking: 
-								span(data-bind="text: profiili().rank");
-							h5.subheader(style="color: #111; text-shadow: 0px 1px 2px #fff")
-								|Pelien määrä: 
-								span(data-bind="text: matchList().length")
-							
+							span(data-bind="if: typeof toughestOpponent() !== 'undefined'"  style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Pahin vastustaja&nbsp;
+
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="visible: toughestOpponent().losses !== 0")
+										span(data-bind="if: toughestOpponent()._id != 1")
+											a(data-bind="text: toughestOpponent().name, attr: { href : '/profile/' + toughestOpponent()._id }")
+										span(data-bind="if: toughestOpponent()._id == 1")
+											span(data-bind="text: toughestOpponent().name")
+										span &nbsp;
+										span (
+										span(data-bind="text: toughestOpponent().losses")
+										span &nbsp;
+										span(data-bind="visible: toughestOpponent().losses == 1") tappio
+										span(data-bind="visible: toughestOpponent().losses > 1") tappiota
+										span )
+
+									span(data-bind="visible: toughestOpponent().losses == 0") -
+							p
+
+							div.row
+
+							span(data-bind="if: typeof softestOpponent() !== 'undefined'"  style="color: #111; text-shadow: 0px 1px 2px #fff")
+								div.large-6.medium-6.small-6.columns.text-right(style="padding: 2px")
+									span(style="font-weight: 700") Helpoin vastustaja&nbsp;
+
+								div.large-6.medium-6.small-6.columns.text-left(style="padding: 2px; font-weight: 300")
+									span(data-bind="visible: softestOpponent().wins !== 0")
+										span(data-bind="if: softestOpponent()._id != 1")
+											a(data-bind="text: softestOpponent().name, attr: { href : '/profile/' + softestOpponent()._id }")
+										span(data-bind="if: softestOpponent()._id == 1")
+											span(data-bind="text: softestOpponent().name")
+										span &nbsp;
+										span (
+										span(data-bind="text: softestOpponent().wins")
+										span &nbsp;
+										span(data-bind="visible: softestOpponent().wins == 1") voitto
+										span(data-bind="visible: softestOpponent().wins > 1") voittoa
+										span )
+
+									span(data-bind="visible: softestOpponent().wins == 0") -
+
+					//div.row(style="border-bottom: 1px solid #cecece; margin: 0px")
+					//div.row(style="border-bottom: 1px solid #fefefe; margin: 0px")
+
+
+
+					div.large-12.medium-12.small-12.columns(style="height: 60px; text-align: center", data-bind="fadeVisible: doneLoading() == false")
+						img(src="/images/loader.gif")
+
+
 				div.row
-					div#chart_div.chart(data-bind="css: { hidden : visiblePage() !== 'profiili', chart_ios : ios() == true,  }")
-					
-					
-	div.row		
+					div#chart_div.chart(data-bind="css: { hidden : visiblePage() !== 'profiili', chart_ios : ios() == true,  }, fadeVisible: doneLoading() == true")
+
+	div.row
 		p
-			
-		
+
+
 	div(class="large-3 medium-12 small-12 columns", data-bind="visible: matchList().length > 0, css: { hidden : visiblePage() !== 'profiili' }" )
 		h4.subheader Pelit
 
@@ -91,30 +211,31 @@ block content
 
 			// /ko
 			div.large-12.medium-6.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.showMatch.bind($data, _id), css: { highlight : scores().length > 0, orange_highlight : _id == $root.selectedMatch_id() }")
-			
-					div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
-					div.large-4.small-4.columns.site_gameList(style="text-align: center")
+
+					div.large-4.medium-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
+					div.large-3.medium-3.small-3.columns.site_gameList(style="text-align: center")
 						span(data-bind="text: p1GamesWon")
 						|&nbsp;-&nbsp;
 						span(data-bind="text: p2GamesWon")
-					div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
-					
-						div.right(style="position: relative; z-index: 5; display: inline-block; text-align: right")
-							i.fi-comment(style="font-size: 18px; color: #222; display: inline", data-bind="visible: $root.getNumberOfComments(_id) > 0")
+					div.large-4.medium-4.small-4.columns.site_gameList
+						span(data-bind="text: playerTwoName", style="text-align: left")
+					div.large-1.medium-1.small-1.columns.site_gameList
+						div.right(style="position: relative; top: 0px !important; z-index: 5; display: inline-block; text-align: right")
+							i.fi-comment(style="font-size: 18px; color: #222; display: inline", data-bind="visible: $root.getNumberOfComments(_id()) > 0")
 							span(style="color: white; z-index: 5; position:absolute; left: 2px; top: 2px; font-size: 10px")
-								span(data-bind="text: $root.getNumberOfComments(_id)")					
-					
+								span(data-bind="text: $root.getNumberOfComments(_id())")
+
 		div.large-12.small-12.columns
 			p
 				small
 					span.highlight Pinkillä
 					span &nbsp;
 					span merkatuista peleistä on pöytäkirja tallennettuna.
-					
+
 	div(class="large-9 medium-12 small-12 columns", data-bind="css: { hidden : visiblePage() !== 'profiili' }")
 
 		include match_details.jade
-					
+
 	div.large-12.small-12.columns#edit(data-bind="css: { hidden : visiblePage() !== 'edit' }")
 		div.large-12.medium-12.small-12.columns
 			form#changePass(data-abide)
@@ -132,34 +253,32 @@ block content
 						small.error Salasanan pitää olla vähintään kuusi merkkiä pitkä
 						div#newPassErr.custom_small_error(data-bind="visible: newPassFail() == true")
 							| Salasanan pitää olla vähintään kuusi merkkiä pitkä
-		
+
 					div
 						label(for="newpassverify") Uusi salasana uudestaan:
 						input(id="newpassverify", type="password", pattern=".{6,}", name="verifypass", required, data-bind="value: newPassVerify")
 						input(type="hidden", data-bind="attr: { 'data-invalid' : newPass() !== newPassVerify() }")
-						small.error 
+						small.error
 						div.custom_small_error#passErr(data-bind="visible: doPasswordsDiffer") Salasanat eivät täsmää
 
 			div.large-12.small-12.right(data-bind="visible: saveSucceeded() === true")
 				span(style="color: green; font-weight: 300")
 					p Salasana vaihdettu.
 					a.button.success.radius(href="/logout") Kirjaudu uudelleen sisään
-		
+
 			div.large-6.small-12.left(data-bind="visible: saveInProgress() === true")
-				img(src="/images/loader.gif");
-	
+				img(src="/images/loader.gif")
+
 			div.large-6.small-12.right(data-bind="visible: saveSucceeded() === false")
 				button.right.small.radius(data-bind="click: saveUser") Vaihda salasana
 
-				
-				
-					
+
 
 	//div.row
 		div.large-12
 			pre(data-bind="text: ko.toJSON(session, null, 2)")
-					
+
 	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
 		&nbsp;
-		
+
 

@@ -2,7 +2,7 @@ extends layout
 
 block append site_styles
 	link(rel="stylesheet" href="/stylesheets/vendor/foundation-datepicker.css")
-	
+
 block append site_scripts
 	script(src="/javascripts/vendor/foundation-datepicker.js")
 	script(src="/javascripts/admin.js")
@@ -13,21 +13,21 @@ block content
 	div.row
 		div(class="large-12 small-12 columns")
 			h4.subheader Ylläpitäjän työkalut
-			
+
 			dl.sub-nav(class="large-12 small-12 columns")
 				dd.active(data-bind="css: { active : visiblePage() == 'users'}")
 					a(data-bind="click: function() { return visiblePage('users') }") Käyttäjät
 				dd(data-bind="css: { active : visiblePage() == 'clubs' }")
-					a(data-bind="click: function() { return visiblePage('clubs') }") Seurat					
+					a(data-bind="click: function() { return visiblePage('clubs') }") Seurat
 				dd(data-bind="css: { active : visiblePage() == 'events' }")
 					a(data-bind="click: function() { return visiblePage('events') }") Tapahtumat
 				dd(data-bind="css: { active : visiblePage() == 'ranking' }")
 					a(data-bind="click: function() { return visiblePage('ranking') }") Ranking
-					
+
 			div#ranking.large-12.small-12.columns.panel(data-bind="css: { hidden : visiblePage() !== 'ranking' }")
 				div.large-6.medium-6.small-12.columns(data-bind="if: rankingList().length > 0 && hotnessList().length > 0")
 					div(style="color: #909090")
-						span Päivitetty: 
+						span Päivitetty:
 						span(data-bind="text: rankingDate")
 					table
 						tbody(data-bind="foreach: rankingList", style="padding: 1px; margin: 0px")
@@ -36,23 +36,28 @@ block content
 								td(style="width: 50px; margin: 0px; padding: 0px")
 									input(data-bind="numericValue: rank", type="number", pattern="[0-9]", style="padding: 4px; margin: 0px", min="1")
 								td
-									select(id="hotness", class="small", data-bind="options: $root.hotnessList,  value: hotness", style="color: #111; font-size: 14px; padding: 9px; margin: 0px")								
-								
+									select(id="hotness", class="small", data-bind="options: $root.hotnessList,  value: hotness", style="color: #111; font-size: 14px; padding: 9px; margin: 0px")
+
 								td(data-bind="text: name")
-								
-				
+
+
 				div.large-6.medium-6.small-12.columns
-					a.button.small.left(data-bind="click: saveRankingList") Tallenna ranking
+					a.button.small(data-bind="click: saveRankingList") Tallenna ranking
 
 					p(data-bind="if: showSuccess() === true", style="color: green")
 						| Tallennus onnistui
-						
 
-				
+
+					a.button.small.success(data-bind="click: generateRankingList") Generoi rankinglista uudestaan
+
+					a.button.alert.small(data-bind="click: generateRankingArchive") Generoi rankingarkisto uudestaan
+
+
+
 					//div(style="background-color: #eee")
-						pre(data-bind="text: ko.toJSON(rankingList, null, 2)")								
-				
-				
+						pre(data-bind="text: ko.toJSON(rankingList, null, 2)")
+
+
 
 
 			div#users.large-12.small-12.columns.panel(data-bind="css: { hidden : visiblePage() !== 'users' }")
@@ -60,10 +65,10 @@ block content
 					form
 						label(for="userid")
 						select(id="userid", class="small", data-bind="options: playerList, optionsText: 'name', value: player", style="color: #111; font-size: 14px")
-						
+
 						label(for="userclub")
 						select(id="userclub", class="small", data-bind="options: clubList, optionsText: 'name', value: userclub", style="color: #111; font-size: 14px")
-						
+
 
 						label(for="sijoitus") Sijoitus
 						input(id="sijoitus", type="number", data-bind="value: player().rank")
@@ -76,7 +81,7 @@ block content
 						br
 						input(id="lukewarm", name="lukewarm", type="radio", value="lukewarm", data-bind="checked: player().hotness") Lukewarm
 						label(for="lukewarm", style="display: inline") &nbsp;Lukewarm
-				
+
 				div.large-6.small-12.columns
 					a.button(data-bind="click: saveUser") Muuta pelaajan ranking
 					table#rankingtable
@@ -87,7 +92,7 @@ block content
 
 					span(data-bind="if: showSuccess() === true", style="color: green")
 						| Tallennus onnistui
-						
+
 			div#clubs.large-12.small-12.columns(data-bind="css: { hidden : visiblePage() !== 'clubs' }")
 				div.panel
 					label(for="club")
@@ -95,45 +100,45 @@ block content
 					label(for="clubShort")
 					input(id="clubShort", type="text", data-bind="value: clubShort", placeholder="Seuran lyhenne...")
 					hr
-				
+
 					a.button.right(data-bind="click: addClub") Lisää seura
-					
-					p &nbsp;				
-					p &nbsp;				
-				
-				
-				
+
+					p &nbsp;
+					p &nbsp;
+
+
+
 			div#events.large-12.small-12.columns(data-bind="css: { hidden : visiblePage() !== 'events' }")
-			
+
 				dl.sub-nav(class="large-12 small-12 columns", style="font-size: 95%")
 					dd.active(data-bind="css: { active : visibleSubPage() == 'newEvent' }")
-						a(data-bind="click: navShowNewEvent") 
+						a(data-bind="click: navShowNewEvent")
 							| Luo uusi
 					dd(data-bind="css: { 'active visible' : visibleSubPage() == 'editEvent', hidden : visibleSubPage() != 'editEvent' }")
 						a(data-bind="click: navShowEditEvent")
 							| Muokkaa
-			
+
 				div.large-12.small-12.columns.panel#editEvent(data-bind=" if: (eventList().length > 0), css: { hidden : visibleSubPage() !== 'editEvent', visible : visibleSubPage() === 'editEvent' }")
 					form
 						label(for="events")
 						select(id="events", class="small", data-bind="options: eventList, optionsText: 'name', value: event", style="color: #111, font-size: 14px")
-			
+
 					div(data-bind="visible: ios() == false")
-					
+
 						label(for="name") Tapahtuman nimi
 
 						input(id="name", type="text", name="name", data-bind="value: event().name");
-		
+
 						label(for="startTimeEdit", data-bind="visible: ios() == false") Alkamispäivä
 
 						input.dp(id="startTimeEdit", type="text", name="startTimeEdit", data-bind="visible:  ios() == false, value: event().startDate", data-date-format="dd.mm.yyyy")
-		
+
 						label(for="endTimeEdit", data-bind="visible: ios() == false") Viimeinen osallistumispäivä
 
 						input.dp(type="text", id="endTimeEdit", name="endTimeEdit", data-bind="visible: ios() == false, value: event().endDate", data-date-format="dd.mm.yyyy")
-				
 
-			
+
+
 					//div(data-bind="visible: ios() == true")
 
 						label(for="start") Alkamispäivä
@@ -144,7 +149,7 @@ block content
 
 					input(type="checkbox", id="rankedEdit", name="ranked", value=" ", checked, style="display: inline", data-bind="checked:  event().affectsRanking")
 					label(for="rankedEdit", style="display: inline")&nbsp; Vaikuttaa rankingiin
-					
+
 
 
 					a(data-bind="click: updateEvent").button.right
@@ -152,20 +157,20 @@ block content
 
 					//pre(data-bind="text: ko.toJSON(event, null, 2)")
 
-			
+
 				div.large-12.small-12.columns.panel#newEvent(data-bind="css: { hidden : visibleSubPage() !== 'newEvent', visible : visibleSubPage() === 'newEvent' } ")
 					h5.subheader Uusi tapahtuma
-			
+
 					label(for="name") Tapahtuman nimi
 					input(id="name", type="text", name="name", data-bind="value: eventName");
-			
-			
+
+
 					div(data-bind="visible: ios() == false")
-			
+
 						label(for="startTime", data-bind="visible: ios() == false") Alkamispäivä
 
 						input.dp(id="startTime", type="text", name="startTime", data-bind="visible:  ios() == false, value: eventStartTime", placeholder="Klikkaa valitaksesi päivämäärän...", data-date-format="dd.mm.yyyy")
-			
+
 						label(for="endTime", data-bind="visible: ios() == false") Viimeinen osallistumispäivä
 
 						input.dp(type="text", id="endTime", name="endTime", data-bind="visible: ios() == false, value: eventEndTime",  data-date-format="dd.mm.yyyy", placeholder="Klikkaa valitaksesi päivämäärän...")
@@ -180,7 +185,7 @@ block content
 						input(type="date", id="end", name="end", data-bind="value: eventEndTime")
 
 					input(type="checkbox", id="ranked", name="ranked", value="true", checked, style="display: inline", data-bind="checked: eventAffectsRanking")
-					label(for="ranked", style="display: inline")&nbsp; Vaikuttaa rankingiin						
+					label(for="ranked", style="display: inline")&nbsp; Vaikuttaa rankingiin
 
 					a(data-bind="click: createEvent").button.right.small
 						| Luo tapahtuma

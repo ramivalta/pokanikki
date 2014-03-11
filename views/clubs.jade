@@ -3,56 +3,52 @@ extends layout
 block append headers
 	link(rel="stylesheet" href="/stylesheets/foundation.css")
 	link(rel="stylesheet" href="/stylesheets/site_styles.css")
-	
+
 block append site_scripts
 	script(src="/javascripts/clubs.js")
 
 block content
 	include navbar
 
-	div.large-2.medium-2.small-12.columns#seurat
-		h3.subheader Seura
-		div(data-bind="foreach: clubList")
-			h5.subheader
-				span(data-bind="text: name")
-				//, click: $root.getClubData.bind($data, _id)")
-				//span(data-bind="text: _id")
-				br
+	h2(style="text-align: center") Laajavuori Squash
 
-	div.large-3.medium-3.small-12.columns
-		h3.subheader Pelaajat
-		div(data-bind="if: playerList().length > 0")
-			h5.subheader
-				ul.no-bullet(data-bind="foreach: playerList")
-					li
-						a(data-bind="text: name, click: function() { window.location.href='/profile/' + _id() }")
-						
-	div.large-3.medium-3.small-12.columns						
-		h3.subheader Tapahtumat
-		div(data-bind="if: eventList().length > 0")
-			h5.subheader Käynnissä olevat
-				ul.no-bullet(data-bind="foreach: eventList")
-					li	
-						a(data-bind="text: name, click: function() { window.location.href='/events/' + _id() }")
-						
-		div(data-bind="if: oldEventList().length > 0")
-			h5.subheader Vanhat
-				ul.no-bullet(data-bind="foreach: oldEventList")
-					li	
-						a(data-bind="text: name, click: function() { window.location.href='/events/' + _id() }")
-						
-		
-		
-			//h5.subheader Aktiivisia pelaajia: 
-				span(data-bind="text: playerList().length")
-			//h5.subheader Tallennettujen otteluiden määrä: 
-				span(data-bind="text: matchList().length")
-		
-	div.large-4.medium-4.small-12.columns
-		h3.subheader Pelit
-		include sidebar_matchlist.jade
-	
-	
-					
+	div.row
+		div.large-12.medium-12.small-12.columns.panel
+
+			div.large-4.medium-4.small-12.columns
+				h3.subheader Pelaajat
+				div(data-bind="if: playerList().length > 0")
+					h5.subheader
+						ul.no-bullet(data-bind="foreach: playerList")
+							li
+								a(data-bind="text: name, click: function() { window.location.href='/profile/' + _id() }")
+
+			div.large-4.medium-4.small-12.columns
+				h3.subheader Tapahtumat
+				div(data-bind="if: eventList().length > 0")
+					h5.subheader Käynnissä olevat
+						ul.no-bullet(data-bind="foreach: eventList")
+							li
+								a(data-bind="text: name, click: function() { window.location.href='/events/' + _id() }")
+
+				div(data-bind="if: oldEventList().length > 0")
+					h5.subheader Vanhat
+						ul.no-bullet(data-bind="foreach: oldEventList")
+							li
+								a(data-bind="text: name, click: function() { window.location.href='/events/' + _id() }")
+
+
+
+					//h5.subheader Aktiivisia pelaajia:
+						span(data-bind="text: playerList().length")
+					//h5.subheader Tallennettujen otteluiden määrä:
+						span(data-bind="text: matchList().length")
+
+			div.large-4.medium-4.small-12.columns
+				h3.subheader Pelit
+				include sidebar_matchlist.jade
+
+
+
 	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
 		&nbsp;

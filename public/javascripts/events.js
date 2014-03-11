@@ -25,7 +25,10 @@ function viewModel() {
 	self.activePage = ko.observable("events");
 
 	self.showSuccess = ko.observable(false);
+	
 	self.eventList = ko.observableArray();
+	self.pastEventList = ko.observableArray();
+	
 	self.matchListHeader = ko.observable();
 	
 	self.selectedEvent = ko.observable();
@@ -34,8 +37,15 @@ function viewModel() {
 	
 	self.showNoMatchesText = ko.observable(false);
 	
+	self.matchDuration = ko.observable();
+	
+	self.showLoadingAnim = ko.observable(true);
+	
 	self.getMatchesForEvent = function(id, name, match_id, mod_url) {
 		//var event_id = event._id;
+		
+		self.showLoadingAnim(true);
+		//$(element).fadeIn() : $(element).fadeOut();		
 		
 		var url = "";
 		
@@ -43,6 +53,7 @@ function viewModel() {
 
 			if(match_id) {
 				url = "/" + match_id;
+				//self.selectedMatch_id(match_id);
 				//console.log("had match_id, appending " + url);
 			}
 			
@@ -62,6 +73,7 @@ function viewModel() {
 		sqEventProxy.getMatchesForEvent(
 		{ event_id : event_id },
 		function(data) {
+
 			if(data.scores.length == 0) {
 				self.matchList([]);
 				self.match(undefined);
@@ -71,16 +83,26 @@ function viewModel() {
 				ko.mapping.fromJS(data.scores, {}, self.matchList);
 				self.showNoMatchesText(false);
 				self.match(undefined);
-				if(match_id) {
-					//console.log("have match_id, showing " + match_id);
-					self.showMatch(match_id);
-				}
-		}
+				
+			}
 			self.matchListHeader(name);
+			
+			self.showLoadingAnim(false);			
+			if(match_id) {
+				self.showMatch(match_id, true);
+			}
+			else {
+				//self.showMatch(self.matchList()[0]._id(), false);
+				//$('html, body').scrollTo('#matchList', 250);
+				$('html, body').scrollTo('#matchList', 250, { axis: 'y' });
+			}
 		});
-	}	
+	}
 	
-	self.showMatch = function(id) {
+	self.matchLoaded = ko.observable(false);
+	
+	self.showMatch = function(id, scroll) {
+		self.matchLoaded(false);
 		var split = window.location.href.split("/");
 		var found = false;
 		for(var i = 0; i < self.matchList().length; i++) {
@@ -97,13 +119,16 @@ function viewModel() {
 					window.history.replaceState({}, {}, url);
 				}
 				
-				
 				self.getStats();
-				$('html, body').scrollTo('#scores', 250);
-				
-				//self.playerListTwo(self.playerList().slice(0)); 				
+		
+				if(scroll == true) {
+					self.matchLoaded(true);				
+					$('html, body').scrollTo('#scores', 250, { axis: 'y' });
+				}
 				
 			}
+			self.matchLoaded(true);
+			self.getCommentsForMatch(id);
 		}
 		
 		if(found == false) {
@@ -136,7 +161,7 @@ function viewModel() {
 		}
 	}
 	
-	self.getEvent();
+	//self.getEvent();
 
 
 	/* self.createEvent = function() {
@@ -166,7 +191,7 @@ function viewModel() {
 		);
 	} */
 	
-	self.getActiveEvents = function() {
+	/*self.getActiveEvents = function() {
 		var data;
 		sqEventProxy.getActiveEvents(
 			{ data:data },
@@ -174,7 +199,7 @@ function viewModel() {
 				ko.mapping.fromJS(data.events, {}, self.eventList);
 			}
 		);
-	}
+	} */
 	
 	//self.getActiveEvents();
 	
@@ -190,13 +215,14 @@ function viewModel() {
 		sqEventProxy.getPastEvents(
 			{data:data},
 			function(data) {
-				ko.mapping.fromJS(data.events, {}, self.eventList);
+				ko.mapping.fromJS(data.current, {}, self.eventList);
+				ko.mapping.fromJS(data.past, {}, self.pastEventList);
 				if(typeof jshare !== 'undefined') {
 					self.getMatchesForEvent(id, name, match_id, true);
 					self.selectedEvent(id);
 				}
 				else {
-					self.getMatchesForEvent(data.events[0]._id, data.events[0].name, null, true);
+					self.getMatchesForEvent(data.current[0]._id, data.current[0].name, null, true);
 				}
 			}
 		);
@@ -205,8 +231,6 @@ function viewModel() {
 	self.getPastEvents();
 	
 
-	
-	
 /*	function getMatches() {
 		var data;
 		sqEventProxy.getMatchList(
@@ -217,22 +241,43 @@ function viewModel() {
 		);
 	}
 	getMatches(); */
+	
 
-	self.toggleVisible = function(item, event) {
-		var el = event.currentTarget;
-		var s = $(el).nextAll('.gameScores:first');
+	self.toggleVisible = function(list, arrow, reverse) {
+		//var el = event.currentTarget;
+		var a = $(arrow);
+		var s = $(list);
+		
+		//var s = $('#pastEvents');
+		//var a = $('#eventsArrow');
+		
 
+		// 				height: '0px',
 		if (s.is(":visible")) {
-
+			// 				easing: 'ease',
 			s.transition( {
 				perspective: '1000',
-				height: '0px',
+				scale : '1.0 , 0' ,
 				opacity: '0',
 				duration: '250',
+				height: '0px',
+
 				complete: function() {
-					s.css('display', 'none');
+					s.css({ display : 'none' });
 				}
 			});
+			
+			if(reverse) {
+				a.transition( {
+					rotate: '-90deg',
+				});
+			}
+			
+			else {
+				a.transition( {
+					rotate: '0deg',
+				});
+			}
 
 			//$(".gameScores").slideUp("slow");
 			//s.slideUp("fast");
@@ -240,30 +285,66 @@ function viewModel() {
 
 			//$(".gameScores").slideDown("slow");
 			//$(this).next("div").slideToggle("slow");
-			var s = $(el).nextAll('.gameScores:first');
+			//var s = $(el).nextAll('.pastEvents');
 			//s.slideUp("slow");
 			//console.log(s);
+			
+			if(reverse) {
+				a.transition( {
+					rotate: '0deg',
+				});
+			}
+			
+			else {
+				a.transition( {
+					rotate: '90deg',
+				});
+			}			
+			
+			
 			s.transition( {
 				perspective: '1000',
 				height: '0px',
 				opacity: '0',
 				duration: '0',
 				complete: function() {
-					s.css('display', 'block');
+					s.css({ display : 'block' });
 
 				}
 			}).transition( {
 				perspective: '1000',
 				duration: '250',
 				opacity: '1',
+				scale: '1.0, 1.0',
 				height: 'auto',
 				complete: function() {
 
 				}
 			});
-			
+//				height: 'auto',			
 			//s.slideDown("fast");
+
+			
+/*			if(_.contains(self.pastEventList(), self.selectedEvent()) == true) {
+				console.log("hit");
+				self.selectedEvent = ko.observable();
+			} */
+			
+			
 		}
+		
+		/*console.log(self.selectedEvent());
+		
+		for(var i = 0; i < self.pastEventList().length; i++) {
+			if(self.pastEventList()[i]._id() == self.selectedEvent()) {
+				self.selectedEvent(0);
+				self.matchList([]);
+				self.matchListHeader("");
+				self.showNoMatchesText(false);
+			}
+		}		 */
+		
+		
 	}
 	
 	
@@ -293,6 +374,10 @@ function viewModel() {
 		self.stats().p2matchBalls(0);
 		
 		if (self.match() !== undefined) {
+		
+			self.matchDuration(moment(self.match().endTime()).diff(self.match().startTime(), 'minutes'));		
+		
+		
 			for(var i = 0; i < self.match().scores().length; i++) {
 				if(typeof self.match().scores()[i].playerOneYesLet !== 'undefined') {
 					if(self.match().scores()[i].playerOneYesLet() == 'true') {
@@ -325,18 +410,128 @@ function viewModel() {
 					}
 				}
 				
-				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' && parseInt(self.match().scores()[i].playerOneScore()) > parseInt(self.match().scores()[i].playerTwoScore()) ) {
+				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true'  && self.match().scores()[i].gameOver() == 'false' && parseInt(self.match().scores()[i].playerOneGamesWon()) >= parseInt(self.match().scores()[i].playerTwoGamesWon()) && parseInt(self.match().scores()[i].playerOneScore()) > parseInt(self.match().scores()[i].playerTwoScore()) ) {
+						//console.log(self.match().scores()[i].playerOneGamesWon() + " " + 
+						//self.match().scores()[i].playerTwoGamesWon());
+						//console.log("p1 matchball");
 						self.stats().p1matchBalls(self.stats().p1matchBalls() + 1);
 				}					
 
-				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' &&  parseInt(self.match().scores()[i].playerTwoScore()) > parseInt(self.match().scores()[i].playerOneScore()) ) {
-					self.stats().p2matchBalls(self.stats().p2matchBalls() + 1);
+				if(typeof self.match().scores()[i].matchBall !== 'undefined' && self.match().scores()[i].matchBall() == 'true' && self.match().scores()[i].gameOver() == 'false' &&  parseInt(self.match().scores()[i].playerTwoGamesWon()) >= parseInt(self.match().scores()[i].playerOneGamesWon()) && parseInt(self.match().scores()[i].playerTwoScore()) > parseInt(self.match().scores()[i].playerOneScore()) ) {
+						self.stats().p2matchBalls(self.stats().p2matchBalls() + 1);
 				}
 			}
 		}
 	}		
 	
+	ko.bindingHandlers.fadeVisible = {
+		init: function(element, valueAccessor) {
+			var shouldDisplay = valueAccessor();
+			var el = $(element);			
+			el.toggle(shouldDisplay);
+		},
+		update: function(element, valueAccessor) {
+			// On update, fade in/out
+			var shouldDisplay = valueAccessor();
+			var el = $(element);
+        
+			if (shouldDisplay == true) {
+				el.css({ display: 'block'});
+				el.transition({ opacity: 1, queue: false, duration: '500ms' });
+			}
+			else {
+				el.transition({ opacity: 0, queue: false, duration: '500ms' });
+				el.css({ display: 'none'});
+			}
+		} 
+	};	
 	
+	self.comment = ko.observable();
+	self.saveInProgress = ko.observable(false);
+	
+	self.createComment = function() {
+		if(self.comment() == undefined)
+			return;
+		if(self.comment() == "") return;
+	
+		self.saveInProgress(true);
+		
+		var author = ko.toJS(self.session.name);
+		var comm = ko.toJS(self.comment);
+		var match_id = ko.toJS(self.match()._id());
+		
+		sqEventProxy.createComment(
+		{comment:comm, author:author, match_id:match_id},
+		function(data) {
+
+			if (data.message == "OK") {
+				//console.log("ok");
+				
+				if(self.commentList().length == 0) {
+					ko.mapping.fromJS(data.comment, {}, self.commentList()[0]);
+					//console.log(ko.mapping.fromJS(data.comment, {}, self.commentList()[0]));
+				}
+				
+				else {
+				
+					ko.mapping.fromJS(data.comment, {}, self.commentList()[self.commentList().length - 1]);
+				}
+				//self.allComments().push(data.comment);
+				self.comment("");
+
+			}
+			self.saveInProgress(false);
+			//console.log(self.commentList()[self.commentList().length - 1]);
+			
+			self.getComments(match_id);
+			//self.getCommentsForMatch(match_id);			
+			
+		});
+		
+
+		
+	}
+	
+	self.allComments = ko.observableArray([]);
+	
+	self.getComments = function(match_id) {
+		var data;
+		sqEventProxy.getComments(
+		{data:data},
+		function(data) {
+			if(data) {
+				ko.mapping.fromJS(data.comments, {}, self.allComments);
+				if (match_id)
+					self.getCommentsForMatch(match_id);
+			}
+		});
+	}
+	
+	self.getComments();
+	
+	self.commentList = ko.observableArray([]);
+	
+	self.getCommentsForMatch = function(match_id) {
+		var comments = [];
+		for(var i = 0; i < self.allComments().length; i++) {
+			if(self.allComments()[i].match_id() == match_id) {
+				comments.push(self.allComments()[i]);
+			}
+		}
+		ko.mapping.fromJS(comments, {}, self.commentList);
+	}
+	
+	self.getNumberOfComments = function(match_id) {
+		var comments = [];
+		for(var i = 0; i < self.allComments().length; i++) {
+			if(self.allComments()[i].match_id() == match_id) {
+				comments.push(self.allComments()[i]);
+			}
+		}
+		if (comments.length > 0) {
+			return comments.length;
+		}
+	}
 	
 	self.login = function() {
 		//console.log("running login");

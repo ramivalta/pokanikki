@@ -2,279 +2,128 @@ extends layout
 
 block append site_scripts
 	script(src="/javascripts/events.js")
-	
+
 block append site_styles
-	
+
 
 block content
 	include navbar
 
 	div(class="large-12 medium-12 small-12 columns")
 		h4.subheader Tapahtumat
-		
+
 		div#eventList(style="display: block")
-			div.large-12.small-12.columns.panel.radius(data-bind="foreach: eventList")
-				div.large-12.small-12.columns(data-bind="css: { orange_highlight : $root.selectedEvent() == _id() }, click: $root.getMatchesForEvent.bind($data, _id(), name(), null, true)", style="cursor: pointer; vertical-align: middle; padding: 6px")
-					h5(style="display: inline")
-						span(data-bind="text: name")
-					span.right
-						|&nbsp; &bull; &nbsp;
-						h5.subheader(data-bind="text: moment(startDate()).format('DoMM.YYYY')", style="display: inline")
-						|&nbsp;-&nbsp;					
-						h5.subheader(data-bind="text: moment(endDate()).format('DoMM.YYYY')", style="display: inline")
-						//a(data-bind="click: $root.getMatchesForEvent.bind($data, _id(), name(), true)", style="display: inline").right
-							|näytä pelit...
-					
+			div.large-12.small-12.columns.radius(style="padding: 0px; border: 1px solid #ccc; border-radius: 3px; overflow: hidden")
+				div.row.eventListHeader(style="border-bottom: 1px solid #acacac; width: 100%; max-width: 100%; cursor: pointer", data-bind="click: function() {  $root.toggleVisible('#currentEvents', '#currentEventsArrow', true) }")
+					div.large-12.medium-12.small-12.columns(style="margin: 4px; padding: 4px")
+						div(style="display: inline-block; font-size: 12px; ")
+							div#currentEventsArrow(style="text-shadow: 0px 1px 2px #fff; position: absolute; bottom: 0px !important; padding-bottom: 10px; padding-top: 10px") &#9660;
+						h5.subheader(style="display: inline-block; margin: 0; color: #222")&nbsp;&nbsp; Käynnissä olevat tapahtumat
 
-		//div.row
-			a.button(data-bind="click: login") Login
-			pre(data-bind="text: ko.toJSON(session, null, 2)")
+				div#currentEvents
+					div(data-bind="foreach: eventList")
+						div.row(data-bind="css: { orange_highlight : $root.selectedEvent() == _id(), eventListItem : $index() !== $root.eventList().length -1 }, click: $root.getMatchesForEvent.bind($data, _id(), name(), null, true)", style="cursor: pointer;  padding: 6px; max-width: 100%; border-radius: 0px ; ")
+							div.large-8.medium-8.small-12.columns
+								span.subheader(data-bind="text: name")
+							div.large-4.medium-4.small-12.columns(style="font-size: 13px")
+								span.left
+									span.subheader &bull;&nbsp;
+									span.subheader(data-bind="text: moment(startDate()).format('DoM.YYYY')")
+									span.subheader &nbsp;&dash;&nbsp;
+									span.subheader(data-bind="text: moment(endDate()).format('DoM.YYYY')")
 
+				div.row.eventListHeader(style="background-color: #E7E7E7; border-bottom: 1px solid #acacac; border-top: 1px solid #acacac; width: 100%; max-width: 100%; cursor: pointer ", data-bind="click: function() {  $root.toggleVisible('#pastEvents', '#pastEventsArrow') }")
+					div.large-12.medium-12.small-12.columns(style="margin: 4px; padding: 4px")
+						div(style="display: inline-block; font-size: 12px")
+							div#pastEventsArrow(style="text-shadow: 0px 1px 2px #fff; position: absolute; bottom: 0px !important; padding-bottom: 10px; padding-top: 10px") &#9658;
+						h5.subheader(style="display: inline-block; margin: 0px; color: #222")&nbsp;&nbsp; Vanhat tapahtumat &nbsp;
 
+						//div#eventsArrow(style="font-size: 12px; display: inline-block; text-shadow: 0px 1px 2px white; margin-bottom: 0px; margin: 0px; position: absolute; margin-top: 8px") &#x25BC;
+
+				div#pastEvents.eventList(style="display: none")
+					div(data-bind="foreach: pastEventList")
+						div.row(data-bind="css: { orange_highlight : $root.selectedEvent() == _id() , eventListItem : $index() !== $root.pastEventList().length -1 }, click: $root.getMatchesForEvent.bind($data, _id(), name(), null, true)", style="cursor: pointer;  padding: 6px; max-width: 100%; border-radius: 0px ;")
+							div.large-8.medium-8.small-12.columns
+								span.subheader(data-bind="text: name")
+							div.large-4.medium-4.small-12.columns(style="font-size: 13px")
+								span.left
+									span.subheader &bull;&nbsp;
+									span.subheader(data-bind="text: moment(startDate()).format('DoM.YYYY')")
+									span.subheader &nbsp;&dash;&nbsp;
+									span.subheader(data-bind="text: moment(endDate()).format('DoM.YYYY')")
+
+	div.row
+		div#matchList
+
+	div.row
+		div.large-12.medium-12.small-12.columns(data-bind="fadeVisible: showLoadingAnim() == true", style="text-align: center; position: absolute; z-index: 5; display: none; min-height: 250px")
+			img(src="/images/loader.gif")
+
+		//min-height: 76px;
 	div(class="large-3 medium-12 small-12 columns")
 
-		h4#tulokset.subheader(data-bind="text: matchListHeader")
-		
-		div(data-bind="if: matchList().length == 0")
-			h5.subheader Tässä tapahtumassa ei ole pelejä.
-
-		div(data-bind="if: matchList().length > 0 ")
-
-			//include sidebar_matchlist.jade
-		
-			div.large-12.small-12.columns(data-bind="foreach: matchList", style="padding: 2px")
-		
-				// ko if: ($index() === 0)
-
-				div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
-				hr
-
-				// /ko
-
-				// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
-
-				div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
-				hr
-
-				// /ko
-
-				div.large-12.medium-6.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.showMatch.bind($data, _id()), css: { highlight : scores().length > 0, orange_highlight : _id == $root.selectedMatch_id() }")
-				
-					div.large-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
-					div.large-4.small-4.columns.site_gameList(style="text-align: center")
-						span(data-bind="text: p1GamesWon")
-						|&nbsp;-&nbsp;
-						span(data-bind="text: p2GamesWon")
-					div.large-4.small-4.columns.site_gameList(data-bind="text: playerTwoName", style="text-align: left")
-					
-			div.large-12.small-12.columns
-				small
-					span.highlight Pinkillä
-					span &nbsp;
-					span merkatuista peleistä on pöytäkirja tallennettuna.
-
-	div(class="large-9 medium-12 small-12 columns", data-bind="visible: match")
+		div(data-bind="fadeVisible: showLoadingAnim() == true")
+			| &nbsp;
 
 
-		div#scores.large-12.medium-12.small-12.columns
-			h4.subheader
-				|Pelin pöytäkirja
-			div(data-bind="if: match() !== undefined")
-				h5.subheader
-					span(data-bind="text: match().playerOneName()")
-					|&nbsp;vs&nbsp;
-					span(data-bind="text: match().playerTwoName()")				
-					|,&nbsp;
-					span(data-bind="text: moment(match().startTime()).format('dddd DD.MM.YYYY, HH:mm')")
-		
+		div(data-bind="fadeVisible: showLoadingAnim() == false")
 
-		div(class="large-12 medium-12 small-12 columns", data-bind="if: match")
 
-			div(data-bind="ifnot: $root.match().scores().length > 0").large-12.small-12.columns
+			h4.subheader(data-bind="text: matchListHeader", style="-webkit-font-smoothing: antialiased;")
 
-				div(style="padding: 6px; color: #000; background: #eee; width: 100%; border: 1px solid #ccc; text-align: center; font-size: 14px; text-overflow: ellipsis; border-bottom: 0px; font-weight: 700")
-					div(data-bind="text: $root.match().playerOneName", style="text-align: right; width: 40%; max-width: 40%; display: inline; white-space: nowrap; text-overflow: ellipsis !important").left
-		
-					div(style="text-align: center; width: 20%; display: inline")
-						span(data-bind="text: $root.match().p1GamesWon()", style="text-align: center")
-						|-
-						span(data-bind="text: $root.match().p2GamesWon()", style="text-align: center")
-			
-					div(data-bind="text: $root.match().playerTwoName", style="text-align: left; width: 40%; display: inline; white-space: nowrap; text-overflow: ellipsis !important").right
 
-			
-				div
-					table#gameTable(style="width: 100%; padding: 0px; margin: 0px; border-collapse: collapse; border: 1px #ccc solid")
-						tbody(data-bind="foreach: $root.match().gameScores")
-							tr(style="border: 1px #ccc solid; font-weight: 700")
-								th.left(style="width: 60px")
-									span(data-bind="text: ($index() + 1)")
-									span . erä
-								td(style="text-align: center")
-									span(data-bind="text: p1score")
-									span -
-									span(data-bind="text: p2score")
-								td.right(style="width: 60px")
-									|&nbsp;
-						//div.left(style="padding: 6px; color: #000; background: #fff; width: 100%; border: 1px solid #eee; border-top: 0; font-size: 13px").right
-							strong(data-bind="text: ($index() + 1)")
-							strong . erä &nbsp;
-							span(data-bind="text: p1score")
-							span -
-							span(data-bind="text: p2score")
-					//p(style="color: #999") Pelistä ei ole yksityiskohtia
-			div.large-7.medium-7.small-12.columns(data-bind="if: $root.match().scores().length > 0")
-					
-				div(data-bind="if: $root.match().scores().length > 0", style="width: 100%").large-12.small-12.columns.gameScores
+			div(data-bind="if: matchList().length == 0")
+				h5.subheader Tässä tapahtumassa ei ole pelejä.
 
-					table(style="padding: 0px; margin: 0px;  font-size: 13px;  border-spacing: 0; width: 100%")
-						thead
-						tbody(style="font-size: 14px; font-weight: 600; background: #fefefe; padding: 8px")
-							tr
-								td(colspan=2, data-bind="text: match().playerOneName()", style="text-align: right")
-								td(style="text-align: center")
-									span(data-bind="text: match().p1GamesWon()", style="text-align: center")
-									span(style="text-align: center")
-										|-
-									span(data-bind="text: match().p2GamesWon()", style="text-align: left")
-								td(colspan=2, data-bind="text: match().playerTwoName()", style="text-align: left")
-		
-						tbody(data-bind="foreach: $root.match().scores").scoreBoard
-			
-							tr(data-bind="if: ($index() == 0)")
-								td(colspan=5, style="padding: 0px; margin: 0px; width: 100%")
-									div(style="padding: 6px; color: #000; background: #eee; width: 100%").right
-										strong 1. erä
-			
-			
-							tr.gameScores
-								td(style="width: 40%").decisionText
-									div(data-bind="if: (typeof playerOneYesLet !== 'undefined' && typeof playerOneNoLet !== 'undefined' && typeof playerOneStroke !== 'undefined')")
-										span(data-bind="if: playerOneYesLet() == 'true'")
-											span.scoreCellYesLet.left &nbsp;
-											| Yes let
-										span(data-bind="if: playerOneNoLet() == 'true'")
-											span.scoreCellNoLet.left &nbsp;
-											| No let
-										span(data-bind="if: playerOneStroke() == 'true'")
-											span.scoreCellStroke.left &nbsp;
-											| Stroke
-									div(data-bind="if: (typeof playerOneYesLet == 'undefined')")
-										| &nbsp;
-		
-								td(style="width: 8%")
-									span(data-bind="text: playerOneScore, css: { circle_pad : playerOneScore().length < 2,											circle : (typeof playerTwoYesLet !== 'undefined' && playerTwoNoLet() == 'true') || (typeof playerOneYesLet !== 'undefined' && playerOneStroke() == 'true') || (typeof playerOneYesLet !== 'undefined' && (playerOneYesLet() == 'false' && playerOneNoLet() == 'false')) }")
-				
-						
-								td(style="width: 4%") -
-								td(style="width: 8%")
-									span(data-bind="text: playerTwoScore, css: { circle_pad : playerTwoScore().length < 2, circle : (typeof playerTwoYesLet !== 'undefined' && playerTwoStroke() == 'true') || (typeof playerOneYesLet !== 'undefined' && playerOneNoLet() == 'true') || (typeof playerTwoYesLet !== 'undefined' && (playerTwoYesLet() == 'false' && playerTwoNoLet() == 'false')) }")
-	
-								td(style="width: 40%").decisionText
-									div(data-bind="if: (typeof playerTwoYesLet !== 'undefined' && typeof playerTwoNoLet !== 'undefined' && typeof playerTwoStroke !== 'undefined')")
-										span(data-bind="if: playerTwoYesLet() == 'true'")
-											span.right.scoreCellYesLet &nbsp;
-											| Yes let
-										span(data-bind="if: playerTwoNoLet() == 'true'")
-											span.right.scoreCellNoLet &nbsp;
-											| No let
-										span(data-bind="if: playerTwoStroke() == 'true'")
-											span.right.scoreCellStroke &nbsp;
-											| Stroke
-									div(data-bind="if: (typeof playerTwoYesLet == 'undefined')")
-										| &nbsp;
-							tr(data-bind="if: gameOver() == 'true' && ($index() !== $root.match().scores().length - 1)")
-								td(colspan=5, style="padding: 0px; margin: 0px; width: 100%")
-									div(style="padding: 6px; color: #000; background: #eee; width: 100%").right
-										strong(data-bind="text: gameNumber")
-										strong . erä
+			div(data-bind="if: matchList().length > 0")
 
-		
-			div.large-5.medium-5.small-12.columns(style="color: #fff; background: black; border-radius: 4px; font-size: 13px", data-bind="visible: $root.match().scores().length > 0")
+				//include sidebar_matchlist.jade
 
-				div
-					h5.subheader(style="padding:0px; margin:0px; padding-top: 8px") Letit
-					div.panel(style="background: black; color: #eee; border: 1px solid #222")
-						p(style="color: #999; font-size: 1em")
-							span(data-bind="text: match().playerOneName()").left
-							span : 
-							span(data-bind="text: stats().p1lets()").right
-				
-							br
-			
-							span(data-bind="text: match().playerTwoName()", style="text-overflow: ellipsis").left
-							span : 
-							span(data-bind="text: stats().p2lets()").right
-		
-					h5.subheader(style="padding: 0x; margin: 0px") No letit
-					div.panel(style="background: black; color: #eee; border: 1px solid #222")
-						p(style="color: #999; font-size: 1em")
-							span(data-bind="text: match().playerOneName()").left.name_ellipsed
-							span : 
-							span(data-bind="text: stats().p1nolets()").right
-				
-							br
+				div.large-12.small-12.columns(data-bind="foreach: matchList")
 
-							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
-							span : 
-							span(data-bind="text: stats().p2nolets()").right
-				
-					h5.subheader(style="padding: 0x; margin: 0px") Stroket
-					div.panel(style="background: black; color: #eee; border: 1px solid #222")
-						p(style="color: #999; font-size: 1em")
-							span(data-bind="text: match().playerOneName()").left.name_ellipsed
-							span : 
-							span(data-bind="text: stats().p1strokes()").right
-				
-							br
+					// ko if: ($index() === 0)
 
-							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
-							span : 
-							span(data-bind="text: stats().p2strokes()").right
-					h5.subheader(style="padding: 0px; margin: 0px") Eräpallot
-					div.panel(style="background: black; color: #eee; border: 1px solid #222")
-						p(style="color: #999; font-size: 1em")
-							span(data-bind="text: match().playerOneName()").left.name_ellipsed
-							span :
-				
-							span.right
-								span(data-bind="text: match().p1GamesWon()")								
-								span /
-								span(data-bind="text: stats().p1gameBalls()")
-				
-							br
-				
-							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
-							span :
-				
-							span.right
-								span(data-bind="text: match().p2GamesWon()")								
-								span /
-								span(data-bind="text: stats().p2gameBalls()")
+					div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+					hr
 
-					h5.subheader(data-bind="visible: stats().p1matchBalls() > 0 || stats().p2matchBalls() > 0", style="padding: 0px; margin: 0px") Ottelupallot
-					div.panel(data-bind="visible: stats().p1matchBalls() > 0 || stats().p2matchBalls() > 0", style="background: black; color: #eee; border: 1px solid #222")
-						p(style="color: #999; font-size: 1em")
-							span(data-bind="text: match().playerOneName()").left.name_ellipsed
-							span :
-							span.right
-								span(data-bind="text: stats().p1matchBalls()")
-				
-							br
-				
-							span(data-bind="text: match().playerTwoName()").left.name_ellipsed
-							span :
-				
-							span.right
-								span(data-bind="text: stats().p2matchBalls()")
-						
-	
+					// /ko
+
+					// ko if: $index() > 0 && moment($parent.matchList()[$index() -1].startTime()).format('DDDYY') !== moment(startTime()).format('DDDYY')
+
+					div.large-12.small-12.columns.site_gameList.left(data-bind="text: moment(startTime()).format('dddd, DoMoYYYY')", style="color: #9f9f9f; font-size: 13px")
+					hr
+
+					// /ko
+
+					div.large-12.medium-6.small-12.columns.site_gameList.gameListHeader(data-bind="click: $root.showMatch.bind($data, _id(), true), css: { highlight : scores().length > 0, orange_highlight : _id == $root.selectedMatch_id() }")
+
+						div.large-4.medium-4.small-4.columns.site_gameList(data-bind="text: playerOneName", style="text-align: right")
+						div.large-3.medium-3.small-3.columns.site_gameList(style="text-align: center")
+							span(data-bind="text: p1GamesWon")
+							|&nbsp;-&nbsp;
+							span(data-bind="text: p2GamesWon")
+						div.large-4.medium-4.small-4.columns.site_gameList
+							span(data-bind="text: playerTwoName", style="text-align: left")
+						div.large-1.medium-1.small-1.columns.site_gameList
+							div.right(style="position: relative; top: 0px !important; z-index: 5; display: inline-block; text-align: right")
+								i.fi-comment(style="font-size: 18px; color: #222; display: inline", data-bind="visible: $root.getNumberOfComments(_id()) > 0")
+								span(style="color: white; z-index: 5; position:absolute; left: 2px; top: 2px; font-size: 10px")
+									span(data-bind="text: $root.getNumberOfComments(_id())")
+
+				div.large-12.small-12.columns
+					p
+						small
+							span.highlight Pinkillä
+							span &nbsp;
+							span merkatuista peleistä on pöytäkirja tallennettuna.
+
+	div(class="large-9 medium-12 small-12 columns")
+
+		include match_details.jade
 
 
 
 
-
-				
 	div.large-12.small-12.columns.show-for-small(style="height: 36px; background: #e9e9e9")
 		&nbsp;
 

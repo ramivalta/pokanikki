@@ -1,6 +1,6 @@
 function viewModel() {
 	var self = this;
-	
+
 	self.session = ko.observable();
 
 	self.session = ({
@@ -11,22 +11,22 @@ function viewModel() {
 		rank	: ko.observable($('#sessrank').val()),
 		username: ko.observable($('#sessuser').val()),
 		clubShort	: ko.observable($('#sessclub').val()),
-		clubName	: ko.observable($('#sessclubshort').val()),		
-	});	
+		clubName	: ko.observable($('#sessclubshort').val()),
+	});
 
 	self.title = ko.observable("Seurat - Pokanikki");
-		
+
 	self.playerList = ko.observableArray();
 	self.matchList = ko.observableArray([]);
-	
+
 	self.eventList = ko.observableArray([]);
-	self.oldEventList = ko.observableArray([]);	
-	
+	self.oldEventList = ko.observableArray([]);
+
 	self.showScores = ko.observable(false);
-	
+
 	self.activePage = ko.observable("profile");
 	self.clubList = ko.observableArray();
-	
+
 	self.playerMatches = ko.observableArray();
 	/*function getPlayers() {
 		var data;
@@ -37,7 +37,7 @@ function viewModel() {
 			}
 		);
 	}
-	getPlayers();		
+	getPlayers();
 	*/
 
 /*	function getMatches() {
@@ -52,8 +52,8 @@ function viewModel() {
 	}
 
 	getMatches(); */
-	
-	
+
+
 	self.getPastEvents = function() {
 		var data;
 		var id, name, match_id;
@@ -77,23 +77,23 @@ function viewModel() {
 			}
 		);
 	}
-	
-	self.getPastEvents();	
-	
-	
+
+	self.getPastEvents();
+
+
 	self.getClubData = function(id, clubShort) {
 		self.getPlayersByClub(id);
 		self.getMatchesByClub(clubShort);
 	}
-	
+
 	self.getMatchesByClub = function(shortHand) {
 		sqEventProxy.getMatchesByClub(
-		{clubShort:shortHand},
+		{clubShort:shortHand, period: 'ranking'},
 		function(data) {
 			ko.mapping.fromJS(data.scores, {}, self.matchList);
 		});
 	}
-	
+
 	function getClubs() {
 		var data;
 		sqEventProxy.getClubs(
@@ -110,13 +110,13 @@ function viewModel() {
 	}
 
 	getClubs();
-	
+
 	self.getClubById = function(id) {
 		for (var i = 0; i < self.clubList().length; i++) {
 			if (self.clubList()[i]._id == id) return self.clubList()[i].name;
 		}
 	}
-	
+
 	self.getPlayersByClub = function(club_id) {
 		//console.log("derped");
 		sqEventProxy.getPlayersByClub(
@@ -131,7 +131,7 @@ function viewModel() {
 	/*self.getMatchesByPlayer = function() {
 		if (!self.session.name) return
 		var player_id = self.session._id();
-		
+
 		//console.log("sending player_id :" + player_id);
 
 		sqEventProxy.getMatchesByPlayer(
@@ -142,10 +142,10 @@ function viewModel() {
 			}
 		);
 	}
-	
-	
+
+
 	self.getMatchesByPlayer(); */
-	
+
 	self.toggleVisible = function(item, event) {
 		var el = event.currentTarget;
 		var s = $(el).nextAll('.gameScores:first');
@@ -186,20 +186,19 @@ function viewModel() {
 				opacity: '1',
 				height: 'auto',
 			});
-			
+
 			//s.slideDown("fast");
 		}
 	}
 
 
 }
-	
+
 
 $(document).ready(function() {
-	
+
 	window.vm = new viewModel();
 	ko.applyBindings(vm, document.getElementById("main"));
     $(document).foundation();
-	
+
 });
-	
