@@ -1075,10 +1075,18 @@ function getMatchesToDrop(db, cb) {
 	});
 }
 
-
-
 exports.generateRankingList = function(db) {
 	return function(req, res) {
+		routes.doGenerateRankingList(db);
+
+		res.end();
+	}
+}
+
+exports.doGenerateRankingList = function(db) {
+	//console.log("called");
+	//return function(req, res) {
+		//console.log("running");
 		var users = db.get('users');
 		var matches = db.get('matches');
 		var rankingArchive = db.get('rankingArchive');
@@ -1155,8 +1163,8 @@ exports.generateRankingList = function(db) {
 			});
 		});
 
-		res.end();
-	}
+		//res.end();
+	//}
 }
 
 function getModRanks(matches, db) {

@@ -44,9 +44,10 @@ function viewModel() {
 
 	self.showGuide = ko.observable(false);
 
+	var ranking_el = $('#ranking');
 
 	self.historySliderMove = function() {
-		$('#ranking').css({ opacity: 0.5 });
+		ranking_el.css({ opacity: '0.5' });
 		var v = self.historySlider() - 1;
 
 		if (self.historySlider() < 3) {
@@ -78,10 +79,11 @@ function viewModel() {
 			ko.mapping.fromJS(self.oldRankings()[v].ranking, self.oldRankingList);
 
 			self.oldRankingDate(self.oldRankings()[v].date());
-			$('#ranking').css({ opacity: 1 });
+			ranking_el.css({ opacity: 1 });
 			self.sliderHasMoved(false);
 		}
-	}).extend({ throttle: 500 });
+	}).extend({ rateLimit: { method: "notifyWhenChangesStop", timeout: 500 }});
+	//}).extend({ throttle: 500 });
 
 	self.highlightId = ko.observable("00");
 

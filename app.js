@@ -150,7 +150,7 @@ app.get('/getAllEvents', routes.getAllEvents(db));
 app.get('/getPastEvents', routes.getPastEvents(db));
 app.get('/getPastRankings', routes.getPastRankings(db));
 app.get('/getAltRankings', routes.getAltRankings(db));
-app.get('/generateRankingList', routes.generateRankingList(db));
+//app.get('/generateRankingList', routes.generateRankingList(db));
 app.get('/getComments', routes.getComments(db));
 app.get('/generateRankingArchive', routes.generateRankingArchive(db));
 
@@ -179,12 +179,12 @@ var updateRanking = new cronJob('1, 0, *, *, *', function() {
 	console.log("generating rankinglist");
 
 
-	routes.generateRankingList(db);
+	routes.doGenerateRankingList(db);
 
 	}, function() {
 		console.log("ranking save task finished");
 	},
-	true
+	false
 );
 
 app.get('/lsq.xml', function(req, res) {
