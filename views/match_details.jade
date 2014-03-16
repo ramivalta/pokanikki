@@ -2,12 +2,14 @@ div#scores.large-12.medium-12.small-12.columns(style="overflow: auto !important"
 	//h4.subheader
 		|Pelin pöytäkirja
 	div(data-bind="if: match() !== undefined")
-		h5.subheader(data-bind="fadeVisible: $root.matchLoaded() == true")
-			span(style="font-weight: 600;")
-				span(data-bind="text: match().playerOneName()")
-				|&nbsp;vs&nbsp;
-				span(data-bind="text: match().playerTwoName()")
-			|,&nbsp;
+		h5(data-bind="fadeVisible: $root.matchLoaded() == true" style="text-align: center")
+			span(style="font-weight: 600; text-align: center")
+				span(data-bind="text: match().playerOneName()" style="text-align: center")
+				br
+				span(style="text-align: center")&nbsp;vs&nbsp;
+				br
+				span(data-bind="text: match().playerTwoName()" style="text-align: center")
+			br
 			span(data-bind="text: moment(match().startTime()).format('dddd D.M.YYYY, HH:mm')")
 
 	div(data-bind="fadeVisible: match() == undefined")
@@ -17,7 +19,7 @@ div#scores.large-12.medium-12.small-12.columns(style="overflow: auto !important"
 div(class="large-12 medium-12 small-12 columns", data-bind="if: match", style="min-height: 360px; overflow: auto !important; ")
 	div(data-bind="ifnot: $root.match().scores().length > 0").large-12.medium-12.small-12.columns.panel_light
 		div(data-bind="fadeVisible: $root.matchLoaded() == true")
-			table#gameTable.panel(style="width: 100%; padding: 0px; margin: 0px; border-collapse: collapse; border: 1px solid #999")
+			table#gameTable.panel(style="min-width: 100%; padding: 0px; margin: 0px; border-collapse: collapse; border: 1px solid #999")
 				thead(style="font-size: 14px; width: 100%")
 					tr(style="border: 1px solid #222; font-weight: 700; padding; background: #222")
 						th(style="border: 1px solid #222; width: 20%") &nbsp; &nbsp; &nbsp;

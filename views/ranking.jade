@@ -36,9 +36,9 @@ block content
 
 				div#sliderContainer.large-10.medium-10.small-10.columns(style="padding-left: 0; padding-right: 0; padding-top: 8px;", data-bind="visible: matchList().length > 0" )
 
-					div.left(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; left: 26px; font-weight: 400")
+					div.left.historySlider-dates(style="left: 26px")
 						span(data-bind="text: oldRankingFirstDate", style="text-shadow: 0px 1px 2px #fff")
-					div.right(style="color: LightGray; font-family: 'League Gothic Regular'; font-size: 36px; position: absolute; top: 10px; padding: 2px; z-index: 1; right: 26px; font-weight: 400")
+					div.right.historySlider-dates(style="right: 26px")
 						span(data-bind="text: oldRankingLastDate", style="text-shadow: 0px 1px 2px #fff")
 
 					div#sliderWrap.large-12.small-12.columns(style="padding-left:0; padding-right:0 ")
@@ -49,7 +49,7 @@ block content
 							div.large-12.small-12.columns(data-bind="value: historySlider, uislider: historySlider, event: { slide: historySliderMove, slidestop : hideTooltip }", name="historySlider", id="historySlider")
 
 								div.ui-slider-handle.cursor_grab
-									div#tooltip(data-bind="text:  moment(oldRankingDate()).format('DoMoYYYY, HH:mm')", style="position: absolute; top: -45px; left: -65px; z-index: 9000; width: 130px; border: 1px #222 solid; padding: 6px; margin: 6px; border-radius: 4px; opacity: 0.85; text-shadow: 0px 1px 2px #fff; box-shadow: 0px 0px 10px #333; background: #eee; font-size: 15px" )
+									div#tooltip(data-bind="text:  moment(oldRankingDate()).format('DoMoYYYY, HH:mm')", style="position: absolute; top: -45px; left: -65px; z-index: 9000; width: 130px; border: 1px #222 solid; padding: 6px; margin: 6px; border-radius: 4px; opacity: 0.85; text-shadow: 0px 1px 2px #000; background: rgba(0, 0, 0, 0.75); font-size: 14px; color: #fff; font-weight: 300; text-align: center" )
 
 				div.large-1.medium-1.small-1.columns(data-bind="click: incrSlider", style="cursor: pointer; margin: 0px; padding: 0px; padding-left: 4px; ")
 					i.fa.fa-chevron-right.left.activeSliderButton(data-bind="css: { inactiveSliderButton : historySlider() >= oldRankings().length  }")

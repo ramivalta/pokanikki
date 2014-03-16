@@ -647,7 +647,7 @@ hr {
 	top: 0px !important;
 	opacity: 1;
 	outline: none;
-	width:  8px !important;
+	width:  12px !important;
 	height: 46px !important;
 	border-radius: 2px;
 	box-shadow: 0px 0px 10px #222;
@@ -730,6 +730,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffa84c', e
 	height: 40px;
 	top: -24px !important;
 	//padding-top: 12px !important;
+}
+
+.historySlider-dates {
+    color: LightGray;
+    font-family: 'League Gothic Regular';
+    font-size: 36px;
+    position: absolute;
+    top: 10px;
+    padding: 2px;
+    z-index: 1;
+    font-weight: 400   
 }
 
 #gameTable tr th, #gameTable tr td {
@@ -968,7 +979,7 @@ div.button {
 
 .eventListHeader {
 	//background-color: #E7E7E7;
-	background: linear-gradient(to bottom, rgba(200,200,200,0), rgba(200,200,200, 1)), url('/images/fabric_plaid.png');
+	background: linear-gradient(to bottom, rgba(200,200,200,0), rgba(215,215,215, 0.8)), url('/images/fabric_plaid.png');
 	box-shadow: inset 0px 0px 2px #fff;
 	-webkit-font-smoothing: antialiased;
 

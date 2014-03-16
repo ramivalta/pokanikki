@@ -17,16 +17,6 @@ html, body {
 	-webkit-user-select: none;
 }
 
-//a {
-//	-webkit-touch-callout: none !important; // pitäis estää longtap-menu ios-laitteilla, mutta ei tunne toimivan?
-//}
-
-/* .ui-li {
-	width: 100px !important;
-	text-overflow: hide;
-} */
-
-
 .winner {
 //	font-size: 20px;
 //	font-weight: 700;
